@@ -1432,7 +1432,7 @@ const pages = {
 };
 for (const a of ARTICLES) {
   const clean = a.title.replace(/&amp;/g,'&').replace(/&#39;/g,"'");
-  const desc = clean + ' — property insight from CapitalVue for Australian investors and home buyers.';
+  const desc = clean + '. Property insight from CapitalVue for Australian investors and home buyers.';
   pages['post-'+a.slug+'.html'] = page((a.seo||clean)+' | CapitalVue', desc, articleBody(a), 'blog.html', 'post-'+a.slug+'.html', articleSchema(a), a.og?{ogImage:a.og}:null);
 }
 pages['terms-and-conditions.html'] = page('Terms &amp; Conditions | CapitalVue','CapitalVue website and dashboard terms and conditions of use.', legalBody('Terms &amp; Conditions','terms.html'),'','terms-and-conditions.html',null,{bare:true});
@@ -1491,7 +1491,11 @@ const sm = Object.keys(pages).filter(f=>f!=='404.html').map(f=>{
 fs.writeFileSync(path.join(DIR,'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sm}\n</urlset>\n`);
 
 // ---- robots.txt ----
-fs.writeFileSync(path.join(DIR,'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${BASE}sitemap.xml\n`);
+// /content/ holds unstyled article fragments that build.js injects into the
+// real post pages. They are duplicate content with no canonical tag. The
+// forced 404 rules in _redirects are the real defence; this is belt and braces
+// for crawlers that read robots.txt before requesting.
+fs.writeFileSync(path.join(DIR,'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /content/\n\nSitemap: ${BASE}sitemap.xml\n`);
 
 // ---- ai.txt (AI crawler guidance) ----
 fs.writeFileSync(path.join(DIR,'ai.txt'), `# ai.txt — AI crawler guidance for capitalvue.com.au\nUser-agent: *\nAllow: /\n\n# CapitalVue permits AI assistants and answer engines to read and cite public pages with attribution and a link back.\nContact: info@capitalvue.com.au\nSitemap: ${BASE}sitemap.xml\nLLM-Content: ${BASE}llms.txt\n`);
@@ -1582,6 +1586,34 @@ redirectLines.push(`${'/our-team/*'.padEnd(74)} ${'/team.html'.padEnd(46)} 301`)
     slashRules.push(`${slug.padEnd(74)} ${('/' + f).padEnd(46)} 301!`);
   }
   redirectLines.unshift(...slashRules, '# --- legacy WordPress URLs below ---');
+}
+
+/* Publish-root exclusions.
+   netlify.toml sets publish = "." so every tracked file is served. These are
+   repo files that must never be reachable over HTTP. The trailing ! forces the
+   rule to win over the static file that actually exists at that path.
+   This is the same failure that made _private/ readable for five weeks; do not
+   add a doc, a config or a source fragment to the root without adding it here. */
+{
+  const blocked = [
+    '/HANDOVER.md',
+    '/DEPLOY.md',
+    '/README.md',
+    '/route53-cutover.json',
+    '/package.json',
+    '/package-lock.json',
+    '/build.js',
+    '/snapshot-email.src.js',
+    '/content/*',
+    '/services.png',
+    '/team.png',
+    '/tracker.png',
+  ];
+  redirectLines.unshift(
+    '# --- publish-root exclusions: repo files that must not be served ---',
+    ...blocked.map(p => `${p.padEnd(74)} ${'/404.html'.padEnd(46)} 404!`),
+    ''
+  );
 }
 
 fs.writeFileSync(path.join(DIR,'_redirects'),

@@ -201,11 +201,17 @@ export default async (req) => {
 
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers });
   // GET is a health check: confirms which build is actually deployed.
-  if (req.method === "GET")
+  // `hardening` stays public because its absence is how a silent downgrade to an
+  // older, unhardened build gets caught. `pending` does NOT go in the response:
+  // naming the control that is missing tells an unauthenticated caller exactly
+  // where to push. It goes to the function log, where the operator reads it.
+  if (req.method === "GET") {
+    if (PENDING.length) console.info("[submit] pending controls:", PENDING.join("; "));
     return new Response(
-      JSON.stringify({ ok: true, version: VERSION, build: BUILD, basedOn: BASED_ON, hardening: HARDENING, pending: PENDING }),
+      JSON.stringify({ ok: true, version: VERSION, build: BUILD, basedOn: BASED_ON, hardening: HARDENING }),
       { status: 200, headers }
     );
+  }
   if (req.method !== "POST")
     return new Response(JSON.stringify({ error: "Method not allowed", version: VERSION }), { status: 405, headers });
 
