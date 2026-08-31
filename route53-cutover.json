@@ -1,0 +1,59 @@
+{
+  "Comment": "CapitalVue cutover to Netlify - apex + www. Fill the two <PASTE...> alias values from the Route 53 console before running. Remove any AAAA blocks if no AAAA records exist for that name.",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "capitalvue.com.au",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [{ "Value": "75.2.60.5" }]
+      }
+    },
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "capitalvue.com.au",
+        "Type": "AAAA",
+        "AliasTarget": {
+          "HostedZoneId": "Z1GM3OXH4ZPM65",
+          "DNSName": "<PASTE FULL dualstack.appcapitalvuecomau-...ap-southeast-2.elb.amazonaws.com>",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "www.capitalvue.com.au",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z1GM3OXH4ZPM65",
+          "DNSName": "<PASTE FULL dualstack.appcapitalvuecomau-...ap-southeast-2.elb.amazonaws.com>",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "www.capitalvue.com.au",
+        "Type": "AAAA",
+        "AliasTarget": {
+          "HostedZoneId": "Z1GM3OXH4ZPM65",
+          "DNSName": "<PASTE FULL dualstack.appcapitalvuecomau-...ap-southeast-2.elb.amazonaws.com>",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "www.capitalvue.com.au",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [{ "Value": "capitalvue-new-preview.netlify.app" }]
+      }
+    }
+  ]
+}

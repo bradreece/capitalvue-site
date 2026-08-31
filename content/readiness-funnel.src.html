@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en-AU" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Property Readiness Snapshot — CapitalVue</title>
+<style>
+  :root{
+    color-scheme:light;
+    --plane:#f9f9f7; --surface:#ffffff; --surface-2:#fcfcfb;
+    --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --baseline:#c3c2b7;
+    --series:#148f8f; --series-soft:rgba(20,143,143,0.10);
+    --brand-navy:#092a4b; --brand-gold:#c9a24b;
+    --accent:#092a4b; --accent-soft:rgba(9,42,75,0.08);
+    --border:rgba(11,11,11,0.10);
+    --notice-bg:#fff8ec; --notice-br:#eda100;
+    --err:#d03b3b;
+    --radius:14px;
+    --font:'Poppins','Poppins Fallback',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --serif:'Fraunces','Fraunces Fallback',Georgia,serif;
+  }
+  @font-face{font-family:'Poppins';src:url('assets/fonts/poppins-400.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Poppins';src:url('assets/fonts/poppins-600.woff2') format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:'Poppins';src:url('assets/fonts/poppins-700.woff2') format('woff2');font-weight:700;font-display:swap}
+  .intro h1,.q h2,.arch-name,.cta h3{font-family:var(--serif);font-weight:700}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:var(--font);background:var(--plane);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;padding:0 16px 64px}
+  .wrap{max-width:640px;margin:0 auto}
+  .wide{max-width:760px}
+
+  /* progress */
+  .topbar{position:sticky;top:0;background:var(--plane);padding:18px 0 10px;z-index:10}
+  .brandrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .logo{height:28px;width:auto;display:block}
+  .stepcount{font-size:12px;color:var(--muted)}
+  .progress{height:6px;background:var(--grid);border-radius:99px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0;background:var(--brand-navy);border-radius:99px;transition:width .35s ease}
+
+  /* screens */
+  .screen{display:none;animation:fade .3s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .intro{text-align:center;padding:48px 8px 8px}
+  .logo-lg{height:46px;width:auto;margin:0 auto 20px;display:block}
+  .intro h1{font-size:32px;line-height:1.15;letter-spacing:-0.01em;margin:0 0 14px}
+  .intro .tag{font-size:13px;letter-spacing:.14em;color:var(--brand-gold);font-weight:700;margin:0 0 8px;text-transform:uppercase}
+  .intro p{font-size:17px;color:var(--ink-2);max-width:48ch;margin:0 auto 10px}
+  .intro .meta{font-size:13px;color:var(--muted);margin-top:18px}
+
+  .q{padding:34px 4px 8px}
+  .q .eyebrow{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .q h2{font-size:25px;line-height:1.25;letter-spacing:-0.01em;margin:0 0 6px}
+  .q .sub{font-size:15px;color:var(--ink-2);margin:0 0 22px}
+
+  .options{display:flex;flex-direction:column;gap:12px}
+  .opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;font:inherit;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s}
+  .opt:hover{border-color:var(--series)}
+  .opt.sel{border-color:var(--series);background:var(--series-soft)}
+  .opt .dot{flex:0 0 20px;height:20px;border-radius:99px;border:2px solid var(--baseline);position:relative}
+  .opt.sel .dot{border-color:var(--series)}
+  .opt.sel .dot::after{content:"";position:absolute;inset:3px;border-radius:99px;background:var(--series)}
+  .opt .txt{flex:1}
+  .opt .txt b{display:block;font-weight:600}
+  .opt .txt span{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
+
+  /* fields */
+  .fields{display:flex;flex-direction:column;gap:16px;margin-top:6px}
+  .field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+  .field input{width:100%;font:inherit;padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink)}
+  .field input:focus{outline:none;border-color:var(--series)}
+  .field .hint{font-size:12px;color:var(--muted);margin-top:5px}
+  .field .msg{font-size:12.5px;color:var(--err);margin-top:5px;display:none}
+  .field.invalid input{border-color:var(--err)}
+  .field.invalid .msg{display:block}
+
+  .hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .consent{display:flex;gap:12px;align-items:flex-start;margin-top:20px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .consent input{margin-top:3px;flex:0 0 auto;width:18px;height:18px;accent-color:var(--series)}
+  .consent label{font-size:13px;color:var(--ink-2);line-height:1.5}
+  .consent-notice{margin-top:20px;font-size:12.5px;line-height:1.55;color:var(--muted);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .consent-notice strong{color:var(--ink-2)}
+  .consent-notice a{color:var(--series)}
+  .consent-notice + .consent{margin-top:10px;background:transparent;border:none;padding:4px 2px}
+
+  /* nav */
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;font-size:16px;padding:13px 26px;border-radius:10px;border:none;cursor:pointer;transition:filter .15s,opacity .15s}
+  .btn:hover{filter:brightness(1.08)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed;filter:none}
+  .btn.ghost{background:transparent;color:var(--ink-2);border:1.5px solid var(--border);font-weight:500}
+  .btn.big{width:100%;font-size:17px;padding:16px}
+
+  /* ===== OUTCOME ===== */
+  #outcome .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 14px;text-align:center}
+  .arch-name{font-size:34px;line-height:1.15;font-weight:700;letter-spacing:-0.01em;text-align:center;margin:0 0 10px}
+  .arch-name .lead-in{display:block;font-size:15px;font-weight:500;color:var(--ink-2);text-transform:none;letter-spacing:0;margin-bottom:6px}
+  .arch-tag{font-size:18px;color:var(--ink-2);text-align:center;max-width:52ch;margin:0 auto 8px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 26px;margin:20px 0}
+  .card h3{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:600}
+  .card p{margin:0}
+  .illus-title{font-size:19px;font-weight:700;margin:0}
+  .illus-sub{font-size:13px;color:var(--muted);margin:2px 0 10px}
+  .chart-holder{position:relative}
+  .chart-svg{width:100%;height:auto;display:block;touch-action:none}
+  .val-line{fill:none;stroke:var(--series);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+  .val-area{fill:var(--series-soft)}
+  .grid-line{stroke:var(--grid);stroke-width:1}
+  .axis-base{stroke:var(--baseline);stroke-width:1}
+  .tick{fill:var(--muted);font-size:11px;font-family:var(--font)}
+  .tick.y{text-anchor:end}.tick.x{text-anchor:middle}
+  .end-dot{fill:var(--series);stroke:var(--surface);stroke-width:2}
+  .end-label{fill:var(--ink);font-weight:700;font-size:13px;font-family:var(--font)}
+  .cross{stroke:var(--baseline);stroke-width:1;stroke-dasharray:3 3;opacity:0}
+  .hover-dot{fill:var(--series);stroke:var(--surface);stroke-width:2;opacity:0}
+  .tooltip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-115%);background:var(--ink);color:var(--surface);padding:6px 9px;border-radius:8px;font-size:12px;white-space:nowrap;transition:opacity .08s;z-index:5}
+  .tooltip b{font-variant-numeric:tabular-nums}
+  .slider-row{margin:18px 0 4px}
+  .slider-row label{display:block;font-size:13px;color:var(--ink-2);margin-bottom:8px}
+  .slider-row .amt{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--series);height:26px}
+  .slider-note{font-size:12px;color:var(--muted);margin:2px 0 0}
+  .notice{background:var(--notice-bg);border-left:4px solid var(--notice-br);border-radius:8px;padding:12px 16px;font-size:13.5px;color:var(--ink-2);margin:16px 0 0}
+  .notice strong{color:var(--ink)}
+  .cta{text-align:center;padding:32px 26px;margin:20px 0;background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1px solid var(--border);border-radius:var(--radius)}
+  .cta h3{font-size:22px;margin:0 0 8px;letter-spacing:-0.01em;color:var(--ink)}
+  .cta p{margin:0 auto 20px;color:var(--ink-2);max-width:46ch}
+  .cal-slot{margin-top:18px;font-size:12px;color:var(--muted)}
+  footer.legal{max-width:760px;margin:8px auto 0;padding:20px 4px 0;border-top:1px solid var(--border)}
+  footer.legal p{font-size:11.5px;line-height:1.6;color:var(--muted);margin:0 0 10px}
+  footer.legal strong{color:var(--ink-2)}
+
+  /* dev restart */
+  .devbar{max-width:760px;margin:14px auto 0;text-align:right}
+  .devbar button{font:inherit;font-size:12px;color:var(--muted);background:none;border:1px dashed var(--baseline);border-radius:8px;padding:4px 10px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app">
+
+  <!-- progress -->
+  <div class="topbar" id="topbar" style="display:none">
+    <div class="brandrow">
+      <img class="logo" src="assets/logo-2.png" alt="CapitalVue">
+      <span class="stepcount" id="stepcount"></span>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="screen active" id="s-intro">
+    <div class="intro">
+      <img class="logo-lg" src="assets/logo-2.png" alt="CapitalVue">
+      <p class="tag">Build a portfolio. Create a legacy.</p>
+      <h1>Where are you really at with property?</h1>
+      <p>Answer a few quick questions and get a personalised readiness snapshot in under two minutes. No jargon, no pressure.</p>
+      <button class="btn" id="startBtn" style="margin-top:22px">Start</button>
+      <p class="meta">Takes ~90 seconds · Your details stay private</p>
+    </div>
+  </section>
+
+  <!-- QUESTION SCREENS injected here -->
+  <div id="questions"></div>
+
+  <!-- OUTCOME -->
+  <section class="screen" id="outcome">
+    <div class="wide" style="margin:0 auto">
+      <p class="kicker">Your Property Readiness Snapshot</p>
+      <h1 class="arch-name"><span class="lead-in" id="o-leadin"></span><span id="o-name"></span></h1>
+      <p class="arch-tag" id="o-tag"></p>
+      <div id="snapshot-email-status"></div>
+
+      <div class="card"><h3>What you told us</h3><p id="o-reflection"></p></div>
+      <div class="card"><h3>What people at this stage often focus on next</h3><p id="o-next"></p></div>
+
+      <div class="card">
+        <p class="illus-title">A general illustration: property values over 10 years</p>
+        <p class="illus-sub">Fixed assumption of 5% growth per year. Not based on your answers.</p>
+        <div class="chart-holder">
+          <div class="tooltip" id="tip"></div>
+          <svg class="chart-svg" id="chart" viewBox="0 0 720 340" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Illustration of a property value growing at 5% per year over 10 years"></svg>
+        </div>
+        <div class="slider-row">
+          <label>Illustrative starting value: <span class="amt" id="pvLabel">$1,000,000</span></label>
+          <input type="range" id="pv" min="400000" max="2500000" step="25000" value="1000000" aria-label="Illustrative starting property value">
+          <p class="slider-note">Move the slider to explore the illustration at different values. This is a general example, not a valuation, a forecast, or a figure based on anything you told us.</p>
+        </div>
+        <div class="notice"><strong>Illustration only.</strong> The figures use a fixed 5% annual growth assumption. They are not a forecast, not a valuation, and not based on your circumstances. Property values can fall as well as rise.</div>
+      </div>
+
+      <div class="cta">
+        <h3 id="o-cta-h">Want to talk it through?</h3>
+        <p id="o-cta-p">Book a short, no-obligation call to talk about your situation and the properties that could suit it.</p>
+        <button class="btn" id="bookBtn">Book a 15-minute call</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="legal" id="legal" style="display:none">
+  <p><strong>General information only.</strong> This page provides general information about residential property and does not take into account your objectives, financial situation or needs. It is not financial product advice, credit assistance, or a recommendation to buy, sell, or finance any property or financial product.</p>
+  <p><strong>The illustration is not a forecast.</strong> Growth figures use a fixed assumed rate for illustration and are not a prediction of future value. Past or assumed growth is not a reliable indicator of future performance. Property values can fall.</p>
+  <p>Before making any property or borrowing decision, consider seeking independent financial, credit, taxation and legal advice suited to your circumstances. This page is published by <strong>CapitalVue Pty Ltd</strong> (ABN 56 671 085 028), a licensed buyers agent (QLD 4769773, SA 335016). CapitalVue does not provide financial product or credit advice. See our <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+</footer>
+
+<div class="devbar" id="devbar" hidden><button id="restart">↻ Restart</button></div>
+
+<script src="snapshot-email.js"></script>
+<script>
+"use strict";
+
+const DEV = new URLSearchParams(location.search).has("dev");
+
+/* =========================================================
+   1. DATA MODEL
+   ========================================================= */
+const state = {
+  answers:{},          // questionId -> value
+  contact:{firstName:"",email:"",mobile:""},
+  consent:false,
+  archetype:null
+};
+
+/* Questions. type "single" auto-advances on select.
+   Contact + consent are special screens. */
+const QUESTIONS = [
+  { id:"purpose", type:"single", eyebrow:"Your goal",
+    title:"What's your next property move?",
+    sub:"Pick the one that fits best.",
+    options:[
+      {v:"first_home", label:"Buy my first home", desc:"A place for me to live in"},
+      {v:"next_home",  label:"Buy my next home",  desc:"Upgrading or relocating where I live"},
+      {v:"first_ip",   label:"Buy my first investment property", desc:"To build wealth, not to live in"},
+      {v:"another_ip", label:"Add another investment property", desc:"I already invest and want to grow"}
+    ]},
+  { id:"timeframe", type:"single", eyebrow:"Timing",
+    title:"When are you looking to buy?",
+    sub:"A rough sense is fine.",
+    options:[
+      {v:"now",     label:"I'm ready now",        desc:"Actively looking, ready to move"},
+      {v:"3_6",     label:"In the next 3–6 months"},
+      {v:"6_12",    label:"In 6–12 months"},
+      {v:"12plus",  label:"12 months or more away"},
+      {v:"exploring",label:"Just exploring for now"}
+    ]},
+  { id:"contact", type:"contact", eyebrow:"Almost there",
+    title:"Where should we send your snapshot?",
+    sub:"We'll show it on the next screen and send you a copy." },
+  { id:"position", type:"single", eyebrow:"Your situation",
+    title:"Which best describes you today?",
+    options:[
+      {v:"renting",     label:"Renting", desc:"I don't own property yet"},
+      {v:"own_home",    label:"I own my home", desc:"No investment properties"},
+      {v:"own_home_ip", label:"I own my home and at least one investment property"}
+    ]},
+  { id:"existingIPs", type:"single", eyebrow:"Your situation",
+    title:"How many investment properties do you already own?",
+    options:[
+      {v:"0",     label:"None yet"},
+      {v:"1",     label:"One"},
+      {v:"2plus", label:"Two or more"}
+    ]},
+  { id:"readiness", type:"single", eyebrow:"Your position",
+    title:"How's your deposit or equity position?",
+    sub:"Your best estimate is fine.",
+    options:[
+      {v:"ready",    label:"Ready to go", desc:"Deposit or usable equity is sorted"},
+      {v:"mostly",   label:"Mostly there", desc:"Close, with a bit more to do"},
+      {v:"building",  label:"Still building it up"},
+      {v:"unsure",   label:"Not sure where I stand"}
+    ]},
+  { id:"finance", type:"single", eyebrow:"Your position",
+    title:"Where are you with finance?",
+    options:[
+      {v:"preapproved", label:"I have pre-approval"},
+      {v:"broker",      label:"I've spoken to a broker or bank"},
+      {v:"cash",        label:"I'm a cash buyer"},
+      {v:"notyet",      label:"Haven't started that yet"}
+    ]},
+  { id:"assets", type:"multi", eyebrow:"Your investing background",
+    title:"Which of these have you invested in before?",
+    sub:"Select all that apply. This just helps us understand where you're coming from.",
+    options:[
+      {v:"property", label:"Property"},
+      {v:"shares",   label:"Shares or ETFs"},
+      {v:"crypto",   label:"Crypto"},
+      {v:"smsf",     label:"An SMSF (self-managed super fund)"},
+      {v:"none",     label:"None of these yet"}
+    ]}
+];
+
+/* =========================================================
+   2. ARCHETYPE CONTENT + MAPPING
+   Maps property answers to a readiness archetype.
+   ========================================================= */
+const ARCHETYPES = {
+  ready_mover:{ name:"Ready Mover", leadIn:"Based on your answers, you look like a",
+    tagline:"You're set up to move, and timing is your main question.",
+    reflection:"From what you told us, your position is largely sorted and you're looking to act in the near term. People at this stage are usually less worried about whether they can buy, and more focused on buying well: the right area, the right asset, and not overpaying in a competitive market.",
+    next:"Common things people work through here: shortlisting locations against their goals, getting a clear read on current buying conditions, and having their finance and team ready so they can move quickly when the right property appears." },
+  growth_investor:{ name:"Growth-Focused Investor", leadIn:"Based on your answers, you look like a",
+    tagline:"You're building for the long term and thinking in years, not months.",
+    reflection:"You told us your focus is long-term growth through property rather than a quick result. People with this mindset tend to care most about buying assets that hold and build value over time, and about making each purchase count.",
+    next:"Common things people work through here: getting clear on what a strong long-term asset looks like for them, how a purchase fits alongside anything they already hold, and the timeline that suits their plans." },
+  foundation_builder:{ name:"Foundation Builder", leadIn:"Based on your answers, you look like a",
+    tagline:"You're getting the groundwork in place for your first move.",
+    reflection:"You told us you're earlier in the journey and building toward your first purchase. Most people at this stage benefit most from clarity: understanding what's realistic, what to prioritise, and what the path actually looks like.",
+    next:"Common things people work through here: getting a clear picture of their position, understanding the steps ahead, and sidestepping the common early mistakes." },
+  strategic_upgrader:{ name:"Strategic Upgrader", leadIn:"Based on your answers, you look like a",
+    tagline:"You have a base already, and you're planning your next step up.",
+    reflection:"You told us you already own and you're thinking about your next move. People in this position often weigh up timing, how to make the transition smoothly, and how to make the next purchase a genuine improvement.",
+    next:"Common things people work through here: sequencing the move, reading current conditions, and being clear on what a better next property actually means for them." },
+  portfolio_expander:{ name:"Portfolio Expander", leadIn:"Based on your answers, you look like a",
+    tagline:"You already hold property and you're looking to keep building.",
+    reflection:"You told us you hold one or more properties and want to keep growing. Experienced investors at this stage usually focus on where the next opportunity is, and on keeping momentum without overextending.",
+    next:"Common things people work through here: identifying the next acquisition, reading current market conditions, and keeping the overall strategy coherent as it grows." }
+};
+
+/* Aggregates the assets answer into a single experience tag
+   used for CRM lead routing. */
+function computeReadiness(a){
+  const raw = Array.isArray(a.assets) ? a.assets : [];
+  const assets = raw.filter(x=>x!=="none");
+  const breadth = assets.length;
+  let tag;
+  if(raw.includes("none")) tag="new";
+  else if(breadth===0) tag="unknown";
+  else if(breadth===1) tag="single-asset";
+  else if(breadth===2) tag="diversifying";
+  else tag="experienced-multi-asset";
+  return { breadth, assets, tag, hasSMSF:assets.includes("smsf"), hasCrypto:assets.includes("crypto") };
+}
+
+function computeArchetype(a){
+  // Precedence matters — first match wins.
+  if(a.existingIPs==="2plus" || a.purpose==="another_ip") return "portfolio_expander";
+  if(a.purpose==="first_ip") return "growth_investor";
+  if((a.timeframe==="now"||a.timeframe==="3_6") && a.readiness==="ready") return "ready_mover";
+  if(a.purpose==="next_home" && (a.position==="own_home"||a.position==="own_home_ip")) return "strategic_upgrader";
+  if(a.purpose==="first_home") return "foundation_builder";
+  return "foundation_builder";
+}
+
+/* =========================================================
+   3. PROGRESS PERSISTENCE
+   Posts form progress so an incomplete session can be resumed.
+   ========================================================= */
+const HS_ENDPOINT = "https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/9f419495-172c-4c2b-9578-e0e87d37fbbe";
+const LABELS = {
+  purpose:"Next move", timeframe:"Timeframe", position:"Situation",
+  existingIPs:"Investment properties owned", readiness:"Deposit/equity", finance:"Finance", assets:"Invested in before"
+};
+function labelFor(qid, val){
+  const q = QUESTIONS.find(x=>x.id===qid);
+  if(!q || !q.options) return val;
+  const pick = v => { const o = q.options.find(o=>o.v===v); return o ? o.label : v; };
+  return Array.isArray(val) ? val.map(pick).join(", ") : pick(val);
+}
+function buildSummary(reason){
+  const L = [];
+  L.push("Property Readiness Snapshot (" + reason + ")");
+  Object.keys(LABELS).forEach(k=>{
+    const v = state.answers[k];
+    if(v !== undefined && v !== null && !(Array.isArray(v) && !v.length)) L.push(LABELS[k] + ": " + labelFor(k, v));
+  });
+  if(state.archetype && ARCHETYPES[state.archetype]) L.push("Archetype: " + ARCHETYPES[state.archetype].name);
+  if(state.readiness) L.push("Investor experience: " + state.readiness.tag);
+  L.push("Source: property-readiness quiz");
+  return L.join("\n");
+}
+/* Submits to HubSpot. Fires once as soon as contact details exist (so a drop-off
+   is still a reachable lead), then again on completion to enrich the same contact.
+   HubSpot dedupes on email, so the second call updates rather than duplicates. */
+let hsLeadPushed = false;
+function hsSubmit(reason){
+  const c = state.contact;
+  if(!c || !c.email) return;
+  const hp = document.getElementById("cv_hp2");
+  if(hp && (hp.value||"") !== "") return;          // bot
+  const payload = {
+    fields:[
+      {name:"firstname",   value:c.firstName||""},
+      {name:"email",       value:c.email},
+      {name:"mobilephone", value:c.mobile||""},
+      {name:"message",     value:buildSummary(reason)}
+    ],
+    context:{ pageUri: location.href, pageName: "Property Readiness Snapshot" },
+    legalConsentOptions:{ consent:{ consentToProcess:true,
+      text:"I agree to CapitalVue contacting me about my enquiry and I have read the collection notice." } }
+  };
+  try{
+    fetch(HS_ENDPOINT, {
+      method:"POST", keepalive:true,
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    }).catch(function(){});
+  }catch(_){}
+  if(!hsLeadPushed){
+    hsLeadPushed = true;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event:"hs_form_submitted", form_source:"readiness_quiz",
+      quiz_archetype: state.archetype || "partial" });
+  }
+}
+function persistProgress(reason){
+  if (DEV) console.debug("[progress]", reason, JSON.parse(JSON.stringify(state)));
+  if (reason === "contact-captured" || reason.indexOf("completed:") === 0) hsSubmit(reason);
+  // Email add-on. Completion only, and strictly after the HubSpot post above.
+  // Fire and forget: it must never block or alter CRM capture.
+  if (reason.indexOf("completed:") === 0) {
+    // Distinct from hs_form_submitted, which fires at the contact step. This is
+    // the finished-the-quiz event: use it for reporting, and for Meta/GA4 if you
+    // ever have the volume to optimise on completions rather than captures.
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "snapshot_completed",
+      form_source: "readiness_quiz",
+      quiz_archetype: state.archetype || "unknown",
+      quiz_experience: (state.readiness && state.readiness.tag) || "unknown"
+    });
+  }
+  if (reason.indexOf("completed:") === 0 && typeof window.sendSnapshotEmail === "function") {
+    try {
+      window.sendSnapshotEmail({
+        contact:   state.contact,
+        consent:   state.consent === true,
+        archetype: state.archetype,
+        readiness: state.readiness || {},
+        answers:   state.answers,
+        source:    location.href
+      });
+    } catch (e) { if (DEV) console.debug("[snapshot-email] hook failed", e); }
+  }
+}
+
+/* =========================================================
+   4. FLOW ENGINE
+   ========================================================= */
+const qWrap = document.getElementById("questions");
+let order = [];        // list of screen ids in sequence
+let idx = 0;           // current index into order
+
+function buildScreens(){
+  QUESTIONS.forEach(q=>{
+    const sec = document.createElement("section");
+    sec.className="screen"; sec.id="s-"+q.id;
+    if(q.type==="single"){
+      sec.innerHTML =
+        `<div class="q">
+          <p class="eyebrow">${q.eyebrow||""}</p>
+          <h2>${q.title}</h2>
+          ${q.sub?`<p class="sub">${q.sub}</p>`:""}
+          <div class="options" data-q="${q.id}">
+            ${q.options.map(o=>`
+              <button class="opt" data-v="${o.v}">
+                <span class="dot"></span>
+                <span class="txt"><b>${o.label}</b>${o.desc?`<span>${o.desc}</span>`:""}</span>
+              </button>`).join("")}
+          </div>
+          <div class="nav">
+            <button class="btn ghost" data-back>Back</button>
+            <span></span>
+          </div>
+        </div>`;
+    } else if(q.type==="multi"){
+      sec.innerHTML =
+        `<div class="q">
+          <p class="eyebrow">${q.eyebrow||""}</p>
+          <h2>${q.title}</h2>
+          ${q.sub?`<p class="sub">${q.sub}</p>`:""}
+          <div class="options" data-q="${q.id}" data-multi="1">
+            ${q.options.map(o=>`
+              <button class="opt" data-v="${o.v}">
+                <span class="dot"></span>
+                <span class="txt"><b>${o.label}</b>${o.desc?`<span>${o.desc}</span>`:""}</span>
+              </button>`).join("")}
+          </div>
+          <div class="nav">
+            <button class="btn ghost" data-back>Back</button>
+            <button class="btn" data-next>Continue</button>
+          </div>
+        </div>`;
+    } else if(q.type==="contact"){
+      sec.innerHTML =
+        `<div class="q">
+          <p class="eyebrow">${q.eyebrow||""}</p>
+          <h2>${q.title}</h2>
+          ${q.sub?`<p class="sub">${q.sub}</p>`:""}
+          <div class="fields">
+            <div class="field" id="f-firstName">
+              <label for="i-firstName">First name</label>
+              <input id="i-firstName" type="text" autocomplete="given-name" placeholder="e.g. Alex">
+              <div class="msg">Please enter your first name.</div>
+            </div>
+            <div class="field" id="f-email">
+              <label for="i-email">Email</label>
+              <input id="i-email" type="email" autocomplete="email" placeholder="you@example.com">
+              <div class="msg">Please enter a valid email address.</div>
+            </div>
+            <div class="hp-field" aria-hidden="true"><label for="cv_hp2">Company</label><input id="cv_hp2" name="cv_hp2" type="text" tabindex="-1" autocomplete="off"></div>
+            <div class="field" id="f-mobile">
+              <label for="i-mobile">Mobile</label>
+              <input id="i-mobile" type="tel" autocomplete="tel" placeholder="04XX XXX XXX">
+              <div class="hint">So we can send your snapshot and follow up if you'd like.</div>
+              <div class="msg">Please enter a valid Australian mobile number.</div>
+            </div>
+          </div>
+          <div class="consent-notice">
+            <p><strong>How we use your details.</strong> CapitalVue Pty Ltd (ABN 56 671 085 028) collects the information on this form to prepare your property readiness snapshot and to contact you about your enquiry. We may share it with service providers who help us deliver this, including our CRM (HubSpot); some providers may store data overseas. You can access, correct or delete your details, or make a privacy complaint, by emailing <a href="mailto:info@capitalvue.com.au">info@capitalvue.com.au</a>. Full details are in our <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+          </div>
+          <div class="consent">
+            <input type="checkbox" id="i-consent">
+            <label for="i-consent">I agree to CapitalVue contacting me about my enquiry and I've read the collection notice above.</label>
+          </div>
+          <div class="nav">
+            <button class="btn ghost" data-back>Back</button>
+            <button class="btn" id="contactNext" disabled>Continue</button>
+          </div>
+        </div>`;
+    }
+    qWrap.appendChild(sec);
+  });
+}
+
+function screenIds(){ return ["s-intro", ...QUESTIONS.map(q=>"s-"+q.id), "outcome"]; }
+/* A renter should never be asked how many investment properties they own. */
+function skipped(id){ return id === "s-existingIPs" && state.answers.position === "renting"; }
+function liveQuestionCount(){ return QUESTIONS.filter(q=>!skipped("s-"+q.id)).length; }
+
+function show(i){
+  order = screenIds();
+  idx = Math.max(0, Math.min(order.length-1, i));
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  const id = order[idx];
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"instant"in window?"instant":"auto"});
+
+  const isIntro = id==="s-intro";
+  const isOutcome = id==="outcome";
+  document.getElementById("topbar").style.display = (isIntro||isOutcome)?"none":"block";
+  document.getElementById("legal").style.display = isOutcome?"block":"none";
+
+  if(!isIntro && !isOutcome){
+    const qNum = order.slice(1, idx+1).filter(x=>!skipped(x)).length;
+    const total = liveQuestionCount();
+    document.getElementById("stepcount").textContent = `Step ${qNum} of ${total}`;
+    document.getElementById("bar").style.width = (qNum/total*100)+"%";
+  }
+  if(isOutcome){ renderOutcome(); }
+}
+
+function next(){ let i=idx+1; while(i < order.length-1 && skipped(order[i])) i++; show(i); }
+function back(){ let i=idx-1; while(i > 0 && skipped(order[i])) i--; show(i); }
+
+/* option selection */
+qWrap.addEventListener("click", e=>{
+  const opt = e.target.closest(".opt");
+  if(opt){
+    const group = opt.closest(".options");
+    const qid = group.dataset.q;
+    if(group.dataset.multi){
+      const v = opt.dataset.v;
+      if(v==="none"){
+        group.querySelectorAll(".opt").forEach(o=>o.classList.remove("sel"));
+        opt.classList.add("sel");
+      } else {
+        const noneBtn = group.querySelector('.opt[data-v="none"]');
+        if(noneBtn) noneBtn.classList.remove("sel");
+        opt.classList.toggle("sel");
+      }
+      state.answers[qid] = [...group.querySelectorAll(".opt.sel")].map(o=>o.dataset.v);
+      persistProgress("answer:"+qid);
+      return;                          // multi does not auto-advance
+    }
+    group.querySelectorAll(".opt").forEach(o=>o.classList.remove("sel"));
+    opt.classList.add("sel");
+    state.answers[qid] = opt.dataset.v;
+    persistProgress("answer:"+qid);
+    setTimeout(next, 180);             // brief highlight, then advance
+    return;
+  }
+  if(e.target.closest("[data-next]")){ next(); return; }
+  if(e.target.closest("[data-back]")){ back(); }
+});
+
+/* =========================================================
+   5. CONTACT VALIDATION
+   ========================================================= */
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+function validMobile(v){
+  const d = v.replace(/[\s()-]/g,"");
+  return /^(?:\+?61|0)4\d{8}$/.test(d);   // AU mobile
+}
+function wireContact(){
+  const fn=document.getElementById("i-firstName");
+  const em=document.getElementById("i-email");
+  const mo=document.getElementById("i-mobile");
+  const cs=document.getElementById("i-consent");
+  const btn=document.getElementById("contactNext");
+  function check(){
+    const ok = fn.value.trim() && validEmail(em.value) && validMobile(mo.value) && cs.checked;
+    btn.disabled = !ok;
+    return ok;
+  }
+  [fn,em,mo].forEach(inp=>inp.addEventListener("input",check));
+  cs.addEventListener("change",check);
+  btn.addEventListener("click",()=>{
+    let ok=true;
+    if(!fn.value.trim()){document.getElementById("f-firstName").classList.add("invalid");ok=false;}
+    if(!validEmail(em.value)){document.getElementById("f-email").classList.add("invalid");ok=false;}
+    if(!validMobile(mo.value)){document.getElementById("f-mobile").classList.add("invalid");ok=false;}
+    if(!ok || !cs.checked) return;
+    state.contact={firstName:fn.value.trim(),email:em.value.trim(),mobile:mo.value.trim()};
+    state.consent=true;
+    persistProgress("contact-captured");   // lead is now reachable even if they drop
+    next();
+  });
+  [fn,em,mo].forEach(inp=>inp.addEventListener("input",()=>{
+    const f=inp.closest(".field"); if(f) f.classList.remove("invalid");
+  }));
+}
+
+/* =========================================================
+   6. OUTCOME RENDER (archetype + projection)
+   ========================================================= */
+const RATE=0.05, YEARS=10;
+const fmt=n=>"$"+Math.round(n).toLocaleString("en-AU");
+const fmtShort=n=> n>=1e6 ? "$"+(n/1e6).toFixed(n%1e6===0?0:1)+"m" : "$"+Math.round(n/1000)+"k";
+const SVG_NS="http://www.w3.org/2000/svg";
+const W=720,H=340,M={t:24,r:96,b:36,l:64};
+const plotW=W-M.l-M.r, plotH=H-M.t-M.b;
+let pts=[], cdata=[];
+function el(n,a){const e=document.createElementNS(SVG_NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function seriesData(pv){const o=[];for(let t=0;t<=YEARS;t++)o.push({t,v:pv*Math.pow(1+RATE,t)});return o;}
+
+function drawChart(pv){
+  const chart=document.getElementById("chart");
+  chart.innerHTML="";
+  cdata=seriesData(pv);
+  const maxV=cdata[YEARS].v;
+  const x=t=>M.l+(t/YEARS)*plotW;
+  const y=v=>M.t+plotH-(v/maxV)*plotH;
+  for(let i=0;i<=4;i++){
+    const val=maxV*i/4, yy=y(val);
+    chart.appendChild(el("line",{class:"grid-line",x1:M.l,y1:yy,x2:M.l+plotW,y2:yy}));
+    const tk=el("text",{class:"tick y",x:M.l-10,y:yy+4});tk.textContent=fmtShort(val);chart.appendChild(tk);
+  }
+  chart.appendChild(el("line",{class:"axis-base",x1:M.l,y1:M.t+plotH,x2:M.l+plotW,y2:M.t+plotH}));
+  for(let t=0;t<=YEARS;t+=2){const tk=el("text",{class:"tick x",x:x(t),y:M.t+plotH+22});tk.textContent="Yr "+t;chart.appendChild(tk);}
+  pts=cdata.map(d=>[x(d.t),y(d.v)]);
+  let area="M"+pts[0][0]+","+(M.t+plotH)+" "+pts.map(p=>"L"+p[0]+","+p[1]).join(" ")+" L"+pts[YEARS][0]+","+(M.t+plotH)+" Z";
+  chart.appendChild(el("path",{class:"val-area",d:area}));
+  chart.appendChild(el("path",{class:"val-line",d:"M"+pts[0][0]+","+pts[0][1]+" "+pts.slice(1).map(p=>"L"+p[0]+","+p[1]).join(" ")}));
+  const ex=pts[YEARS][0],ey=pts[YEARS][1];
+  chart.appendChild(el("circle",{class:"end-dot",cx:ex,cy:ey,r:4.5}));
+  const lbl=el("text",{class:"end-label",x:ex+8,y:ey+4,"text-anchor":"start"});lbl.textContent=fmt(maxV);chart.appendChild(lbl);
+  const s0=el("text",{class:"end-label",x:pts[0][0],y:pts[0][1]-12,"text-anchor":"start"});s0.setAttribute("fill","var(--ink-2)");s0.textContent=fmt(pv);chart.appendChild(s0);
+  chart.appendChild(el("line",{class:"cross",id:"cross",x1:0,y1:M.t,x2:0,y2:M.t+plotH}));
+  chart.appendChild(el("circle",{class:"hover-dot",id:"hdot",r:5}));
+}
+function chartMove(evt){
+  const chart=document.getElementById("chart");
+  const r=chart.getBoundingClientRect();
+  const px=(evt.touches?evt.touches[0].clientX:evt.clientX)-r.left;
+  const sx=px*(W/r.width);
+  let t=Math.round(((sx-M.l)/plotW)*YEARS); t=Math.max(0,Math.min(YEARS,t));
+  const p=pts[t]; if(!p)return;
+  const cross=document.getElementById("cross"),hdot=document.getElementById("hdot"),tip=document.getElementById("tip");
+  cross.setAttribute("x1",p[0]);cross.setAttribute("x2",p[0]);cross.style.opacity=1;
+  hdot.setAttribute("cx",p[0]);hdot.setAttribute("cy",p[1]);hdot.style.opacity=1;
+  tip.style.left=(p[0]*r.width/W)+"px";tip.style.top=(p[1]*r.height/H)+"px";
+  tip.innerHTML="Year "+t+" · <b>"+fmt(cdata[t].v)+"</b>";tip.style.opacity=1;
+}
+function chartLeave(){const t=document.getElementById("tip"),c=document.getElementById("cross"),h=document.getElementById("hdot");if(t)t.style.opacity=0;if(c)c.style.opacity=0;if(h)h.style.opacity=0;}
+
+function renderOutcome(){
+  state.archetype = computeArchetype(state.answers);
+  const a = ARCHETYPES[state.archetype];
+  const fn = state.contact.firstName;
+  document.getElementById("o-leadin").textContent = fn ? `${fn}, based on your answers you look like a` : a.leadIn;
+  document.getElementById("o-name").textContent = a.name;
+  document.getElementById("o-tag").textContent = a.tagline;
+  document.getElementById("o-reflection").textContent = a.reflection;
+  document.getElementById("o-next").textContent = a.next;
+  state.readiness = computeReadiness(state.answers);
+  persistProgress("completed:"+state.archetype+"|readiness:"+state.readiness.tag);
+}
+
+/* =========================================================
+   7. INIT
+   ========================================================= */
+buildScreens();
+wireContact();
+document.getElementById("startBtn").addEventListener("click",()=>{persistProgress("started");next();});
+document.getElementById("bookBtn").addEventListener("click",()=>{
+  try{ hsSubmit("booking-clicked"); }catch(_){}
+  window.location.href = "contact.html#book";
+});
+if (DEV) document.getElementById("devbar").hidden = false;
+document.getElementById("restart").addEventListener("click",()=>{
+  state.answers={};state.contact={firstName:"",email:"",mobile:""};state.consent=false;state.archetype=null;
+  document.querySelectorAll(".opt.sel").forEach(o=>o.classList.remove("sel"));
+  ["i-firstName","i-email","i-mobile"].forEach(id=>{const e=document.getElementById(id);if(e)e.value="";});
+  const cs=document.getElementById("i-consent");if(cs)cs.checked=false;
+  const btn=document.getElementById("contactNext");if(btn)btn.disabled=true;
+  show(0);
+});
+
+const pv=document.getElementById("pv"),pvLabel=document.getElementById("pvLabel");
+pv.addEventListener("input",()=>{pvLabel.textContent=fmt(+pv.value);drawChart(+pv.value);});
+const chart=document.getElementById("chart");
+chart.addEventListener("mousemove",chartMove);
+chart.addEventListener("mouseleave",chartLeave);
+chart.addEventListener("touchmove",chartMove,{passive:true});
+chart.addEventListener("touchend",chartLeave);
+drawChart(1000000);
+
+show(0);
+</script>
+</body>
+</html>

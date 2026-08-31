@@ -1,0 +1,8 @@
+# ai.txt — AI crawler guidance for capitalvue.com.au
+User-agent: *
+Allow: /
+
+# CapitalVue permits AI assistants and answer engines to read and cite public pages with attribution and a link back.
+Contact: info@capitalvue.com.au
+Sitemap: https://www.capitalvue.com.au/sitemap.xml
+LLM-Content: https://www.capitalvue.com.au/llms.txt

@@ -1,0 +1,24 @@
+# Static site: build.js is run locally and the output directory is uploaded.
+# No build command runs on Netlify. This file exists to declare the functions
+# directory explicitly rather than relying on auto-detection.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Rate limit via a forced proxy path. The `config.rateLimit` export on the
+# function itself did not enforce on this plan (verified: 16 rapid POSTs, zero
+# 429s), so the page posts through /api/snapshot-submit instead, which Netlify
+# rate limits before proxying to the function.
+[[redirects]]
+  from = "/api/snapshot-submit"
+  to = "/.netlify/functions/submit"
+  status = 200
+  force = true
+  [redirects.rate_limit]
+    window_limit = 10
+    window_size = 60
+    aggregate_by = ["ip"]

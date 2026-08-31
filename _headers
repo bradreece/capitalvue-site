@@ -1,0 +1,19 @@
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://googleads.g.doubleclick.net https://www.google.com https://www.google.com.au https://connect.facebook.net https://js.hsforms.net https://js-ap1.hsforms.net https://js.hs-scripts.com https://js-ap1.hs-scripts.com https://static.hsappstatic.net https://static-ap1.hsappstatic.net https://js.hs-analytics.net https://js-ap1.hs-analytics.net https://js.hsadspixel.net https://js-ap1.hsadspixel.net https://js.usemessages.com https://js-ap1.usemessages.com; style-src 'self' 'unsafe-inline' https://static.hsappstatic.net https://static-ap1.hsappstatic.net https://js.hsforms.net https://js-ap1.hsforms.net; font-src 'self' data: https://fonts.gstatic.com https://static.hsappstatic.net; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.google.com.au https://googleads.g.doubleclick.net https://*.doubleclick.net https://www.facebook.com https://connect.facebook.net https://*.hubspot.com https://*.hsforms.com https://track.hubspot.com https://forms.hsforms.com https://*.hs-analytics.net; connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://*.g.doubleclick.net https://www.google.com https://www.google.com.au https://connect.facebook.net https://www.facebook.com https://*.hubspot.com https://*.hubapi.com https://*.hsforms.com https://*.hscollectedforms.net https://*.hs-analytics.net https://*.hsadspixel.net; frame-src 'self' https://*.hubspot.com https://*.hsforms.com https://*.hsforms.net https://td.doubleclick.net https://www.googletagmanager.com https://www.facebook.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://*.hsforms.com; object-src 'none'
+
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.jpg
+  Cache-Control: public, max-age=2592000
+
+/assets/*.png
+  Cache-Control: public, max-age=2592000
