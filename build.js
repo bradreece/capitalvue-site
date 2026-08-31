@@ -580,6 +580,7 @@ const page = (title, desc, body, active, pathName, schema, opts) => {
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${(opts&&opts.noindex)?'noindex,follow':'index,follow,max-image-preview:large'}">
+${(opts&&opts.baseHref)?'<base href="/">':''}<!-- 404 only. Netlify serves 404.html for ANY missing path, so at /wp-content/uploads/x/y.png every relative href on this page would resolve against that directory and 404 again. 79 legacy redirect entries sit at subpath depth, and this page exists to recover exactly that traffic. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CapitalVue">
 <meta property="og:title" content="${esc(ogTitle)}">
@@ -1438,7 +1439,7 @@ for (const a of ARTICLES) {
 pages['terms-and-conditions.html'] = page('Terms &amp; Conditions | CapitalVue','CapitalVue website and dashboard terms and conditions of use.', legalBody('Terms &amp; Conditions','terms.html'),'','terms-and-conditions.html',null,{bare:true});
 pages['privacy-policy.html'] = page('Privacy Policy | CapitalVue','How CapitalVue collects, holds and manages your personal information under the Australian Privacy Principles.', legalBody('Privacy Policy','privacy.html'),'','privacy-policy.html',null,{bare:true});
 
-pages['404.html'] = page('Page not found | CapitalVue','That page has moved or no longer exists. Find CapitalVue services, the buying power calculator, property trackers and contact details here.', notFoundBody,'','404.html',null,{noindex:true});
+pages['404.html'] = page('Page not found | CapitalVue','That page has moved or no longer exists. Find CapitalVue services, the buying power calculator, property trackers and contact details here.', notFoundBody,'','404.html',null,{noindex:true,baseHref:true});
 
 // ---- Property Readiness Snapshot landing page ----
 // Self-contained quiz funnel with its own CSS/JS, so it deliberately does NOT go
