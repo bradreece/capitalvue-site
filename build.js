@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const DIR = '/home/claude/capitalvue-site';
+// Output directory = wherever this script lives. Must stay relative so the
+// build works in Netlify's container as well as on a local clone.
+const DIR = __dirname;
 const BASE = 'https://www.capitalvue.com.au/';
 const A = f => 'assets/' + f;
 const LOGO_DARK = A('logo-2.png');

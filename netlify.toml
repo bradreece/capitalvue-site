@@ -3,6 +3,7 @@
 # directory explicitly rather than relying on auto-detection.
 
 [build]
+  command = "node build.js"
   publish = "."
   functions = "netlify/functions"
 
