@@ -41,6 +41,7 @@ const featBand = `
 const readContent = f => fs.readFileSync(path.join(DIR,'content',f),'utf8');
 const DASH = A('tracker-shot.jpg');
 const BLOGIMG = {
+  'brisbane-property-market-update-august-2026': A('blog-brisbane-market-update-aug-2026.jpg'),
   'buyers-agent-fees-australia': A('blog-buyers-agent-fees.jpg'),
   'adelaide-house-vs-unit-yield-gap': A('blog-adelaide-yield.jpg'),
   'property-due-diligence-checklist': A('blog-due-diligence.jpg'),
@@ -886,6 +887,7 @@ ${ctaBand}`;
 
 /* ---------------- BLOG ---------------- */
 const ARTICLES = [
+    {slug:'brisbane-property-market-update-august-2026', date:'8 September 2026', iso:'2026-09-08', cat:'Market update', title:'Brisbane Property Market Update: What the August 2026 Data Says', seo:'Brisbane Property Market Update, August 2026', og:'assets/og-brisbane-market-update-aug-2026.jpg', file:'brisbane-market-update-august-2026.html'},
   {slug:'buyers-agent-fees-australia', date:'17 August 2026', iso:'2026-08-17', cat:'Fees', title:'Buyers Agent Fees in Australia: What You Actually Pay', seo:'Buyers Agent Fees in Australia 2026', og:'assets/og-buyers-agent-fees.jpg', file:'buyers-agent-fees.html'},
   {slug:'adelaide-house-vs-unit-yield-gap', date:'5 August 2026', iso:'2026-08-05', cat:'Market update', title:'Adelaide&#39;s House vs Unit Yield Gap, and the Cost That Eats It', seo:'Adelaide House vs Unit Yields 2026', og:'assets/og-adelaide-yield.jpg', file:'adelaide-yield-gap.html'},
   {slug:'property-due-diligence-checklist', date:'6 July 2026', iso:'2026-07-06', cat:'Due diligence', title:'Property Due Diligence Checklist: Adelaide &amp; SEQ Investors', seo:'Property Due Diligence Checklist', file:'due-diligence.html'},
