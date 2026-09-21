@@ -41,6 +41,7 @@ const featBand = `
 const readContent = f => fs.readFileSync(path.join(DIR,'content',f),'utf8');
 const DASH = A('tracker-shot.jpg');
 const BLOGIMG = {
+  'brisbane-flood-risk-flood-maps': A('blog-brisbane-flood-risk.jpg'),
   'brisbane-property-market-update-august-2026': A('blog-brisbane-market-update-aug-2026.jpg'),
   'buyers-agent-fees-australia': A('blog-buyers-agent-fees.jpg'),
   'adelaide-house-vs-unit-yield-gap': A('blog-adelaide-yield.jpg'),
@@ -887,6 +888,7 @@ ${ctaBand}`;
 
 /* ---------------- BLOG ---------------- */
 const ARTICLES = [
+  {slug:'brisbane-flood-risk-flood-maps', date:'22 September 2026', iso:'2026-09-22', cat:'Due diligence', author:'Dr Rebecca Cox', title:'Brisbane Flood Risk: What the Flood Maps Do Not Tell You', seo:'Brisbane Flood Risk: What Flood Maps Miss', og:'assets/og-brisbane-flood-risk.jpg', file:'brisbane-flood-risk.html'},  
     {slug:'brisbane-property-market-update-august-2026', date:'8 September 2026', iso:'2026-09-08', cat:'Market update', title:'Brisbane Property Market Update: What the August 2026 Data Says', seo:'Brisbane Property Market Update, August 2026', og:'assets/og-brisbane-market-update-aug-2026.jpg', file:'brisbane-market-update-august-2026.html'},
   {slug:'buyers-agent-fees-australia', date:'17 August 2026', iso:'2026-08-17', cat:'Fees', title:'Buyers Agent Fees in Australia: What You Actually Pay', seo:'Buyers Agent Fees in Australia 2026', og:'assets/og-buyers-agent-fees.jpg', file:'buyers-agent-fees.html'},
   {slug:'adelaide-house-vs-unit-yield-gap', date:'5 August 2026', iso:'2026-08-05', cat:'Market update', title:'Adelaide&#39;s House vs Unit Yield Gap, and the Cost That Eats It', seo:'Adelaide House vs Unit Yields 2026', og:'assets/og-adelaide-yield.jpg', file:'adelaide-yield-gap.html'},
@@ -904,7 +906,7 @@ const articleBody = a => `
   <div class="crumb"><a href="index.html">Home</a> / <a href="blog.html">Blog</a></div>
   <span class="eyebrow">${a.cat}</span>
   <h1 class="serif" style="font-size:clamp(1.8rem,3.8vw,2.6rem)">${a.title}</h1>
-  <div class="article-meta">${a.date} · By Brad · CapitalVue</div>
+  <div class="article-meta">${a.date} · By ${a.author||'Brad'} · CapitalVue</div>
 </div></section>
 <section><div class="wrap"><div class="article">
 <img src="${BLOGIMG[a.slug]}" alt="${esc(a.title)}" decoding="async" style="width:100%;border-radius:16px;margin-bottom:2rem;aspect-ratio:16/8;object-fit:cover;box-shadow:var(--shadow-sm)">
