@@ -548,7 +548,7 @@ const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@
 const esc = s => String(s).replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/"/g,'&quot;');
 const CRUMB = {
   'about.html':'About','services.html':'Services & pricing','tracker.html':'Property Trackers',
-  'buying-power.html':'Buying Power Calculator',
+  'buying-power.html':'Buying Power Calculator','evaluate-and-negotiate.html':'Evaluate and Negotiate',
   'buyers-agent-brisbane.html':'Buyers Agent Brisbane','buyers-agent-adelaide.html':'Buyers Agent Adelaide',
   'team.html':'Team','blog.html':'Blog','contact.html':'Contact',
   'terms-and-conditions.html':'Terms & Conditions','privacy-policy.html':'Privacy Policy','aml-ctf-statement.html':'AML/CTF Statement'
@@ -1275,6 +1275,212 @@ const BNE_FAQ = [
   {q:'How long does it take to buy a property in Brisbane?', a:'Most CapitalVue purchases run six to ten weeks from strategy session to signed contract, then a standard 30 to 45 day settlement. Tighter briefs take longer. We would rather miss a deal than push you into the wrong asset to hit a deadline.'},
 ];
 
+/* ---------------- EVALUATE AND NEGOTIATE (campaign landing page) ----------------
+   Matched landing page for the Meta EvalNeg ad set. Owner-occupier service at
+   $11,500. Kept out of NAV on purpose: entry is paid traffic and the services
+   page. Indexed, because it owns the "no asking price, what do I pay" query.
+   Form posts to its own HubSpot form GUID, not the shared form[data-hs] handler,
+   because it needs field validation, mobile normalisation and a Lead event. */
+const EN_HS = 'https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/74a9780b-9cd2-48ef-9233-9b855507734d';
+const enOpt = v => `<option value="${v}">${v}</option>`;
+const enSelect = (id,name,label,opts) => `
+        <div class="en-f">
+          <label for="${id}">${label} <span class="en-req">*</span></label>
+          <select id="${id}" name="${name}" required>
+            <option value="" disabled selected>Select one</option>
+            ${opts.map(enOpt).join('\n            ')}
+          </select>
+        </div>`;
+const enWorth = (h,p) => `<div class="en-card reveal"><span class="hc-tag" style="background:rgba(20,143,143,.12);color:var(--emerald-d)">Not on the portals</span><h3>${h}</h3><p>${p}</p></div>`;
+const evalNegBody = `
+${pageHero('Evaluate and Negotiate','Evaluate and Negotiate service','No asking price? Here\'s how we work out what to pay.','Most listings around Brisbane and Adelaide now run without a price, and the selling agent\'s job is to keep it that way until you\'ve committed. You still have to put a number on the offer. This page is how we get to that number, and what it costs to have us do it.')}
+
+<section><div class="wrap">
+  <div class="sec-head reveal"><span class="eyebrow">The evidence</span><h2 class="serif">What &quot;worth&quot; means when the listing won&#39;t tell you</h2></div>
+  <div class="en-worth">
+    ${enWorth('Comparable sales, not the guide','A property is worth what similar homes nearby have sold for in the last few months, adjusted for the things that differ: land size, condition, position, aspect. We pull the settled sales, not the asking prices, and build the range from those. &quot;Offers over&quot; is a marketing line; the sales record is evidence.')}
+    ${enWorth('The overlays that change the number','Two homes on the same street can be worth different amounts because one sits in a flood overlay, a bushfire zone, or a planning overlay that limits what you can do with it. We check every property on your shortlist against the state and council mapping before you inspect, so the Saturday goes on homes that are still worth what they look like.')}
+    ${enWorth('Our experience','We know when a property sells off-market, and what it sold for. A portal only shows what was publicly listed, so that price never reaches realestate.com.au or Domain. Layered over an average of 1,200 properties we review per client, it is what lets us call a fair price instead of guessing at one.<span class="en-src">CapitalVue client shortlist data, August 2026.</span>')}
+  </div>
+</div></section>
+
+<section class="bg-paper"><div class="wrap">
+  <div class="en-cov">
+    <div class="reveal">
+      <h2 class="serif" style="margin-bottom:1.2rem">What $11,500 inc GST covers</h2>
+      <p style="margin-bottom:1rem"><strong style="color:var(--ink)">Before you inspect.</strong> You find the homes on realestate.com.au or Domain and send them to us. For each one: a price range from comparable settled sales, flood and bushfire overlay status, zoning and any planning overlays, and a plain read of whether it fits the brief you gave us. You inspect the ones that pass.</p>
+      <p style="margin-bottom:1rem"><strong style="color:var(--ink)">When you have chosen one.</strong> We negotiate the purchase: offer strategy, price, terms and conditions, and the back-and-forth with the selling agent, private treaty or auction. If it goes under the hammer we attend and bid for you as part of this fee.</p>
+      <p><strong style="color:var(--ink)">What it does not cover.</strong> Building and pest inspections, conveyancing, finance. We will tell you when to order them and what to look for in the reports, but they are your own professionals and your own contracts.</p>
+    </div>
+    <div class="en-price reveal">
+      <span class="eyebrow" style="color:#4fc2c2">Evaluate and Negotiate</span>
+      <div class="price">$11,500 <span>inc GST</span></div>
+      <ul>
+        ${li('Price range from comparable settled sales')}
+        ${li('Flood, bushfire, zoning and overlay checks on every shortlisted home')}
+        ${li('Offer strategy, negotiation and the paperwork through to signing')}
+        ${li('Auction attendance and bidding if it goes under the hammer, no separate charge')}
+      </ul>
+      <a class="btn btn-light" href="#shortlist" style="width:100%;justify-content:center">Send my shortlist details</a>
+      <p class="en-fine">Licensed buyers agency, QLD 4769773, SA 335016. General information only, not financial, credit, tax or legal advice.</p>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap" style="max-width:820px">
+  <div class="sec-head reveal"><span class="eyebrow">Fit</span><h2 class="serif">Who it&#39;s for, and who it isn&#39;t</h2></div>
+  <p>For people still in the market and starting to feel it. You know exactly what you want and where. You have put in an offer on a home you had already mentally moved into, maybe more than one, and watched it go to someone else. Not because you wanted it less. Because you did not know what to actually put on the table.</p>
+  <p style="margin-top:1rem">Not for investors building a portfolio, which is a <a href="services.html">different service with a different fee</a>, and not for anyone who has not started looking yet. If that is you, the free <a href="property-readiness.html">two-minute readiness check</a> is the better first step.</p>
+</div></section>
+
+<section class="bg-paper" id="shortlist"><div class="wrap" style="max-width:640px">
+  <div class="sec-head center reveal"><h2 class="serif">Send us your shortlist</h2><p style="margin-top:.8rem">Tell us where you are looking and we will come back within one business day with whether the service fits and what happens next.</p></div>
+  <div class="en-form-card reveal">
+    <form id="cv-evalneg-form" novalidate>
+      <div class="en-f">
+        <label for="cv-areas">Suburbs or areas you are looking in <span class="en-opt">(optional)</span></label>
+        <input type="text" id="cv-areas" name="areas_of_interest" maxlength="200" placeholder="e.g. Camp Hill, Morningside, Adelaide inner east">
+      </div>
+      <div class="en-row">
+        ${enSelect('cv-budget','budget_range','Budget range',['Under $800k','$800k to $1m','$1m to $1.3m','$1.3m to $1.6m','$1.6m to $2m','Over $2m','Not sure yet'])}
+        ${enSelect('cv-timeframe','cv_timeframe_stated','When you want to buy',['Ready now','3 to 6 months','6 to 12 months','12 months or more'])}
+      </div>
+      <div class="en-row">
+        ${enSelect('cv-shortlist','shortlist_status','Found properties to check?',['Not yet','One or two in mind','A shortlist ready to go','Offer or auction coming up'])}
+        <div class="en-f">
+          <label for="cv-name">Name <span class="en-req">*</span></label>
+          <input type="text" id="cv-name" name="firstname" maxlength="80" autocomplete="given-name" required>
+        </div>
+      </div>
+      <div class="en-row">
+        <div class="en-f">
+          <label for="cv-mobile">Mobile <span class="en-req">*</span></label>
+          <input type="tel" id="cv-mobile" name="mobilephone" maxlength="24" autocomplete="tel" placeholder="04XX XXX XXX" required>
+        </div>
+        <div class="en-f">
+          <label for="cv-email">Email <span class="en-req">*</span></label>
+          <input type="email" id="cv-email" name="email" maxlength="254" autocomplete="email" placeholder="you@example.com" required>
+        </div>
+      </div>
+      <div class="en-hp"><label for="cv-website">Website</label><input type="text" id="cv-website" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="en-err" id="cv-err" hidden></p>
+      <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center">Send my shortlist details</button>
+      <p class="en-fine2">No obligation. We will tell you if the service is not the right fit. Licensed buyers agency, QLD 4769773, SA 335016.</p>
+    </form>
+    <div class="en-alt">
+      <p>Prefer to talk it through first?</p>
+      <a class="btn btn-ghost" href="contact.html#book" style="width:100%;justify-content:center;border-color:var(--navy);color:var(--navy)">Book a 15 minute call</a>
+      <p class="en-tel">Or call <a href="tel:+61499484727">0499 484 727</a></p>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap" style="max-width:820px">
+  <div class="calc-disc" style="margin-top:0">
+    <p style="margin-bottom:.8rem"><strong style="color:var(--ink)">General information only.</strong> This page provides general information about residential property and does not take into account your objectives, financial situation or needs. It is not financial product advice, credit assistance, or a recommendation to buy, sell, or finance any property or financial product.</p>
+    <p style="margin-bottom:.8rem"><strong style="color:var(--ink)">A price range is not a valuation.</strong> Any range we give you is our opinion, formed from the sales evidence available at the time. It is not a sworn valuation and it is not a forecast of future value. Property values can fall as well as rise.</p>
+    <p>Before making any property or borrowing decision, consider seeking independent financial, credit, taxation and legal advice suited to your circumstances. This page is published by <strong style="color:var(--ink)">CapitalVue Pty Ltd</strong> (ABN 56 671 085 028), a licensed buyers agent (QLD 4769773, SA 335016). CapitalVue does not provide financial product or credit advice. See our <a href="privacy-policy.html">Privacy Policy</a>.</p>
+  </div>
+</div></section>
+
+<style>
+.en-worth{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.en-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-sm)}
+.en-card h3{margin:.9rem 0 .6rem}
+.en-card p{font-size:.95rem;line-height:1.7}
+.en-src{display:block;margin-top:.9rem;font-size:.78rem;font-style:italic;color:var(--muted)}
+.en-cov{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:start}
+.en-price{background:linear-gradient(160deg,var(--navy-2),var(--navy));color:#fff;border-radius:var(--radius);padding:32px;box-shadow:var(--shadow)}
+.en-price .price{font-size:2.3rem;font-weight:700;margin:.5rem 0 1.2rem}
+.en-price .price span{font-size:.9rem;font-weight:500;color:#8fb3d6}
+.en-price ul{list-style:none;margin-bottom:1.6rem}
+.en-price li{display:flex;gap:.6rem;align-items:flex-start;color:#c6d2e2;font-size:.94rem;line-height:1.6;margin-bottom:.7rem}
+.en-fine{font-size:.76rem;color:#8fb3d6;margin-top:1rem;line-height:1.6}
+.en-form-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow-sm)}
+.en-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.en-f{margin-bottom:16px}
+.en-f label{display:block;font-size:.84rem;font-weight:600;color:var(--ink);margin-bottom:6px}
+.en-req{color:#c0392b}
+.en-opt{color:#8494a8;font-weight:500}
+.en-f input,.en-f select{width:100%;height:48px;padding:13px 16px;border:1px solid var(--line);border-radius:12px;font-size:.95rem;font-family:inherit;color:var(--ink);background:#fff}
+.en-f select{-webkit-appearance:none;appearance:none;padding-right:42px;cursor:pointer;background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNCcgaGVpZ2h0PSc5JyB2aWV3Qm94PScwIDAgMTQgOScgZmlsbD0nbm9uZSc+PHBhdGggZD0nTTEgMWw2IDYgNi02JyBzdHJva2U9JyM1NzY4N2YnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJy8+PC9zdmc+");background-repeat:no-repeat;background-position:right 16px center;background-size:14px 9px}
+.en-f input:focus,.en-f select:focus{outline:none;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(20,143,143,.12)}
+.en-f input.bad,.en-f select.bad{border-color:#c0392b}
+.en-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.en-err{color:#c0392b;font-size:.85rem;margin-bottom:.8rem;line-height:1.5}
+.en-fine2{font-size:.78rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.5}
+.en-alt{margin-top:24px;padding-top:24px;border-top:1px dashed var(--line)}
+.en-alt>p:first-child{font-size:.88rem;text-align:center;margin-bottom:12px}
+.en-tel{font-size:.85rem;color:var(--muted);text-align:center;margin-top:12px}
+.en-tel a{color:var(--emerald);font-weight:600}
+.en-done{text-align:center;padding:1.5rem 0}
+@media(max-width:860px){.en-worth{grid-template-columns:1fr}.en-cov{grid-template-columns:1fr;gap:28px}.en-row{grid-template-columns:1fr;gap:0}}
+</style>
+
+<script>
+(function(){
+  var f=document.getElementById('cv-evalneg-form'); if(!f) return;
+  var HS=${JSON.stringify(EN_HS)};
+  var err=document.getElementById('cv-err');
+  function cookie(n){var m=document.cookie.match('(^|;)\\\\s*'+n+'\\\\s*=\\\\s*([^;]+)');return m?m.pop():'';}
+  function mobile(v){
+    var d=(v||'').replace(/[^0-9+]/g,'');
+    if(d.indexOf('+614')===0&&d.length===12) return d;
+    if(d.indexOf('614')===0&&d.length===11) return '+'+d;
+    if(d.indexOf('04')===0&&d.length===10) return '+61'+d.slice(1);
+    if(d.indexOf('4')===0&&d.length===9) return '+61'+d;
+    return '';
+  }
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(f.website.value) return;                       // honeypot
+    var bad=[],msg=[];
+    ['cv-budget','cv-timeframe','cv-shortlist','cv-name','cv-email','cv-mobile'].forEach(function(id){
+      var el=document.getElementById(id); el.classList.remove('bad');
+      if(!el.value.trim()){bad.push(el);}
+    });
+    if(bad.length) msg.push('Please complete every field marked with an asterisk.');
+    var em=document.getElementById('cv-email');
+    if(em.value.trim()&&!/^[^@\\s]+@[^@\\s.]+\\.[^@\\s]{2,}$/.test(em.value.trim())){bad.push(em);msg.push('That email address does not look right.');}
+    var mb=document.getElementById('cv-mobile'), norm=mobile(mb.value);
+    if(mb.value.trim()&&!norm){bad.push(mb);msg.push('Please enter an Australian mobile, e.g. 0412 345 678.');}
+    if(bad.length){
+      bad.forEach(function(el){el.classList.add('bad');});
+      err.textContent=msg.join(' '); err.hidden=false; bad[0].focus();
+      return;
+    }
+    err.hidden=true;
+    var fields=[
+      {name:'email',value:em.value.trim()},
+      {name:'firstname',value:document.getElementById('cv-name').value.trim()},
+      {name:'mobilephone',value:norm},
+      {name:'budget_range',value:document.getElementById('cv-budget').value},
+      {name:'cv_timeframe_stated',value:document.getElementById('cv-timeframe').value},
+      {name:'shortlist_status',value:document.getElementById('cv-shortlist').value}
+    ];
+    var areas=document.getElementById('cv-areas').value.trim();
+    if(areas) fields.push({name:'areas_of_interest',value:areas});
+    var ctx={pageUri:location.href,pageName:document.title};
+    var hutk=cookie('hubspotutk'); if(hutk) ctx.hutk=hutk;
+    var btn=f.querySelector('button[type=submit]'), lbl=btn.textContent;
+    btn.disabled=true; btn.textContent='Sending...';
+    fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields,context:ctx})})
+    .then(function(r){ if(!r.ok) throw new Error('bad'); return r; })
+    .then(function(){
+      window.dataLayer=window.dataLayer||[];
+      window.dataLayer.push({event:'generate_lead',form_source:'evalneg_page'});
+      if(window.fbq) fbq('track','Lead');
+      f.innerHTML='<div class="en-done"><h3 class="serif" style="color:var(--ink)">Got it.</h3><p style="margin-top:.6rem">We will come back within one business day with whether the service fits and what happens next.</p></div>';
+    })
+    .catch(function(){
+      btn.disabled=false; btn.textContent=lbl;
+      err.textContent='Sorry, something went wrong. Please email info@capitalvue.com.au and we will respond right away.';
+      err.hidden=false;
+    });
+  });
+})();
+</script>`;
+
 const brisbaneBody = `
 ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','Buyers agent Brisbane: we buy the property, you keep the leverage.','A licensed Brisbane buyers agency for investors. Fixed fees, no commissions from sellers, and a Camp Hill office so the inspections are ours, not yours.')}
 
@@ -1423,6 +1629,8 @@ const CALC_SCHEMA = [
 ];
 
 /* ---------------- WRITE ---------------- */
+const EVALNEG_SCHEMA = {"@context":"https://schema.org","@type":"Service","name":"Evaluate and Negotiate","serviceType":"Buyers agent evaluation and negotiation","provider":{"@id":BASE+"#organisation"},"areaServed":[{"@type":"State","name":"Queensland"},{"@type":"State","name":"South Australia"}],"description":"Owner-occupier service: price range from comparable settled sales, flood, bushfire, zoning and planning overlay checks on every shortlisted property, then negotiation or auction bidding through to signing.","offers":{"@type":"Offer","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee. Auction attendance and bidding included."}};
+
 const pages = {
   'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 27 Google reviews.', indexBody,'index.html','index.html',{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE}),
   'about.html':   page('About CapitalVue | Licensed Buyers Agency (QLD, SA)','CapitalVue pairs a licensed buyers agency with real-time portfolio technology to make buying an investment property or a home simple, transparent and provable.', aboutBody,'about.html','about.html'),
@@ -1433,6 +1641,7 @@ const pages = {
   'contact.html': page('Book a Strategy Call | Contact CapitalVue','Book a free, no-obligation property strategy call with CapitalVue, buyers agents for investors and home buyers in Brisbane and Adelaide.', contactBody,'contact.html','contact.html'),
   'buyers-agent-brisbane.html': page('Buyers Agent Brisbane for Investors | CapitalVue','Licensed Brisbane buyers agent for property investors. Fixed fees from $2,200, no seller commissions, Camp Hill office. Current Brisbane market data and real client results.', brisbaneBody,'','buyers-agent-brisbane.html',[svcAreaSchema('Brisbane','QLD',['Brisbane','Morningside','Camp Hill','Carina Heights','Chapel Hill','Keperra','Taigum','Kangaroo Point','Woolloongabba','Chermside']), faqSchema(BNE_FAQ)],{ogTitle:'Buyers Agent Brisbane | CapitalVue',ogDesc:'Licensed Brisbane buyers agency for investors. Fixed fees, no seller commissions, and current market data on where Brisbane actually sits.'}),
   'buyers-agent-adelaide.html': page('Buyers Agent Adelaide for Investors | CapitalVue','Licensed South Australian buyers agent (SA 335016) for property investors. Fixed fees, no seller commissions, and an honest read on the current Adelaide market.', adelaideBody,'','buyers-agent-adelaide.html',[svcAreaSchema('Adelaide','SA',['Adelaide','St Morris','Norwood','Payneham','Salisbury','Mawson Lakes','Woodville','Findon','Marion','Hallett Cove']), faqSchema(ADL_FAQ)],{ogTitle:'Buyers Agent Adelaide | CapitalVue',ogDesc:'Licensed SA buyers agency for investors. Fixed fees, no seller commissions, and a clear view of a market that has just come off the boil.'}),
+  'evaluate-and-negotiate.html': page('Evaluate &amp; Negotiate | $11,500 Fixed Fee | CapitalVue','No asking price on the listing? We price it from settled sales, check the overlays and negotiate. Fixed $11,500 inc GST. Licensed QLD and SA.', evalNegBody,'services.html','evaluate-and-negotiate.html', EVALNEG_SCHEMA, {ogTitle:'No asking price? Here is how we work out what to pay.',ogDesc:'You find the home. We price it from the settled sales, check the flood and planning overlays, and negotiate. $11,500 inc GST, published.'}),
   'buying-power.html': page('Borrowing Power Calculator | CapitalVue','Free borrowing power calculator for Australian buyers and investors. Estimate how much you can borrow, your purchase budget, repayments and property growth in 60 seconds.', calcBody,'buying-power.html','buying-power.html', CALC_SCHEMA, {ogTitle:'What can you buy, and what could it be worth?', ogDesc:'A free 60-second estimate of your property borrowing power, buying budget and illustrative growth. From CapitalVue, licensed Australian buyers agents.', ogImage:'assets/og-calculator.jpg'}),
 };
 for (const a of ARTICLES) {
