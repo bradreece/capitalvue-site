@@ -41,6 +41,7 @@ const featBand = `
 const readContent = f => fs.readFileSync(path.join(DIR,'content',f),'utf8');
 const DASH = A('tracker-shot.jpg');
 const BLOGIMG = {
+  'adelaide-property-market-update-september-2026': A('blog-adelaide-market-update-sep-2026.jpg'),
   'brisbane-flood-risk-flood-maps': A('blog-brisbane-flood-risk.jpg'),
   'brisbane-property-market-update-august-2026': A('blog-brisbane-market-update-aug-2026.jpg'),
   'buyers-agent-fees-australia': A('blog-buyers-agent-fees.jpg'),
@@ -888,6 +889,7 @@ ${ctaBand}`;
 
 /* ---------------- BLOG ---------------- */
 const ARTICLES = [
+    {slug:'adelaide-property-market-update-september-2026', date:'3 October 2026', iso:'2026-10-03', cat:'Market update', title:'Adelaide Property Market Update: September 2026', seo:'Adelaide Property Market Update, Sep 2026', og:'assets/og-adelaide-market-update-sep-2026.jpg', file:'adelaide-market-update-september-2026.html'},
   {slug:'brisbane-flood-risk-flood-maps', date:'22 September 2026', iso:'2026-09-22', cat:'Due diligence', author:'Dr Rebecca Cox', title:'Brisbane Flood Risk: What the Flood Maps Do Not Tell You', seo:'Brisbane Flood Risk: What Flood Maps Miss', og:'assets/og-brisbane-flood-risk.jpg', file:'brisbane-flood-risk.html'},  
     {slug:'brisbane-property-market-update-august-2026', date:'8 September 2026', iso:'2026-09-08', cat:'Market update', title:'Brisbane Property Market Update: What the August 2026 Data Says', seo:'Brisbane Property Market Update, August 2026', og:'assets/og-brisbane-market-update-aug-2026.jpg', file:'brisbane-market-update-august-2026.html'},
   {slug:'buyers-agent-fees-australia', date:'17 August 2026', iso:'2026-08-17', cat:'Fees', title:'Buyers Agent Fees in Australia: What You Actually Pay', seo:'Buyers Agent Fees in Australia 2026', og:'assets/og-buyers-agent-fees.jpg', file:'buyers-agent-fees.html'},
