@@ -1314,7 +1314,7 @@ const evalNegBody = `
       <button type="button" class="en-tap" data-tf="6 to 12 months">6 to 12 months</button>
       <button type="button" class="en-tap" data-tf="12 months or more">12 months or more</button>
     </div>
-    <form id="cv-evalneg-form" class="en-step hs-form-do-not-collect" novalidate hidden>
+    <div id="cv-evalneg-form" class="en-step" role="group" aria-label="Your details" hidden>
       <p class="en-chosen">Buying: <strong id="en-chosen-tf"></strong> <a href="#start" id="en-change">Change</a></p>
       <div class="en-f">
         <label for="cv-name">First name</label>
@@ -1339,11 +1339,11 @@ const evalNegBody = `
       <p class="en-ferr" id="cv-consent-err" hidden></p>
       <div class="en-hp"><label for="cv-website">Website</label><input type="text" id="cv-website" name="website" tabindex="-1" autocomplete="off"></div>
       <p class="en-err" id="cv-err" hidden></p>
-      <button class="btn btn-primary en-go" type="submit">Check if it fits</button>
-    </form>
+      <button class="btn btn-primary en-go" type="button">Check if it fits</button>
+    </div>
     <div id="en-done" class="en-step" hidden>
       <div class="en-done"><h3 class="serif">Got it.</h3><p>We will come back within one business day with whether the service fits and what happens next.</p></div>
-      <form id="cv-enrich" class="hs-form-do-not-collect" novalidate>
+      <div id="cv-enrich">
         <p class="en-opt-h">Optional: tell us a little more so we can come prepared.</p>
         ${enSelect('cv-budget','budget_range','Budget range',['Under $800k','$800k to $1m','$1m to $1.3m','$1.3m to $1.6m','$1.6m to $2m','Over $2m','Not sure yet']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
         ${enSelect('cv-shortlist','shortlist_status','Found properties to check?',['Not yet','One or two in mind','A shortlist ready to go','Offer or auction coming up']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
@@ -1351,8 +1351,8 @@ const evalNegBody = `
           <label for="cv-areas">Suburbs or areas you are looking in</label>
           <input type="text" id="cv-areas" name="areas_of_interest" maxlength="200" placeholder="e.g. Camp Hill, Morningside, Adelaide inner east">
         </div>
-        <button class="btn btn-primary en-go" type="submit">Add these details</button>
-      </form>
+        <button class="btn btn-primary en-go" type="button">Add these details</button>
+      </div>
       <div class="en-alt">
         <a class="btn btn-ghost" href="contact.html#book" style="width:100%;justify-content:center;border-color:var(--navy);color:var(--navy)">Book a 15 minute call</a>
         <p class="en-tel">Or call <a href="tel:+61499484727">0499 484 727</a></p>
@@ -1508,9 +1508,8 @@ const evalNegBody = `
   });
   var HSCTX=function(){var c={pageUri:location.href,pageName:document.title},h=cookie('hubspotutk');if(h)c.hutk=h;return c;};
   var CONSENT={consent:{consentToProcess:true,text:"I agree to CapitalVue contacting me about my enquiry and I've read the collection notice above."}};
-  f.addEventListener('submit',function(e){
-    e.preventDefault();
-    if(f.website.value) return;
+  function step2(){
+    if(document.getElementById('cv-website').value) return;
     var nm=document.getElementById('cv-name'), mb=document.getElementById('cv-mobile'), em=document.getElementById('cv-email'), cb=document.getElementById('cv-consent'), ce=document.getElementById('cv-consent-err');
     var ok=true, first=null, norm=mobile(mb.value);
     function flag(el,msg){ferr(el,msg);if(msg){ok=false;if(!first)first=el;}}
@@ -1526,7 +1525,7 @@ const evalNegBody = `
       {name:'mobilephone',value:norm},
       {name:'cv_timeframe_stated',value:tf}
     ],context:HSCTX(),legalConsentOptions:CONSENT};
-    var btn=f.querySelector('button[type=submit]'), lbl=btn.textContent;
+    var btn=f.querySelector('.en-go'), lbl=btn.textContent;
     btn.disabled=true; btn.textContent='Sending...';
     fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
     .then(function(r){ if(!r.ok) throw new Error('bad'); return r; })
@@ -1541,22 +1540,24 @@ const evalNegBody = `
       err.textContent='Sorry, something went wrong. Please email info@capitalvue.com.au and we will respond right away.';
       err.hidden=false;
     });
-  });
+  }
+  f.querySelector('.en-go').addEventListener('click',step2);
+  ['cv-name','cv-mobile','cv-email'].forEach(function(id){document.getElementById(id).addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();step2();}});});
   var ef=document.getElementById('cv-enrich');
-  ef.addEventListener('submit',function(e){
-    e.preventDefault();
+  function enrich(){
     var fields=[{name:'email',value:window.enEmail||''},{name:'firstname',value:window.enName||''},{name:'mobilephone',value:window.enMob||''},{name:'cv_timeframe_stated',value:tf}];
     var b=document.getElementById('cv-budget').value, sl=document.getElementById('cv-shortlist').value, ar=document.getElementById('cv-areas').value.trim();
     if(b) fields.push({name:'budget_range',value:b});
     if(sl) fields.push({name:'shortlist_status',value:sl});
     if(ar) fields.push({name:'areas_of_interest',value:ar});
-    var btn=ef.querySelector('button[type=submit]');
+    var btn=ef.querySelector('.en-go');
     if(fields.length<5||!fields[0].value){btn.textContent='Nothing to add';return;}
     btn.disabled=true; btn.textContent='Saving...';
     fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields,context:HSCTX(),legalConsentOptions:CONSENT})})
     .then(function(r){ if(!r.ok) throw new Error('bad'); btn.textContent='Added, thank you'; })
     .catch(function(){ btn.disabled=false; btn.textContent='Could not save, try again'; });
-  });
+  }
+  ef.querySelector('.en-go').addEventListener('click',enrich);
 })();
 </script>`;
 
