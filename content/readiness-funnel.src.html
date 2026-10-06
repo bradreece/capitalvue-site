@@ -388,7 +388,7 @@ function hsSubmit(reason){
       {name:"mobilephone", value:c.mobile||""},
       {name:"message",     value:buildSummary(reason)}
     ],
-    context:{ pageUri: location.href, pageName: "Property Readiness Snapshot" },
+    context:(function(){var c={pageUri:location.href,pageName:"Property Readiness Snapshot"},p=document.cookie.split(";");for(var i=0;i<p.length;i++){var k=p[i].trim();if(k.indexOf("hubspotutk=")===0){c.hutk=k.slice(11);break;}}return c;})(),
     legalConsentOptions:{ consent:{ consentToProcess:true,
       text:"I agree to CapitalVue contacting me about my enquiry and I have read the collection notice." } }
   };
@@ -721,5 +721,8 @@ drawChart(1000000);
 
 show(0);
 </script>
+<!-- Start of HubSpot Embed Code -->
+<script type="text/javascript" id="hs-script-loader" async defer src="//js-ap1.hs-scripts.com/45491120.js"></script>
+<!-- End of HubSpot Embed Code -->
 </body>
 </html>

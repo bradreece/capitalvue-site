@@ -529,6 +529,7 @@ if(featEl&&FEAT.length>2){
     },460);
   },4600);}
 }
+function hsCtx(n){var c={pageUri:location.href,pageName:n||document.title},p=document.cookie.split(";");for(var i=0;i<p.length;i++){var k=p[i].trim();if(k.indexOf("hubspotutk=")===0){c.hutk=k.slice(11);break;}}return c;}
 var HS="https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/9732e175-6e3c-4fd5-be4c-0ea2341cd65e";
 document.querySelectorAll("form[data-hs]").forEach(function(f){
   f.addEventListener("submit",function(e){
@@ -538,7 +539,7 @@ document.querySelectorAll("form[data-hs]").forEach(function(f){
     var fields=Object.keys(data).filter(function(k){return data[k];}).map(function(k){return {name:k,value:data[k]};});
     var btn=f.querySelector("button[type=submit]"); var lbl=btn?btn.textContent:"";
     if(btn){btn.disabled=true;btn.textContent="Sending...";}
-    fetch(HS,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:fields,context:{pageUri:location.href,pageName:document.title}})})
+    fetch(HS,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:fields,context:hsCtx()})})
     .then(function(r){ if(!r.ok){throw new Error("bad");} f.innerHTML='<div style="text-align:center;padding:1.5rem 0"><h3 style="color:var(--ink);font-family:Fraunces,serif">Thank you</h3><p style="margin-top:.5rem">We have your details and will be in touch shortly.</p></div>'; })
     .catch(function(){ if(btn){btn.disabled=false;btn.textContent=lbl||"Try again";} alert("Sorry, something went wrong. Please email info@capitalvue.com.au and we will respond right away."); });
   });
@@ -613,6 +614,9 @@ ${bare?bareHeader:header(active)}
 ${body}
 ${bare?bareFooter:footer()}
 ${bare?'':SCRIPT}
+<!-- Start of HubSpot Embed Code -->
+<script type="text/javascript" id="hs-script-loader" async defer src="//js-ap1.hs-scripts.com/45491120.js"></script>
+<!-- End of HubSpot Embed Code -->
 </body></html>`;
 };
 
@@ -1142,6 +1146,7 @@ ${pageHero('Calculator','Borrowing &amp; buying power calculator','What can you 
 <script>
 (function(){
   if(!document.getElementById('revealBtn')) return;
+  function hsCtx(n){var c={pageUri:location.href,pageName:n||document.title},p=document.cookie.split(";");for(var i=0;i<p.length;i++){var k=p[i].trim();if(k.indexOf("hubspotutk=")===0){c.hutk=k.slice(11);break;}}return c;}
   var HSCALC="https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/9f419495-172c-4c2b-9578-e0e87d37fbbe";
   function el(id){return document.getElementById(id);}
   function num(id){var s=(el(id).value||'').toString().replace(/[^0-9.]/g,'');var v=parseFloat(s);return isNaN(v)?0:v;}
@@ -1213,7 +1218,7 @@ ${pageHero('Calculator','Borrowing &amp; buying power calculator','What can you 
     var owns=el('own')&&el('own').checked;
     var summary='[Buying Power Calculator] Income1 '+money(num('inc1'))+', Income2 '+money(num('inc2'))+', Cash deposit '+money(num('dep'))+', Expenses/mo '+money(num('exp'))+'.'+(owns?(' EXISTING OWNER: value '+money(num('pval'))+', loan '+money(num('ploan'))+', rent/wk '+money(num('prent'))+', usable equity '+money(d.usable)+'.'):'')+' Indicative borrowing power '+money(d.maxLoan)+', budget '+money(d.budget)+', repayment/mo '+money(d.repay)+'. Illustrative value in '+d.yrs+'yr at '+d.g+'%: '+money(d.fv)+' (equity '+money(d.equity)+'). Marketing opt-in: '+(mkt?'yes':'no')+'.';
     var fields=[{name:'firstname',value:name},{name:'email',value:email},{name:'mobilephone',value:phone},{name:'message',value:summary}];
-    var payload={fields:fields,context:{pageUri:location.href,pageName:document.title},legalConsentOptions:{consent:{consentToProcess:true,text:"I have read and agree to CapitalVue's Privacy Policy and consent to CapitalVue collecting and handling my personal information."}}};
+    var payload={fields:fields,context:hsCtx(),legalConsentOptions:{consent:{consentToProcess:true,text:"I have read and agree to CapitalVue's Privacy Policy and consent to CapitalVue collecting and handling my personal information."}}};
     var btn=el('unlockBtn');btn.disabled=true;btn.textContent='Unlocking...';
     render();el('gate').hidden=true;el('output').hidden=false;el('output').scrollIntoView({behavior:'smooth',block:'nearest'});
     window.dataLayer=window.dataLayer||[];
@@ -1309,7 +1314,7 @@ const evalNegBody = `
       <button type="button" class="en-tap" data-tf="6 to 12 months">6 to 12 months</button>
       <button type="button" class="en-tap" data-tf="12 months or more">12 months or more</button>
     </div>
-    <form id="cv-evalneg-form" class="en-step" novalidate hidden>
+    <div id="cv-evalneg-form" class="en-step" role="group" aria-label="Your details" hidden>
       <p class="en-chosen">Buying: <strong id="en-chosen-tf"></strong> <a href="#start" id="en-change">Change</a></p>
       <div class="en-f">
         <label for="cv-name">First name</label>
@@ -1334,11 +1339,11 @@ const evalNegBody = `
       <p class="en-ferr" id="cv-consent-err" hidden></p>
       <div class="en-hp"><label for="cv-website">Website</label><input type="text" id="cv-website" name="website" tabindex="-1" autocomplete="off"></div>
       <p class="en-err" id="cv-err" hidden></p>
-      <button class="btn btn-primary en-go" type="submit">Check if it fits</button>
-    </form>
+      <button class="btn btn-primary en-go" type="button">Check if it fits</button>
+    </div>
     <div id="en-done" class="en-step" hidden>
       <div class="en-done"><h3 class="serif">Got it.</h3><p>We will come back within one business day with whether the service fits and what happens next.</p></div>
-      <form id="cv-enrich" novalidate>
+      <div id="cv-enrich">
         <p class="en-opt-h">Optional: tell us a little more so we can come prepared.</p>
         ${enSelect('cv-budget','budget_range','Budget range',['Under $800k','$800k to $1m','$1m to $1.3m','$1.3m to $1.6m','$1.6m to $2m','Over $2m','Not sure yet']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
         ${enSelect('cv-shortlist','shortlist_status','Found properties to check?',['Not yet','One or two in mind','A shortlist ready to go','Offer or auction coming up']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
@@ -1346,8 +1351,8 @@ const evalNegBody = `
           <label for="cv-areas">Suburbs or areas you are looking in</label>
           <input type="text" id="cv-areas" name="areas_of_interest" maxlength="200" placeholder="e.g. Camp Hill, Morningside, Adelaide inner east">
         </div>
-        <button class="btn btn-primary en-go" type="submit">Add these details</button>
-      </form>
+        <button class="btn btn-primary en-go" type="button">Add these details</button>
+      </div>
       <div class="en-alt">
         <a class="btn btn-ghost" href="contact.html#book" style="width:100%;justify-content:center;border-color:var(--navy);color:var(--navy)">Book a 15 minute call</a>
         <p class="en-tel">Or call <a href="tel:+61499484727">0499 484 727</a></p>
@@ -1474,8 +1479,10 @@ const evalNegBody = `
     if(d.indexOf('+614')===0&&d.length===12) return d;
     if(d.indexOf('614')===0&&d.length===11) return '+'+d;
     if(d.indexOf('04')===0&&d.length===10) return '+61'+d.slice(1);
+    if(d.indexOf('+6104')===0&&d.length===13) return '+61'+d.slice(4);
+    if(d.indexOf('6104')===0&&d.length===12) return '+61'+d.slice(3);
     if(d.indexOf('4')===0&&d.length===9) return '+61'+d;
-    return d.replace(/[^0-9]/g,'').length>=8?v.trim():'';
+    return '';
   }
   function emailOk(v){var a=v.indexOf('@'),d=v.lastIndexOf('.');return a>0&&d>a+1&&v.length-d>2&&v.indexOf(' ')<0;}
   function show(step){
@@ -1501,14 +1508,13 @@ const evalNegBody = `
   });
   var HSCTX=function(){var c={pageUri:location.href,pageName:document.title},h=cookie('hubspotutk');if(h)c.hutk=h;return c;};
   var CONSENT={consent:{consentToProcess:true,text:"I agree to CapitalVue contacting me about my enquiry and I've read the collection notice above."}};
-  f.addEventListener('submit',function(e){
-    e.preventDefault();
-    if(f.website.value) return;
+  function step2(){
+    if(document.getElementById('cv-website').value) return;
     var nm=document.getElementById('cv-name'), mb=document.getElementById('cv-mobile'), em=document.getElementById('cv-email'), cb=document.getElementById('cv-consent'), ce=document.getElementById('cv-consent-err');
     var ok=true, first=null, norm=mobile(mb.value);
     function flag(el,msg){ferr(el,msg);if(msg){ok=false;if(!first)first=el;}}
     flag(nm,nm.value.trim()?'':'Please enter your first name.');
-    flag(mb,mb.value.trim()?(norm?'':'Please enter a mobile number, e.g. 0412 345 678.'):'Please enter your mobile number.');
+    flag(mb,mb.value.trim()?(norm?'':'Please enter an Australian mobile, e.g. 0412 345 678.'):'Please enter your mobile number.');
     flag(em,em.value.trim()?(emailOk(em.value.trim())?'':'That email address does not look right.'):'Please enter your email address.');
     if(!cb.checked){ce.textContent='Please tick to confirm you agree.';ce.hidden=false;ok=false;if(!first)first=cb;}else{ce.hidden=true;}
     if(!ok){first.focus();return;}
@@ -1519,7 +1525,7 @@ const evalNegBody = `
       {name:'mobilephone',value:norm},
       {name:'cv_timeframe_stated',value:tf}
     ],context:HSCTX(),legalConsentOptions:CONSENT};
-    var btn=f.querySelector('button[type=submit]'), lbl=btn.textContent;
+    var btn=f.querySelector('.en-go'), lbl=btn.textContent;
     btn.disabled=true; btn.textContent='Sending...';
     fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
     .then(function(r){ if(!r.ok) throw new Error('bad'); return r; })
@@ -1534,22 +1540,24 @@ const evalNegBody = `
       err.textContent='Sorry, something went wrong. Please email info@capitalvue.com.au and we will respond right away.';
       err.hidden=false;
     });
-  });
+  }
+  f.querySelector('.en-go').addEventListener('click',step2);
+  ['cv-name','cv-mobile','cv-email'].forEach(function(id){document.getElementById(id).addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();step2();}});});
   var ef=document.getElementById('cv-enrich');
-  ef.addEventListener('submit',function(e){
-    e.preventDefault();
+  function enrich(){
     var fields=[{name:'email',value:window.enEmail||''},{name:'firstname',value:window.enName||''},{name:'mobilephone',value:window.enMob||''},{name:'cv_timeframe_stated',value:tf}];
     var b=document.getElementById('cv-budget').value, sl=document.getElementById('cv-shortlist').value, ar=document.getElementById('cv-areas').value.trim();
     if(b) fields.push({name:'budget_range',value:b});
     if(sl) fields.push({name:'shortlist_status',value:sl});
     if(ar) fields.push({name:'areas_of_interest',value:ar});
-    var btn=ef.querySelector('button[type=submit]');
+    var btn=ef.querySelector('.en-go');
     if(fields.length<5||!fields[0].value){btn.textContent='Nothing to add';return;}
     btn.disabled=true; btn.textContent='Saving...';
     fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields,context:HSCTX(),legalConsentOptions:CONSENT})})
     .then(function(r){ if(!r.ok) throw new Error('bad'); btn.textContent='Added, thank you'; })
     .catch(function(){ btn.disabled=false; btn.textContent='Could not save, try again'; });
-  });
+  }
+  ef.querySelector('.en-go').addEventListener('click',enrich);
 })();
 </script>`;
 
