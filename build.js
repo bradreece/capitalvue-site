@@ -1457,7 +1457,7 @@ const evalNegBody = `
 .en-done{text-align:center;padding:.6rem 0 1rem}
 .en-done h3{color:var(--ink)}
 .en-done p{margin-top:.6rem}
-@media(max-width:860px){.en-hero-grid{grid-template-columns:1fr;gap:20px}.en-worth{grid-template-columns:1fr}.en-cov{grid-template-columns:1fr;gap:28px}}
+@media(max-width:860px){.en-hero{padding:14px 0 22px}.en-hero-grid{grid-template-columns:1fr;gap:14px}.en-hero h1{font-size:1.6rem;line-height:1.12;margin-top:.35rem}.en-hero-copy p{font-size:.92rem;line-height:1.45;margin-top:.55rem}.en-hero-card{padding:16px}.en-q{margin-bottom:10px}.en-worth{grid-template-columns:1fr}.en-cov{grid-template-columns:1fr;gap:28px}}
 </style>
 
 <script>
