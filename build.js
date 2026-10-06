@@ -1521,6 +1521,13 @@ const evalNegBody = `
     show(history.state&&history.state.enStep===2&&tf?2:1);
   });
   var HSCTX=function(){var c={pageUri:location.href,pageName:document.title},h=cookie('hubspotutk');if(h)c.hutk=h;return c;};
+  function backup(stage,extra){
+    try{
+      var o={stage:stage,pageUrl:location.href};
+      for(var k in extra){o[k]=extra[k];}
+      fetch('/.netlify/functions/evalneg-backup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o),keepalive:true}).catch(function(){});
+    }catch(e){}
+  }
   var CONSENT={consent:{consentToProcess:true,text:"I agree to CapitalVue contacting me about my enquiry and I've read the collection notice above."}};
   function step2(){
     if(document.getElementById('cv-website').value) return;
@@ -1533,6 +1540,7 @@ const evalNegBody = `
     if(!cb.checked){ce.textContent='Please tick to confirm you agree.';ce.hidden=false;ok=false;if(!first)first=cb;}else{ce.hidden=true;}
     if(!ok){first.focus();return;}
     err.hidden=true;
+    backup('step2',{firstName:nm.value.trim(),email:em.value.trim(),mobileTyped:mb.value.trim(),mobile:norm,timeframe:tf,consent:true,website:document.getElementById('cv-website').value});
     var body={fields:[
       {name:'email',value:em.value.trim()},
       {name:'firstname',value:nm.value.trim()},
@@ -1566,6 +1574,7 @@ const evalNegBody = `
     if(ar) fields.push({name:'areas_of_interest',value:ar});
     var btn=ef.querySelector('.en-go');
     if(fields.length<5||!fields[0].value){btn.textContent='Nothing to add';return;}
+    backup('details',{firstName:window.enName||'',email:window.enEmail||'',mobile:window.enMob||'',timeframe:tf,budget:b,shortlist:sl,areas:ar,consent:true});
     btn.disabled=true; btn.textContent='Saving...';
     fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields,context:HSCTX(),legalConsentOptions:CONSENT})})
     .then(function(r){ if(!r.ok) throw new Error('bad'); btn.textContent='Added, thank you'; })
@@ -1914,6 +1923,7 @@ redirectLines.push(`${'/our-team/*'.padEnd(74)} ${'/team.html'.padEnd(46)} 301`)
     '/build.js',
     '/snapshot-email.src.js',
     '/content/*',
+    '/netlify/functions/*',
     '/services.png',
     '/team.png',
     '/tracker.png',
