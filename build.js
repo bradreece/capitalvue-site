@@ -982,7 +982,7 @@ ${pageHero('Contact','Get in touch','Book a free strategy call.','Tell us where 
     <p style="color:var(--muted);margin-bottom:1.3rem;font-size:.96rem">Not ready to pick a time? Send us a note and we'll reply within one business day, with no obligation and no hard sell.</p>
     <div class="hs-form-frame" data-region="ap1" data-form-id="9732e175-6e3c-4fd5-be4c-0ea2341cd65e" data-portal-id="45491120"></div>
     <script src="https://js-ap1.hsforms.net/forms/embed/45491120.js" defer></script>
-    <p style="color:var(--muted);font-size:.8rem;margin-top:.9rem;line-height:1.5">By submitting this form you agree to our <a href="privacy-policy.html" style="color:var(--emerald);text-decoration:underline">Privacy Policy</a>. This site uses cookies and tracking (Google, Meta and HubSpot) to measure traffic and advertising.</p>
+    <p style="color:var(--muted);font-size:.8rem;margin-top:.9rem;line-height:1.5">This site uses cookies and tracking (Google, Meta and HubSpot) to measure traffic and advertising. See our <a href="privacy-policy.html" style="color:var(--emerald);text-decoration:underline">Privacy Policy</a>.</p>
   </div>
   <div class="reveal">
     <h2 class="serif" style="font-size:1.6rem;margin-bottom:1rem">Contact details</h2>
