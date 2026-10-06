@@ -529,6 +529,7 @@ if(featEl&&FEAT.length>2){
     },460);
   },4600);}
 }
+function hsCtx(n){var c={pageUri:location.href,pageName:n||document.title},p=document.cookie.split(";");for(var i=0;i<p.length;i++){var k=p[i].trim();if(k.indexOf("hubspotutk=")===0){c.hutk=k.slice(11);break;}}return c;}
 var HS="https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/0b6974fa-ec13-45d0-aa45-62d8f985f2da";
 document.querySelectorAll("form[data-hs]").forEach(function(f){
   f.addEventListener("submit",function(e){
@@ -538,7 +539,7 @@ document.querySelectorAll("form[data-hs]").forEach(function(f){
     var fields=Object.keys(data).filter(function(k){return data[k];}).map(function(k){return {name:k,value:data[k]};});
     var btn=f.querySelector("button[type=submit]"); var lbl=btn?btn.textContent:"";
     if(btn){btn.disabled=true;btn.textContent="Sending...";}
-    fetch(HS,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:fields,context:{pageUri:location.href,pageName:document.title}})})
+    fetch(HS,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:fields,context:hsCtx()})})
     .then(function(r){ if(!r.ok){throw new Error("bad");} f.innerHTML='<div style="text-align:center;padding:1.5rem 0"><h3 style="color:var(--ink);font-family:Fraunces,serif">Thank you</h3><p style="margin-top:.5rem">We have your details and will be in touch shortly.</p></div>'; })
     .catch(function(){ if(btn){btn.disabled=false;btn.textContent=lbl||"Try again";} alert("Sorry, something went wrong. Please email info@capitalvue.com.au and we will respond right away."); });
   });
@@ -613,6 +614,9 @@ ${bare?bareHeader:header(active)}
 ${body}
 ${bare?bareFooter:footer()}
 ${bare?'':SCRIPT}
+<!-- Start of HubSpot Embed Code -->
+<script type="text/javascript" id="hs-script-loader" async defer src="//js-ap1.hs-scripts.com/45491120.js"></script>
+<!-- End of HubSpot Embed Code -->
 </body></html>`;
 };
 
@@ -1142,6 +1146,7 @@ ${pageHero('Calculator','Borrowing &amp; buying power calculator','What can you 
 <script>
 (function(){
   if(!document.getElementById('revealBtn')) return;
+  function hsCtx(n){var c={pageUri:location.href,pageName:n||document.title},p=document.cookie.split(";");for(var i=0;i<p.length;i++){var k=p[i].trim();if(k.indexOf("hubspotutk=")===0){c.hutk=k.slice(11);break;}}return c;}
   var HSCALC="https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/9f419495-172c-4c2b-9578-e0e87d37fbbe";
   function el(id){return document.getElementById(id);}
   function num(id){var s=(el(id).value||'').toString().replace(/[^0-9.]/g,'');var v=parseFloat(s);return isNaN(v)?0:v;}
@@ -1213,7 +1218,7 @@ ${pageHero('Calculator','Borrowing &amp; buying power calculator','What can you 
     var owns=el('own')&&el('own').checked;
     var summary='[Buying Power Calculator] Income1 '+money(num('inc1'))+', Income2 '+money(num('inc2'))+', Cash deposit '+money(num('dep'))+', Expenses/mo '+money(num('exp'))+'.'+(owns?(' EXISTING OWNER: value '+money(num('pval'))+', loan '+money(num('ploan'))+', rent/wk '+money(num('prent'))+', usable equity '+money(d.usable)+'.'):'')+' Indicative borrowing power '+money(d.maxLoan)+', budget '+money(d.budget)+', repayment/mo '+money(d.repay)+'. Illustrative value in '+d.yrs+'yr at '+d.g+'%: '+money(d.fv)+' (equity '+money(d.equity)+'). Marketing opt-in: '+(mkt?'yes':'no')+'.';
     var fields=[{name:'firstname',value:name},{name:'email',value:email},{name:'mobilephone',value:phone},{name:'message',value:summary}];
-    var payload={fields:fields,context:{pageUri:location.href,pageName:document.title},legalConsentOptions:{consent:{consentToProcess:true,text:"I have read and agree to CapitalVue's Privacy Policy and consent to CapitalVue collecting and handling my personal information."}}};
+    var payload={fields:fields,context:hsCtx(),legalConsentOptions:{consent:{consentToProcess:true,text:"I have read and agree to CapitalVue's Privacy Policy and consent to CapitalVue collecting and handling my personal information."}}};
     var btn=el('unlockBtn');btn.disabled=true;btn.textContent='Unlocking...';
     render();el('gate').hidden=true;el('output').hidden=false;el('output').scrollIntoView({behavior:'smooth',block:'nearest'});
     window.dataLayer=window.dataLayer||[];
@@ -1309,7 +1314,7 @@ const evalNegBody = `
       <button type="button" class="en-tap" data-tf="6 to 12 months">6 to 12 months</button>
       <button type="button" class="en-tap" data-tf="12 months or more">12 months or more</button>
     </div>
-    <form id="cv-evalneg-form" class="en-step" novalidate hidden>
+    <form id="cv-evalneg-form" class="en-step hs-form-do-not-collect" novalidate hidden>
       <p class="en-chosen">Buying: <strong id="en-chosen-tf"></strong> <a href="#start" id="en-change">Change</a></p>
       <div class="en-f">
         <label for="cv-name">First name</label>
@@ -1338,7 +1343,7 @@ const evalNegBody = `
     </form>
     <div id="en-done" class="en-step" hidden>
       <div class="en-done"><h3 class="serif">Got it.</h3><p>We will come back within one business day with whether the service fits and what happens next.</p></div>
-      <form id="cv-enrich" novalidate>
+      <form id="cv-enrich" class="hs-form-do-not-collect" novalidate>
         <p class="en-opt-h">Optional: tell us a little more so we can come prepared.</p>
         ${enSelect('cv-budget','budget_range','Budget range',['Under $800k','$800k to $1m','$1m to $1.3m','$1.3m to $1.6m','$1.6m to $2m','Over $2m','Not sure yet']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
         ${enSelect('cv-shortlist','shortlist_status','Found properties to check?',['Not yet','One or two in mind','A shortlist ready to go','Offer or auction coming up']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
