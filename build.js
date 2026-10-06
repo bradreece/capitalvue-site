@@ -1484,7 +1484,21 @@ const evalNegBody = `
     if(d.indexOf('4')===0&&d.length===9) return '+61'+d;
     return '';
   }
-  function emailOk(v){var a=v.indexOf('@'),d=v.lastIndexOf('.');return a>0&&d>a+1&&v.length-d>2&&v.indexOf(' ')<0;}
+  function emailOk(v){
+    if(!v||v.length>254||v.indexOf(' ')>=0) return false;
+    var p=v.split('@'); if(p.length!==2||!p[0]||p[0].length>64) return false;
+    var l=p[0], bad=',;:<>()[]"';
+    if(l.charAt(0)==='.'||l.charAt(l.length-1)==='.'||l.indexOf('..')>=0) return false;
+    for(var x=0;x<l.length;x++){ if(bad.indexOf(l.charAt(x))>=0) return false; }
+    var d=p[1].split('.'); if(d.length<2) return false;
+    for(var i=0;i<d.length;i++){
+      var s=d[i]; if(!s||s.charAt(0)==='-'||s.charAt(s.length-1)==='-') return false;
+      for(var j=0;j<s.length;j++){ var c=s.charAt(j).toLowerCase(); if(!((c>='a'&&c<='z')||(c>='0'&&c<='9')||c==='-')) return false; }
+    }
+    var t=d[d.length-1]; if(t.length<2) return false;
+    for(var k=0;k<t.length;k++){ var u=t.charAt(k).toLowerCase(); if(u<'a'||u>'z') return false; }
+    return true;
+  }
   function show(step){
     s1.hidden=step!==1; f.hidden=step!==2; s3.hidden=step!==3;
   }
@@ -1515,7 +1529,7 @@ const evalNegBody = `
     function flag(el,msg){ferr(el,msg);if(msg){ok=false;if(!first)first=el;}}
     flag(nm,nm.value.trim()?'':'Please enter your first name.');
     flag(mb,mb.value.trim()?(norm?'':'Please enter an Australian mobile, e.g. 0412 345 678.'):'Please enter your mobile number.');
-    flag(em,em.value.trim()?(emailOk(em.value.trim())?'':'That email address does not look right.'):'Please enter your email address.');
+    flag(em,em.value.trim()?(emailOk(em.value.trim())?'':'Please check your email address, e.g. name@example.com.'):'Please enter your email address.');
     if(!cb.checked){ce.textContent='Please tick to confirm you agree.';ce.hidden=false;ok=false;if(!first)first=cb;}else{ce.hidden=true;}
     if(!ok){first.focus();return;}
     err.hidden=true;
