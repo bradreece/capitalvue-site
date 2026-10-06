@@ -1283,7 +1283,7 @@ const BNE_FAQ = [
    page. Indexed, because it owns the "no asking price, what do I pay" query.
    Form posts to its own HubSpot form GUID, not the shared form[data-hs] handler,
    because it needs field validation, mobile normalisation and a Lead event. */
-const EN_HS = 'https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/74a9780b-9cd2-48ef-9233-9b855507734d';
+const EN_HS = 'https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/f543c628-06ef-4c53-98cd-257fb7e6f001';
 const enOpt = v => `<option value="${v}">${v}</option>`;
 const enSelect = (id,name,label,opts) => `
         <div class="en-f">
@@ -1295,14 +1295,65 @@ const enSelect = (id,name,label,opts) => `
         </div>`;
 const enWorth = (h,p) => `<div class="en-card reveal"><span class="hc-tag" style="background:rgba(20,143,143,.12);color:var(--emerald-d)">Not on the portals</span><h3>${h}</h3><p>${p}</p></div>`;
 const evalNegBody = `
-${pageHero('Evaluate and Negotiate','Evaluate and Negotiate service','No asking price? Here\'s how we work out what to pay.','Most listings around Brisbane and Adelaide now run without a price, and the selling agent\'s job is to keep it that way until you\'ve committed. You still have to put a number on the offer. This page is how we get to that number, and what it costs to have us do it.')}
-
-<section><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow">The evidence</span><h2 class="serif">What &quot;worth&quot; means when the listing won&#39;t tell you</h2></div>
-  <div class="en-worth">
-    ${enWorth('Comparable sales, not the guide','A property is worth what similar homes nearby have sold for in the last few months, adjusted for the things that differ: land size, condition, position, aspect. We pull the settled sales, not the asking prices, and build the range from those. &quot;Offers over&quot; is a marketing line; the sales record is evidence.')}
-    ${enWorth('The overlays that change the number','Two homes on the same street can be worth different amounts because one sits in a flood overlay, a bushfire zone, or a planning overlay that limits what you can do with it. We check every property on your shortlist against the state and council mapping before you inspect, so the Saturday goes on homes that are still worth what they look like.')}
-    ${enWorth('Our experience','We know when a property sells off-market, and what it sold for. A portal only shows what was publicly listed, so that price never reaches realestate.com.au or Domain. Layered over an average of 1,200 properties we review per client, it is what lets us call a fair price instead of guessing at one.<span class="en-src">CapitalVue client shortlist data, August 2026.</span>')}
+<section class="en-hero" id="start"><div class="wrap en-hero-grid">
+  <div class="en-hero-copy">
+    <span class="eyebrow">Evaluate and Negotiate service</span>
+    <h1 class="serif">No asking price? Here&#39;s how we work out what to pay.</h1>
+    <p>Send us the listings you like. We price each one from the sales data, check the flood and bushfire overlays, and negotiate the one you choose. $11,500 inc GST, published.</p>
+  </div>
+  <div class="en-hero-card">
+    <div id="en-step1" class="en-step">
+      <h2 class="en-q">When do you want to buy?</h2>
+      <button type="button" class="en-tap" data-tf="Ready now">Ready now</button>
+      <button type="button" class="en-tap" data-tf="3 to 6 months">3 to 6 months</button>
+      <button type="button" class="en-tap" data-tf="6 to 12 months">6 to 12 months</button>
+      <button type="button" class="en-tap" data-tf="12 months or more">12 months or more</button>
+    </div>
+    <form id="cv-evalneg-form" class="en-step" novalidate hidden>
+      <p class="en-chosen">Buying: <strong id="en-chosen-tf"></strong> <a href="#start" id="en-change">Change</a></p>
+      <div class="en-f">
+        <label for="cv-name">First name</label>
+        <input type="text" id="cv-name" name="firstname" maxlength="80" autocomplete="given-name" required>
+        <p class="en-ferr" hidden></p>
+      </div>
+      <div class="en-f">
+        <label for="cv-mobile">Mobile</label>
+        <input type="tel" id="cv-mobile" name="mobilephone" maxlength="24" inputmode="tel" autocomplete="tel" placeholder="04XX XXX XXX" required>
+        <p class="en-ferr" hidden></p>
+      </div>
+      <div class="en-f">
+        <label for="cv-email">Email</label>
+        <input type="email" id="cv-email" name="email" maxlength="254" autocomplete="email" placeholder="you@example.com" required>
+        <p class="en-ferr" hidden></p>
+      </div>
+      <div class="en-notice"><p><strong>How we use your details.</strong> CapitalVue Pty Ltd (ABN 56 671 085 028) collects the information on this form to assess whether our Evaluate and Negotiate service fits you and to contact you about your enquiry. We may share it with service providers who help us deliver this, including our CRM (HubSpot); some providers may store data overseas. You can access, correct or delete your details, or make a privacy complaint, by emailing <a href="mailto:info@capitalvue.com.au">info@capitalvue.com.au</a>. Full details are in our <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p></div>
+      <div class="en-consent">
+        <input type="checkbox" id="cv-consent">
+        <label for="cv-consent">I agree to CapitalVue contacting me about my enquiry and I&#39;ve read the collection notice above.</label>
+      </div>
+      <p class="en-ferr" id="cv-consent-err" hidden></p>
+      <div class="en-hp"><label for="cv-website">Website</label><input type="text" id="cv-website" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="en-err" id="cv-err" hidden></p>
+      <button class="btn btn-primary en-go" type="submit">Check if it fits</button>
+    </form>
+    <div id="en-done" class="en-step" hidden>
+      <div class="en-done"><h3 class="serif">Got it.</h3><p>We will come back within one business day with whether the service fits and what happens next.</p></div>
+      <form id="cv-enrich" novalidate>
+        <p class="en-opt-h">Optional: tell us a little more so we can come prepared.</p>
+        ${enSelect('cv-budget','budget_range','Budget range',['Under $800k','$800k to $1m','$1m to $1.3m','$1.3m to $1.6m','$1.6m to $2m','Over $2m','Not sure yet']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
+        ${enSelect('cv-shortlist','shortlist_status','Found properties to check?',['Not yet','One or two in mind','A shortlist ready to go','Offer or auction coming up']).replace(' <span class="en-req">*</span>','').replace(' required>','>')}
+        <div class="en-f">
+          <label for="cv-areas">Suburbs or areas you are looking in</label>
+          <input type="text" id="cv-areas" name="areas_of_interest" maxlength="200" placeholder="e.g. Camp Hill, Morningside, Adelaide inner east">
+        </div>
+        <button class="btn btn-primary en-go" type="submit">Add these details</button>
+      </form>
+      <div class="en-alt">
+        <a class="btn btn-ghost" href="contact.html#book" style="width:100%;justify-content:center;border-color:var(--navy);color:var(--navy)">Book a 15 minute call</a>
+        <p class="en-tel">Or call <a href="tel:+61499484727">0499 484 727</a></p>
+      </div>
+    </div>
+    <p class="en-fine2">Licensed buyers agency, QLD 4769773, SA 335016.<br>No obligation. We will tell you if it is not the right fit.</p>
   </div>
 </div></section>
 
@@ -1312,7 +1363,8 @@ ${pageHero('Evaluate and Negotiate','Evaluate and Negotiate service','No asking 
       <h2 class="serif" style="margin-bottom:1.2rem">What $11,500 inc GST covers</h2>
       <p style="margin-bottom:1rem"><strong style="color:var(--ink)">Before you inspect.</strong> You find the homes on realestate.com.au or Domain and send them to us. For each one: a price range from comparable settled sales, flood and bushfire overlay status, zoning and any planning overlays, and a plain read of whether it fits the brief you gave us. You inspect the ones that pass.</p>
       <p style="margin-bottom:1rem"><strong style="color:var(--ink)">When you have chosen one.</strong> We negotiate the purchase: offer strategy, price, terms and conditions, and the back-and-forth with the selling agent, private treaty or auction. If it goes under the hammer we attend and bid for you as part of this fee.</p>
-      <p><strong style="color:var(--ink)">What it does not cover.</strong> Building and pest inspections, conveyancing, finance. We will tell you when to order them and what to look for in the reports, but they are your own professionals and your own contracts.</p>
+      <p style="margin-bottom:1rem"><strong style="color:var(--ink)">Included.</strong> Pre-contract and post-contract due diligence: we review the contract, the disclosure documents and the building and pest report, and tell you what to look for. We coordinate the building and pest inspection and the conveyancing. We also work with our broker partner so the timing and conditions your finance puts on the contract fit your situation. Each step is set up around you, not run as a standard package.</p>
+      <p><strong style="color:var(--ink)">Not included.</strong> Finance advice and the loan itself, which are your broker&#39;s. The inspection, the conveyancing and the finance are carried out and charged by independent professionals, and you pay their fees directly.</p>
     </div>
     <div class="en-price reveal">
       <span class="eyebrow" style="color:#4fc2c2">Evaluate and Negotiate</span>
@@ -1320,61 +1372,32 @@ ${pageHero('Evaluate and Negotiate','Evaluate and Negotiate service','No asking 
       <ul>
         ${li('Price range from comparable settled sales')}
         ${li('Flood, bushfire, zoning and overlay checks on every shortlisted home')}
+        ${li('Review of the building and pest report')}
+        ${li('Coordination of building and pest inspection and conveyancing')}
         ${li('Offer strategy, negotiation and the paperwork through to signing')}
         ${li('Auction attendance and bidding if it goes under the hammer, no separate charge')}
       </ul>
-      <a class="btn btn-light" href="#shortlist" style="width:100%;justify-content:center">Send my shortlist details</a>
+      <a class="btn btn-light" href="#start" style="width:100%;justify-content:center">Check if it fits</a>
       <p class="en-fine">Licensed buyers agency, QLD 4769773, SA 335016. General information only, not financial, credit, tax or legal advice.</p>
     </div>
   </div>
 </div></section>
 
-<section><div class="wrap" style="max-width:820px">
+<section><div class="wrap">
+  <div class="sec-head reveal"><span class="eyebrow">The evidence</span><h2 class="serif">What &quot;worth&quot; means when the listing won&#39;t tell you</h2></div>
+  <p class="en-stat reveal">In a November 2025 sample of Brisbane house listings, 63 per cent showed no price or range in the headline.<span class="en-src">Compare the Market, &quot;Buying blind: The Great Australian Scam of 2026&quot;, page dated 5 December 2025. Three and four bedroom houses on realestate.com.au and Domain, sampled November 2025, headlines classified.</span></p>
+  <div class="en-worth">
+    ${enWorth('Comparable sales, not the guide','A property is worth what similar homes nearby have sold for in the last few months, adjusted for the things that differ: land size, condition, position, aspect. We pull the settled sales, not the asking prices, and build the range from those. &quot;Offers over&quot; is a marketing line; the sales record is evidence.')}
+    ${enWorth('The overlays that change the number','Two homes on the same street can be worth different amounts because one sits in a flood overlay, a bushfire zone, or a planning overlay that limits what you can do with it. We check every property on your shortlist against the state and council mapping before you inspect, so the Saturday goes on homes that are still worth what they look like.')}
+    ${enWorth('Our experience','We know when a property sells off-market, and what it sold for. A portal only shows what was publicly listed, so that price never reaches realestate.com.au or Domain. On one recent search, we reviewed more than 1,300 properties against the client&#39;s criteria. 19 made the shortlist and the client inspected 3. That depth of evidence is what lets us call a fair price instead of guessing at one.<span class="en-src">CapitalVue search records, one anonymised client engagement.</span>')}
+  </div>
+</div></section>
+
+<section class="bg-paper"><div class="wrap" style="max-width:820px">
   <div class="sec-head reveal"><span class="eyebrow">Fit</span><h2 class="serif">Who it&#39;s for, and who it isn&#39;t</h2></div>
   <p>For people still in the market and starting to feel it. You know exactly what you want and where. You have put in an offer on a home you had already mentally moved into, maybe more than one, and watched it go to someone else. Not because you wanted it less. Because you did not know what to actually put on the table.</p>
   <p style="margin-top:1rem">Not for investors building a portfolio, which is a <a href="services.html">different service with a different fee</a>, and not for anyone who has not started looking yet. If that is you, the free <a href="property-readiness.html">two-minute readiness check</a> is the better first step.</p>
-</div></section>
-
-<section class="bg-paper" id="shortlist"><div class="wrap" style="max-width:640px">
-  <div class="sec-head center reveal"><h2 class="serif">Send us your shortlist</h2><p style="margin-top:.8rem">Tell us where you are looking and we will come back within one business day with whether the service fits and what happens next.</p></div>
-  <div class="en-form-card reveal">
-    <form id="cv-evalneg-form" novalidate>
-      <div class="en-f">
-        <label for="cv-areas">Suburbs or areas you are looking in <span class="en-opt">(optional)</span></label>
-        <input type="text" id="cv-areas" name="areas_of_interest" maxlength="200" placeholder="e.g. Camp Hill, Morningside, Adelaide inner east">
-      </div>
-      <div class="en-row">
-        ${enSelect('cv-budget','budget_range','Budget range',['Under $800k','$800k to $1m','$1m to $1.3m','$1.3m to $1.6m','$1.6m to $2m','Over $2m','Not sure yet'])}
-        ${enSelect('cv-timeframe','cv_timeframe_stated','When you want to buy',['Ready now','3 to 6 months','6 to 12 months','12 months or more'])}
-      </div>
-      <div class="en-row">
-        ${enSelect('cv-shortlist','shortlist_status','Found properties to check?',['Not yet','One or two in mind','A shortlist ready to go','Offer or auction coming up'])}
-        <div class="en-f">
-          <label for="cv-name">Name <span class="en-req">*</span></label>
-          <input type="text" id="cv-name" name="firstname" maxlength="80" autocomplete="given-name" required>
-        </div>
-      </div>
-      <div class="en-row">
-        <div class="en-f">
-          <label for="cv-mobile">Mobile <span class="en-req">*</span></label>
-          <input type="tel" id="cv-mobile" name="mobilephone" maxlength="24" autocomplete="tel" placeholder="04XX XXX XXX" required>
-        </div>
-        <div class="en-f">
-          <label for="cv-email">Email <span class="en-req">*</span></label>
-          <input type="email" id="cv-email" name="email" maxlength="254" autocomplete="email" placeholder="you@example.com" required>
-        </div>
-      </div>
-      <div class="en-hp"><label for="cv-website">Website</label><input type="text" id="cv-website" name="website" tabindex="-1" autocomplete="off"></div>
-      <p class="en-err" id="cv-err" hidden></p>
-      <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center">Send my shortlist details</button>
-      <p class="en-fine2">No obligation. We will tell you if the service is not the right fit. Licensed buyers agency, QLD 4769773, SA 335016.</p>
-    </form>
-    <div class="en-alt">
-      <p>Prefer to talk it through first?</p>
-      <a class="btn btn-ghost" href="contact.html#book" style="width:100%;justify-content:center;border-color:var(--navy);color:var(--navy)">Book a 15 minute call</a>
-      <p class="en-tel">Or call <a href="tel:+61499484727">0499 484 727</a></p>
-    </div>
-  </div>
+  <p style="margin-top:1.6rem;text-align:center"><a class="btn btn-primary" href="#start">Back to the form</a></p>
 </div></section>
 
 <section><div class="wrap" style="max-width:820px">
@@ -1386,11 +1409,31 @@ ${pageHero('Evaluate and Negotiate','Evaluate and Negotiate service','No asking 
 </div></section>
 
 <style>
+.en-hero{background:radial-gradient(900px 400px at 85% -20%,#12457b,var(--navy) 55%,#061a30);color:#fff;padding:28px 0 34px}
+.en-hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+.en-hero .eyebrow{color:#4fc2c2}
+.en-hero h1{font-size:clamp(1.75rem,4vw,2.9rem);color:#fff;margin-top:.5rem;line-height:1.15}
+.en-hero-copy p{color:#c6d2e2;margin-top:.9rem;max-width:52ch;font-size:1rem;line-height:1.55}
+.en-hero-card{background:#fff;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);color:var(--ink)}
+.en-q{font-size:1.05rem;margin-bottom:12px;color:var(--ink)}
+.en-tap{display:block;width:100%;min-height:52px;margin-bottom:8px;padding:0 18px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-weight:600;font-size:1rem;color:var(--ink);text-align:left;cursor:pointer;transition:.15s}
+.en-tap:hover,.en-tap:focus-visible{border-color:var(--emerald);box-shadow:0 0 0 3px rgba(20,143,143,.15);outline:none}
+.en-chosen{font-size:.9rem;margin-bottom:14px;color:var(--muted)}
+.en-chosen strong{color:var(--ink)}
+.en-chosen a{margin-left:.5rem;color:var(--emerald);font-weight:600}
+.en-notice{font-size:.78rem;line-height:1.55;color:var(--muted);background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:4px}
+.en-consent{display:flex;gap:10px;align-items:flex-start;margin-top:10px}
+.en-consent input{margin-top:3px;width:20px;height:20px;flex:0 0 auto;accent-color:var(--emerald)}
+.en-consent label{font-size:.82rem;line-height:1.5}
+.en-go{width:100%;justify-content:center;min-height:52px;margin-top:14px}
+.en-ferr{color:#c0392b;font-size:.8rem;margin-top:4px;line-height:1.4}
+.en-opt-h{font-size:.9rem;margin:6px 0 14px;color:var(--muted)}
+.en-stat{font-size:1.1rem;line-height:1.6;max-width:820px;margin:0 auto 1.6rem;color:var(--ink);font-weight:600}
 .en-worth{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .en-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-sm)}
 .en-card h3{margin:.9rem 0 .6rem}
 .en-card p{font-size:.95rem;line-height:1.7}
-.en-src{display:block;margin-top:.9rem;font-size:.78rem;font-style:italic;color:var(--muted)}
+.en-src{display:block;margin-top:.9rem;font-size:.78rem;font-style:italic;font-weight:400;color:var(--muted)}
 .en-cov{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:start}
 .en-price{background:linear-gradient(160deg,var(--navy-2),var(--navy));color:#fff;border-radius:var(--radius);padding:32px;box-shadow:var(--shadow)}
 .en-price .price{font-size:2.3rem;font-weight:700;margin:.5rem 0 1.2rem}
@@ -1398,87 +1441,114 @@ ${pageHero('Evaluate and Negotiate','Evaluate and Negotiate service','No asking 
 .en-price ul{list-style:none;margin-bottom:1.6rem}
 .en-price li{display:flex;gap:.6rem;align-items:flex-start;color:#c6d2e2;font-size:.94rem;line-height:1.6;margin-bottom:.7rem}
 .en-fine{font-size:.76rem;color:#8fb3d6;margin-top:1rem;line-height:1.6}
-.en-form-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow-sm)}
-.en-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.en-f{margin-bottom:16px}
+.en-f{margin-bottom:12px}
 .en-f label{display:block;font-size:.84rem;font-weight:600;color:var(--ink);margin-bottom:6px}
 .en-req{color:#c0392b}
-.en-opt{color:#8494a8;font-weight:500}
-.en-f input,.en-f select{width:100%;height:48px;padding:13px 16px;border:1px solid var(--line);border-radius:12px;font-size:.95rem;font-family:inherit;color:var(--ink);background:#fff}
+.en-f input,.en-f select{width:100%;height:48px;padding:13px 16px;border:1px solid var(--line);border-radius:12px;font-size:1rem;font-family:inherit;color:var(--ink);background:#fff}
 .en-f select{-webkit-appearance:none;appearance:none;padding-right:42px;cursor:pointer;background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNCcgaGVpZ2h0PSc5JyB2aWV3Qm94PScwIDAgMTQgOScgZmlsbD0nbm9uZSc+PHBhdGggZD0nTTEgMWw2IDYgNi02JyBzdHJva2U9JyM1NzY4N2YnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJy8+PC9zdmc+");background-repeat:no-repeat;background-position:right 16px center;background-size:14px 9px}
 .en-f input:focus,.en-f select:focus{outline:none;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(20,143,143,.12)}
 .en-f input.bad,.en-f select.bad{border-color:#c0392b}
 .en-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.en-err{color:#c0392b;font-size:.85rem;margin-bottom:.8rem;line-height:1.5}
-.en-fine2{font-size:.78rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.5}
-.en-alt{margin-top:24px;padding-top:24px;border-top:1px dashed var(--line)}
-.en-alt>p:first-child{font-size:.88rem;text-align:center;margin-bottom:12px}
+.en-err{color:#c0392b;font-size:.85rem;margin-top:.8rem;line-height:1.5}
+.en-fine2{font-size:.76rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
+.en-alt{margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
 .en-tel{font-size:.85rem;color:var(--muted);text-align:center;margin-top:12px}
 .en-tel a{color:var(--emerald);font-weight:600}
-.en-done{text-align:center;padding:1.5rem 0}
-@media(max-width:860px){.en-worth{grid-template-columns:1fr}.en-cov{grid-template-columns:1fr;gap:28px}.en-row{grid-template-columns:1fr;gap:0}}
+.en-done{text-align:center;padding:.6rem 0 1rem}
+.en-done h3{color:var(--ink)}
+.en-done p{margin-top:.6rem}
+@media(max-width:860px){.en-hero{padding:14px 0 22px}.en-hero-grid{grid-template-columns:1fr;gap:14px}.en-hero h1{font-size:1.6rem;line-height:1.12;margin-top:.35rem}.en-hero-copy p{font-size:.92rem;line-height:1.45;margin-top:.55rem}.en-hero-card{padding:16px}.en-q{margin-bottom:10px}.en-worth{grid-template-columns:1fr}.en-cov{grid-template-columns:1fr;gap:28px}}
 </style>
 
 <script>
 (function(){
   var f=document.getElementById('cv-evalneg-form'); if(!f) return;
   var HS=${JSON.stringify(EN_HS)};
-  var err=document.getElementById('cv-err');
-  function cookie(n){var m=document.cookie.match('(^|;)\\\\s*'+n+'\\\\s*=\\\\s*([^;]+)');return m?m.pop():'';}
+  var s1=document.getElementById('en-step1'), s3=document.getElementById('en-done');
+  var tfEl=document.getElementById('en-chosen-tf'), err=document.getElementById('cv-err');
+  var tf='', submitted=false, leadFired=false;
+  function dl(o){window.dataLayer=window.dataLayer||[];window.dataLayer.push(o);}
+  function cookie(n){var p=document.cookie.split(';');for(var i=0;i<p.length;i++){var c=p[i].trim();if(c.indexOf(n+'=')===0)return c.slice(n.length+1);}return '';}
   function mobile(v){
     var d=(v||'').replace(/[^0-9+]/g,'');
     if(d.indexOf('+614')===0&&d.length===12) return d;
     if(d.indexOf('614')===0&&d.length===11) return '+'+d;
     if(d.indexOf('04')===0&&d.length===10) return '+61'+d.slice(1);
     if(d.indexOf('4')===0&&d.length===9) return '+61'+d;
-    return '';
+    return d.replace(/[^0-9]/g,'').length>=8?v.trim():'';
   }
+  function emailOk(v){var a=v.indexOf('@'),d=v.lastIndexOf('.');return a>0&&d>a+1&&v.length-d>2&&v.indexOf(' ')<0;}
+  function show(step){
+    s1.hidden=step!==1; f.hidden=step!==2; s3.hidden=step!==3;
+  }
+  function ferr(el,msg){
+    var p=el.parentNode.querySelector('.en-ferr');
+    if(msg){el.classList.add('bad');p.textContent=msg;p.hidden=false;}
+    else{el.classList.remove('bad');p.hidden=true;}
+  }
+  history.replaceState({enStep:1},'');
+  var taps=document.querySelectorAll('.en-tap');
+  for(var i=0;i<taps.length;i++){taps[i].addEventListener('click',function(){
+    tf=this.getAttribute('data-tf'); tfEl.textContent=tf;
+    dl({event:'en_step1_complete',timeframe:tf});
+    history.pushState({enStep:2},'');
+    show(2); document.getElementById('cv-name').focus();
+  });}
+  document.getElementById('en-change').addEventListener('click',function(e){e.preventDefault();if(history.state&&history.state.enStep===2)history.back();else show(1);});
+  window.addEventListener('popstate',function(){
+    if(submitted) return;
+    show(history.state&&history.state.enStep===2&&tf?2:1);
+  });
+  var HSCTX=function(){var c={pageUri:location.href,pageName:document.title},h=cookie('hubspotutk');if(h)c.hutk=h;return c;};
+  var CONSENT={consent:{consentToProcess:true,text:"I agree to CapitalVue contacting me about my enquiry and I've read the collection notice above."}};
   f.addEventListener('submit',function(e){
     e.preventDefault();
-    if(f.website.value) return;                       // honeypot
-    var bad=[],msg=[];
-    ['cv-budget','cv-timeframe','cv-shortlist','cv-name','cv-email','cv-mobile'].forEach(function(id){
-      var el=document.getElementById(id); el.classList.remove('bad');
-      if(!el.value.trim()){bad.push(el);}
-    });
-    if(bad.length) msg.push('Please complete every field marked with an asterisk.');
-    var em=document.getElementById('cv-email');
-    if(em.value.trim()&&!/^[^@\\s]+@[^@\\s.]+\\.[^@\\s]{2,}$/.test(em.value.trim())){bad.push(em);msg.push('That email address does not look right.');}
-    var mb=document.getElementById('cv-mobile'), norm=mobile(mb.value);
-    if(mb.value.trim()&&!norm){bad.push(mb);msg.push('Please enter an Australian mobile, e.g. 0412 345 678.');}
-    if(bad.length){
-      bad.forEach(function(el){el.classList.add('bad');});
-      err.textContent=msg.join(' '); err.hidden=false; bad[0].focus();
-      return;
-    }
+    if(f.website.value) return;
+    var nm=document.getElementById('cv-name'), mb=document.getElementById('cv-mobile'), em=document.getElementById('cv-email'), cb=document.getElementById('cv-consent'), ce=document.getElementById('cv-consent-err');
+    var ok=true, first=null, norm=mobile(mb.value);
+    function flag(el,msg){ferr(el,msg);if(msg){ok=false;if(!first)first=el;}}
+    flag(nm,nm.value.trim()?'':'Please enter your first name.');
+    flag(mb,mb.value.trim()?(norm?'':'Please enter a mobile number, e.g. 0412 345 678.'):'Please enter your mobile number.');
+    flag(em,em.value.trim()?(emailOk(em.value.trim())?'':'That email address does not look right.'):'Please enter your email address.');
+    if(!cb.checked){ce.textContent='Please tick to confirm you agree.';ce.hidden=false;ok=false;if(!first)first=cb;}else{ce.hidden=true;}
+    if(!ok){first.focus();return;}
     err.hidden=true;
-    var fields=[
+    var body={fields:[
       {name:'email',value:em.value.trim()},
-      {name:'firstname',value:document.getElementById('cv-name').value.trim()},
+      {name:'firstname',value:nm.value.trim()},
       {name:'mobilephone',value:norm},
-      {name:'budget_range',value:document.getElementById('cv-budget').value},
-      {name:'cv_timeframe_stated',value:document.getElementById('cv-timeframe').value},
-      {name:'shortlist_status',value:document.getElementById('cv-shortlist').value}
-    ];
-    var areas=document.getElementById('cv-areas').value.trim();
-    if(areas) fields.push({name:'areas_of_interest',value:areas});
-    var ctx={pageUri:location.href,pageName:document.title};
-    var hutk=cookie('hubspotutk'); if(hutk) ctx.hutk=hutk;
+      {name:'cv_timeframe_stated',value:tf}
+    ],context:HSCTX(),legalConsentOptions:CONSENT};
     var btn=f.querySelector('button[type=submit]'), lbl=btn.textContent;
     btn.disabled=true; btn.textContent='Sending...';
-    fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields,context:ctx})})
+    fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
     .then(function(r){ if(!r.ok) throw new Error('bad'); return r; })
     .then(function(){
-      window.dataLayer=window.dataLayer||[];
-      window.dataLayer.push({event:'generate_lead',form_source:'evalneg_page'});
-      if(window.fbq) fbq('track','Lead');
-      f.innerHTML='<div class="en-done"><h3 class="serif" style="color:var(--ink)">Got it.</h3><p style="margin-top:.6rem">We will come back within one business day with whether the service fits and what happens next.</p></div>';
+      submitted=true;
+      if(!leadFired){leadFired=true;dl({event:'generate_lead',form_source:'evalneg_page'});if(window.fbq) fbq('track','Lead');}
+      window.enEmail=em.value.trim(); window.enName=nm.value.trim(); window.enMob=norm;
+      show(3);
     })
     .catch(function(){
       btn.disabled=false; btn.textContent=lbl;
       err.textContent='Sorry, something went wrong. Please email info@capitalvue.com.au and we will respond right away.';
       err.hidden=false;
     });
+  });
+  var ef=document.getElementById('cv-enrich');
+  ef.addEventListener('submit',function(e){
+    e.preventDefault();
+    var fields=[{name:'email',value:window.enEmail||''},{name:'firstname',value:window.enName||''},{name:'mobilephone',value:window.enMob||''},{name:'cv_timeframe_stated',value:tf}];
+    var b=document.getElementById('cv-budget').value, sl=document.getElementById('cv-shortlist').value, ar=document.getElementById('cv-areas').value.trim();
+    if(b) fields.push({name:'budget_range',value:b});
+    if(sl) fields.push({name:'shortlist_status',value:sl});
+    if(ar) fields.push({name:'areas_of_interest',value:ar});
+    var btn=ef.querySelector('button[type=submit]');
+    if(fields.length<5||!fields[0].value){btn.textContent='Nothing to add';return;}
+    btn.disabled=true; btn.textContent='Saving...';
+    fetch(HS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:fields,context:HSCTX(),legalConsentOptions:CONSENT})})
+    .then(function(r){ if(!r.ok) throw new Error('bad'); btn.textContent='Added, thank you'; })
+    .catch(function(){ btn.disabled=false; btn.textContent='Could not save, try again'; });
   });
 })();
 </script>`;
