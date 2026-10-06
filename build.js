@@ -1479,8 +1479,10 @@ const evalNegBody = `
     if(d.indexOf('+614')===0&&d.length===12) return d;
     if(d.indexOf('614')===0&&d.length===11) return '+'+d;
     if(d.indexOf('04')===0&&d.length===10) return '+61'+d.slice(1);
+    if(d.indexOf('+6104')===0&&d.length===13) return '+61'+d.slice(4);
+    if(d.indexOf('6104')===0&&d.length===12) return '+61'+d.slice(3);
     if(d.indexOf('4')===0&&d.length===9) return '+61'+d;
-    return d.replace(/[^0-9]/g,'').length>=8?v.trim():'';
+    return '';
   }
   function emailOk(v){var a=v.indexOf('@'),d=v.lastIndexOf('.');return a>0&&d>a+1&&v.length-d>2&&v.indexOf(' ')<0;}
   function show(step){
@@ -1513,7 +1515,7 @@ const evalNegBody = `
     var ok=true, first=null, norm=mobile(mb.value);
     function flag(el,msg){ferr(el,msg);if(msg){ok=false;if(!first)first=el;}}
     flag(nm,nm.value.trim()?'':'Please enter your first name.');
-    flag(mb,mb.value.trim()?(norm?'':'Please enter a mobile number, e.g. 0412 345 678.'):'Please enter your mobile number.');
+    flag(mb,mb.value.trim()?(norm?'':'Please enter an Australian mobile, e.g. 0412 345 678.'):'Please enter your mobile number.');
     flag(em,em.value.trim()?(emailOk(em.value.trim())?'':'That email address does not look right.'):'Please enter your email address.');
     if(!cb.checked){ce.textContent='Please tick to confirm you agree.';ce.hidden=false;ok=false;if(!first)first=cb;}else{ce.hidden=true;}
     if(!ok){first.focus();return;}
