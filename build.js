@@ -704,6 +704,7 @@ ${trustbar}
     <div class="step reveal"><div class="num">04</div><h3>Settle &amp; track</h3><p>We oversee settlement, connect a vetted property manager to find a tenant, and put the asset on your live dashboard.</p></div>
   </div>
   <p style="text-align:center;max-width:760px;margin:34px auto 0">We buy across South East Queensland and South Australia. Most of our work runs through our <a href="buyers-agent-brisbane.html">Brisbane buyers agent</a> and <a href="buyers-agent-adelaide.html">Adelaide buyers agent</a> desks, where you can see the current market data and every purchase we have made in that state.</p>
+  <p style="text-align:center;max-width:760px;margin:14px auto 0">Want to see the search from your side? <a href="portal-demo.html" style="color:var(--emerald);font-weight:600">Try the client portal demo</a>, built with sample data.</p>
   <div style="text-align:center;margin-top:26px"><a class="btn btn-primary" href="services.html">See services &amp; pricing</a></div>
 </div></section>
 <section><div class="wrap">
@@ -793,7 +794,7 @@ ${pageHero('Services &amp; pricing','Services &amp; pricing','Transparent, fixed
         ${li('Virtual &amp; on-site inspections and full due diligence')}
         ${li('Price negotiation &amp; auction representation')}
         ${li('Settlement oversight &amp; vetted property manager')}
-        ${li('Secure client portal with AML compliance')}
+        ${li('<a href="portal-demo.html" style="color:#4fc2c2;text-decoration:underline">Secure client portal</a> with AML compliance')}
       </ul>
       <a class="btn btn-light" href="contact.html#book">Book a free strategy call</a>
     </div>
@@ -829,6 +830,14 @@ ${pageHero('Services &amp; pricing','Services &amp; pricing','Transparent, fixed
     <div class="step reveal"><div class="num">03</div><h3>Negotiate &amp; secure</h3><p>Hard negotiation or auction bidding, with terms that protect you.</p></div>
     <div class="step reveal"><div class="num">04</div><h3>Settle &amp; track</h3><p>Settlement oversight, a tenant via our PM network, and your live dashboard.</p></div>
   </div>
+  <div class="own reveal" style="margin-top:40px">
+    <div>
+      <span class="eyebrow">Your side of the search</span>
+      <h2 class="serif">See exactly what you see as a client.</h2>
+      <p>From the first strategy call to settlement, every shortlisted property, agency note, document and contract milestone sits in your own client portal. It comes with every CapitalVue service except standalone auction bidding. Click through a working demonstration with sample data, no account needed.</p>
+    </div>
+    <div><a class="btn btn-primary" href="portal-demo.html">Try the client portal demo</a></div>
+  </div>
 </div></section>
 <section><div class="wrap" style="max-width:860px">
   <div class="sec-head reveal"><span class="eyebrow">Where we buy</span><h2 class="serif">The same service, in the markets we know.</h2></div>
@@ -856,6 +865,7 @@ ${pageHero('Property Trackers','CapitalVue Dashboard','The only buyers agency th
     </div>
     <div class="hero-actions" style="margin-top:1.8rem"><a class="btn btn-navy" href="https://app.capitalvue.com.au/" target="_blank" rel="noopener">Property Tracker Login</a></div>
     <p style="color:var(--muted);font-size:.88rem;margin-top:.9rem">Existing clients, log in to your CapitalVue Property Tracker. Our next-generation platform, CapitalVue Portfolio, is below.</p>
+    <p style="color:var(--muted);font-size:.88rem;margin-top:.5rem">The tracker covers you after settlement. During the search you work in your client portal. <a href="portal-demo.html" style="color:var(--emerald);font-weight:600">See the portal demo</a>.</p>
   </div>
   <div class="feat-visual reveal" style="padding:12px">
     <img src="${DASH}" alt="CapitalVue Property Tracker dashboard showing market value, equity, yield and tax metrics" loading="lazy" decoding="async" style="width:100%;border-radius:12px;display:block">
