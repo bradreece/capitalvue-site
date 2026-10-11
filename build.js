@@ -71,6 +71,7 @@ const CSS = `
   --shadow:0 18px 45px -20px rgba(9,42,75,.4);
   --shadow-sm:0 8px 24px -14px rgba(9,42,75,.45);
   --maxw:1160px;
+  color-scheme:only light;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -598,6 +599,7 @@ ${(opts&&opts.baseHref)?'<base href="/">':''}<!-- 404 only. Netlify serves 404.h
 <link rel="icon" type="image/png" href="${FAVICON}">
 <link rel="apple-touch-icon" href="${FAVICON}">
 <meta name="theme-color" content="#092a4b">
+<meta name="color-scheme" content="only light"><!-- Opts out of browser auto-dark. Without it some phone browsers invert the palette: white header to black, navy hero to pale blue. -->
 <meta name="facebook-domain-verification" content="17ylvcghlmyioj9ehbiswnt20svyf2">
 <link rel="preload" href="assets/fonts/poppins-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/poppins-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -1793,6 +1795,7 @@ pages['404.html'] = page('Page not found | CapitalVue','That page has moved or n
 <meta name="twitter:image" content="${BASE}assets/og.jpg">
 <link rel="icon" type="image/png" href="${FAVICON}">
 <meta name="theme-color" content="#092a4b">
+<meta name="color-scheme" content="only light"><!-- Opts out of browser auto-dark. Without it some phone browsers invert the palette: white header to black, navy hero to pale blue. -->
 <meta name="facebook-domain-verification" content="17ylvcghlmyioj9ehbiswnt20svyf2">
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
 <script>(function(){var d=document;window.dataLayer=window.dataLayer||[];if(!/(^|\\.)capitalvue\\.com\\.au$/i.test(location.hostname))return;(function(w,s,l,i){w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,'script','dataLayer','GTM-WFV2RRJZ');var g=d.createElement('script');g.async=true;g.src='https://www.googletagmanager.com/gtag/js?id=G-MB36F9MP7P';d.head.appendChild(g);function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','G-MB36F9MP7P');!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,d,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','440670218340973');fbq('track','PageView');})();</script>
@@ -1937,6 +1940,7 @@ redirectLines.push(`${'/our-team/*'.padEnd(74)} ${'/team.html'.padEnd(46)} 301`)
     '/services.png',
     '/team.png',
     '/tracker.png',
+    '/portal-demo.patch',
   ];
   redirectLines.unshift(
     '# --- publish-root exclusions: repo files that must not be served ---',
