@@ -232,6 +232,13 @@ section{padding:84px 0}
 .svc-min .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:.55rem 0;border-top:1px dashed var(--line);font-size:.92rem}
 .svc-min .row:first-of-type{border-top:0}
 .svc-min .row b{color:var(--navy)}
+.svc-min ul{list-style:none;margin:.9rem 0;display:grid;gap:.45rem}
+.svc-min li{display:flex;gap:.55rem;align-items:flex-start;font-size:.88rem;color:#33465f}
+.svc-min li svg{flex:0 0 auto;margin-top:2px}
+.svc-min .svc-cta{margin-top:.8rem;font-weight:600}
+.svc-min .svc-cta a{color:var(--emerald)}
+.prob-grid.two{grid-template-columns:repeat(2,1fr);align-items:start}
+.prob p{font-size:.94rem}
 .feat{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
 .feat-list{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:1.6rem}
 .feat-item{display:flex;gap:.6rem;align-items:flex-start;font-size:.92rem;color:#33465f}
@@ -261,6 +268,7 @@ section{padding:84px 0}
 .member .nm{font-weight:600;color:var(--ink)}
 .member .rl{font-size:.82rem;color:var(--emerald);font-weight:600;margin-bottom:.6rem}
 .member p{font-size:.85rem}
+.member p+p{margin-top:.55rem}
 .member .contact{margin-top:.7rem;font-size:.82rem;line-height:1.6}
 .member .contact a{color:var(--emerald);font-weight:600}
 .member .contact .lbl{color:var(--muted);font-weight:500}
@@ -368,7 +376,7 @@ footer{background:var(--ink);color:#c2cddd;padding:60px 0 28px;font-size:.9rem}
   .feat,.contact-grid{grid-template-columns:1fr;gap:30px}
   .svc-grid{grid-template-columns:1fr}
   .team-grid,.values,.blog-grid{grid-template-columns:repeat(2,1fr)}
-  .rev-grid,.prob-grid{grid-template-columns:1fr}
+  .rev-grid,.prob-grid,.prob-grid.two{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr 1fr}
   .member.wide{grid-column:span 2}
   .foot-grid{grid-template-columns:1fr 1fr}
@@ -554,7 +562,8 @@ const CRUMB = {
   'buying-power.html':'Buying Power Calculator','evaluate-and-negotiate.html':'Evaluate and Negotiate',
   'buyers-agent-brisbane.html':'Buyers Agent Brisbane','buyers-agent-adelaide.html':'Buyers Agent Adelaide',
   'team.html':'Team','blog.html':'Blog','contact.html':'Contact',
-  'terms-and-conditions.html':'Terms & Conditions','privacy-policy.html':'Privacy Policy','aml-ctf-statement.html':'AML/CTF Statement'
+  'terms-and-conditions.html':'Terms & Conditions','privacy-policy.html':'Privacy Policy','aml-ctf-statement.html':'AML/CTF Statement',
+  'why-no-price.html':'Why there is no price'
 };
 const bcList = items => ({"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":items.map((it,i)=>({"@type":"ListItem","position":i+1,"name":it.name,"item":it.url}))});
 const page = (title, desc, body, active, pathName, schema, opts) => {
@@ -781,15 +790,75 @@ ${ctaBand}`;
 
 /* ---------------- SERVICES ---------------- */
 const li = t => `<li>${check()} ${t}</li>`;
+/* ---------------- SERVICES (rewritten 12 Oct 2026 per Website Build Brief) ----------------
+   Owns the "buyers agent fees" query. Fee line is deliberate here: this is the
+   pricing page. Suburb data is history, never a forecast: do not write "the
+   suburbs that will outperform" anywhere on this page. */
+const SVC_FAQ = [
+  {q:'When will a buyers agent tell you not to bother?', a:'You know the street, you have the sales evidence, you are comfortable negotiating and you enjoy the search. Call us anyway and we will say so on the call. We would rather lose the fee than take it from someone who did not need us. And if you only need half of it, we will tell you that too, and quote you the $11,500.'}
+];
+const SVC_SCHEMA = {"@context":"https://schema.org","@type":"Service","@id":BASE+"services.html#service","name":"Buyers agent services","serviceType":"Buyers agent","provider":{"@id":BASE+"#organisation"},"areaServed":[{"@type":"Place","name":"Adelaide, SA"},{"@type":"Place","name":"South East Queensland"}],"url":BASE+"services.html","offers":[
+  {"@type":"Offer","name":"Full Buyers Agent Service","price":"19500","priceCurrency":"AUD","description":"$19,500 inc GST, fixed fee. Market and suburb selection, on and off-market search, inspections, valuation, due diligence, negotiation and auction bidding, contract review and settlement."},
+  {"@type":"Offer","name":"Owner-Occupier Evaluation & Negotiation","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee. You find the listings and attend inspections. We assess every listing you send, value against comparable sales, run due diligence, negotiate or bid, and manage contract and settlement."},
+  {"@type":"Offer","name":"Auction Bidding Service","price":"2200","priceCurrency":"AUD","description":"$2,200 inc GST per auction."}
+]};
+const objQ = (q,body) => `<div class="prob reveal"><h3>&ldquo;${q}&rdquo;</h3>${body}</div>`;
 const servicesBody = `
-${pageHero('Services &amp; pricing','Services &amp; pricing','Transparent, fixed fees. No surprises.','From full done-for-you acquisition to lighter-touch support and ongoing strategy, choose the level of help that fits where you are.')}
-<section><div class="wrap">
+<section class="page-hero"><div class="wrap">
+  <div class="crumb"><a href="index.html">Home</a> / Services &amp; pricing</div>
+  <span class="eyebrow">Services &amp; pricing</span>
+  <h1 class="serif">What a buyers agent costs, published.</h1>
+  <p>You can search realestate.com.au for free. The problem starts at &ldquo;Contact Agent&rdquo;.</p>
+  <p>No price, no guide, and the only person who will tell you what it is worth is paid by the seller. We tell you what it is worth before you fall in love with it.</p>
+  <div class="hero-actions" style="margin-top:1.6rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="#fees">See the fees</a></div>
+</div></section>
+<section class="bg-paper"><div class="wrap">
+  <div class="sec-head reveal"><span class="eyebrow">What buyers tell us</span><h2 class="serif">Four things we hear every week</h2></div>
+  <div class="prob-grid two">
+    ${objQ('There is no price, so I scroll past.',`<p>Most listings are not going to auction. On those, the missing price is not a rule, it is a decision somebody made. The vendor may be testing the market and has not settled on what they will accept. It may be overpriced, where a real number would stop the enquiry and no number keeps the inspections coming. Or nothing comparable has sold nearby in months and it is genuinely hard to price, which is where buyers overpay by the most.</p><p style="margin-top:.8rem">Two cases are the law rather than the vendor. In Queensland, if it is going to auction, the selling agent and the auctioneer are not allowed to give you a price guide. In South Australia a price must be a single figure or a two-figure range, and the top of that range cannot exceed 110 per cent of the bottom.</p><p style="margin-top:.8rem"><a href="why-no-price.html" style="color:var(--emerald);font-weight:600">Read the full breakdown, including what an SA range actually tells you →</a></p>`)}
+    ${objQ('The asking price looks fine to me.',`<p>A listing a hundred thousand above what the comparable two streets away actually sold for still looks reasonable in the photographs. Nothing on the portal tells you which one you are looking at.</p>`)}
+    ${objQ('I will just ask the agent what it is worth.',`<p>You can, and they will answer. The selling agent is engaged by the seller and paid on the sale. That is not a criticism, it is the structure. It does mean the only valuation in the room belongs to the other side unless you bring one.</p>`)}
+    ${objQ('I have been told what I can borrow.',`<p>Borrowing capacity and what you can afford to hold are different numbers, and the gap is where people get hurt. A pre-approval is a lender&#39;s appetite, not a budget.</p>`)}
+  </div>
+</div></section>
+<section id="fees"><div class="wrap">
+  <div class="sec-head reveal"><span class="eyebrow">Fees</span><h2 class="serif">Transparent, fixed fees. No surprises.</h2><p>The difference between our two services is not how much help you get. It is whether you already know where you are buying.</p></div>
+  <div class="article reveal" style="max-width:none">
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th></th><th>Evaluate &amp; Negotiate<br>$11,500 inc GST</th><th>Full Buyers Agent Service<br>$19,500 inc GST</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Choosing the market and the suburbs</strong></td><td>You already know, you are buying a life not an asset</td><td>We shortlist areas against twenty years of suburb performance and the metrics in your strategy</td></tr>
+        <tr><td><strong>Finding the listings</strong></td><td>You, on the portals</td><td>Us</td></tr>
+        <tr><td><strong>Off-market access</strong></td><td>No</td><td>Yes</td></tr>
+        <tr><td><strong>Inspections</strong></td><td>You attend</td><td>We inspect and report back, including video walkthroughs</td></tr>
+        <tr><td><strong>Assessing what you send us</strong></td><td>Yes, every listing, no cap</td><td>Not needed, we source it</td></tr>
+        <tr><td><strong>Valuation against comparable sales</strong></td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Due diligence, building and pest, disclosure</strong></td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Dealing with the selling agent</strong></td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Negotiation and auction bidding</strong></td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Contract review and settlement</strong></td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Usually suits</strong></td><td>Owner-occupiers buying locally</td><td>Investors, and buyers purchasing interstate or from overseas</td></tr>
+      </tbody>
+    </table></div>
+    <p>Both services: the same agent from your first call to settlement.</p>
+  </div>
+  <div class="article reveal" style="margin-top:2.2rem">
+    <h3>The $8,000 buys four things, and the first is the one that matters most.</h3>
+    <p>We work out <em>where</em>. An owner-occupier already knows, because they are choosing a suburb to live in. An investor has the whole country, and that one decision moves the result more than anything else in the process.</p>
+    <p>We know how every suburb in Adelaide and South East Queensland has performed for the last twenty years. Growth, yield, what happened to them in the downturns and how long they took to come back.</p>
+    <p>That is history, not a forecast. Nobody can tell you what a suburb will do next and we are not going to pretend otherwise. What twenty years of evidence does tell you is which markets have held up under pressure, which ones only worked in a boom, and which ones have never done the thing people assume they do. You choose with that in front of you instead of a hunch and a headline.</p>
+    <p>Then we find the property, including off-market stock that never reaches a portal, and we inspect it. You get the walkthrough video we get, not a summary of it.</p>
+    <p>The depth is not in the walkthrough, and we will not pretend otherwise. It is in the building and pest report: what a qualified inspector actually found, what the repairs cost, and what that does to the number you should be paying. That part is identical whichever service you take.</p>
+    <p>If you already know the street you want, and you are going to walk through the house anyway because you intend to live in it, you are paying for work you were always going to do yourself.</p>
+  </div>
+</div></section>
+<section class="bg-paper"><div class="wrap">
   <div class="svc-grid">
     <div class="svc-hero reveal">
-      <span class="hc-tag" style="background:rgba(20,143,143,.18);color:#4fc2c2">Most popular</span>
+      <span class="hc-tag" style="background:rgba(20,143,143,.18);color:#4fc2c2">Investors, interstate and overseas buyers</span>
       <h3 style="color:#fff;font-size:1.5rem;margin-top:.9rem">Full Buyers Agent Service</h3>
       <div class="price">$19,500 <span>inc GST</span></div>
-      <p style="color:#c6d2e2">End-to-end. We manage every intricate detail so you get the outcome without the workload.</p>
+      <p style="color:#c6d2e2">For buyers who do not have a suburb picked out, or cannot run the search themselves. We start with where: twenty years of suburb performance across Adelaide and South East Queensland, narrowed to the areas that match the metrics in your strategy. Then we find the property, including off-market stock that never reaches a portal, inspect it and report back, and take it through to settlement. Clients run this from anywhere; the property is in Adelaide or South East Queensland, you do not have to be.</p>
       <ul>
         ${li('Personalised investment strategy &amp; structuring')}
         ${li('On &amp; off-market property identification')}
@@ -804,17 +873,29 @@ ${pageHero('Services &amp; pricing','Services &amp; pricing','Transparent, fixed
       <div class="svc-min reveal">
         <h3>Owner-Occupier Evaluation &amp; Negotiation</h3>
         <div class="p2">$11,500 <span style="font-size:.8rem;font-weight:500;color:var(--muted)">inc GST</span></div>
-        <p>Found your home already? We handle due diligence, building &amp; pest review, agent liaison, negotiation, contract review and settlement management. <a href="evaluate-and-negotiate.html">How we work out what to pay</a>.</p>
+        <p>Still searching? Send us the listings you find and we will tell you which ones are worth going to see. Most are not: they will sell past your budget, or there is something in the building the photographs are not showing. Then we run the full process on the one you want.</p>
+        <ul>
+          ${li('Every listing you send, for as long as your search takes. No cap')}
+          ${li('Independent valuation read against recent comparable sales, including unpriced and auction listings')}
+          ${li('Full due diligence, building and pest and seller disclosure')}
+          ${li('All dealings with the selling agent')}
+          ${li('Price negotiation and auction bidding')}
+          ${li('Contract review and settlement management')}
+        </ul>
+        <p>You attend the inspections. You are buying a home you will live in, so you were going to anyway.</p>
+        <p class="svc-cta"><a href="evaluate-and-negotiate.html">How we work out what to pay →</a> · <a href="contact.html#book">Book a free strategy call</a></p>
       </div>
       <div class="svc-min reveal">
         <h3>Auction Bidding Service</h3>
         <div class="p2">$2,200 <span style="font-size:.8rem;font-weight:500;color:var(--muted)">/ auction</span></div>
         <p>Standalone, expert auction representation. We set the strategy and bid on your behalf so you never overpay under pressure.</p>
+        <p class="svc-cta"><a href="contact.html#book">Book a free strategy call</a></p>
       </div>
       <div class="svc-min reveal">
         <h3>Property Strategy Service</h3>
         <div class="p2">Ongoing advisory</div>
         <p>Ongoing maintenance, rental and loan reviews to keep your portfolio performing long after you buy.</p>
+        <p class="svc-cta"><a href="contact.html#book">Book a free strategy call</a></p>
       </div>
       <div class="svc-min reveal" style="background:var(--paper)">
         <h3>Property Tracker</h3>
@@ -824,6 +905,19 @@ ${pageHero('Services &amp; pricing','Services &amp; pricing','Transparent, fixed
     </div>
   </div>
 </div></section>
+<section><div class="wrap"><div class="article">
+  <span class="eyebrow">The fee objection</span>
+  <h3 style="margin-top:.6rem">&ldquo;Anyone can do this themselves&rdquo;</h3>
+  <p>Mostly true, and we would rather say so here than argue about it in the comments.</p>
+  <p>You can find the listings. You can walk through them on a Saturday. You can read a contract and bid at an auction. Plenty of people do all of it and buy well. If that is you, do not hire us for the full service. That is exactly why there is an $11,500 version: you keep the parts you are happy doing and pay for the parts that are hard to do once every ten years.</p>
+  <p>What is hard is pricing a property that has no price on it, reading a building and pest report against what the repairs actually cost, and negotiating against someone who does it forty times a year while you do it twice in a lifetime.</p>
+  <h4>One agent, two or three clients.</h4>
+  <p>You deal with the same person from the first call to settlement. Not a principal who signs you and then hands you to someone you have not met, and not a different name for the search, the due diligence and the negotiation.</p>
+  <p>Each of our agents carries two or three engagements at a time. That is the arithmetic behind the fee: fewer clients, more hours on each. It is also the part of a buyers agency you cannot assess from a website, which is why we will put it in writing.</p>
+  <p>We publish our fees because the alternative is a discovery call that exists to find out what you will pay. We take no commission from a seller, so nobody on our side is paid more when you pay more.</p>
+  <h3>When we will tell you not to bother</h3>
+  <p>${SVC_FAQ[0].a}</p>
+</div></div></section>
 <section class="bg-paper"><div class="wrap">
   <div class="sec-head reveal"><span class="eyebrow">What you get</span><h2 class="serif">The full-service process, step by step.</h2></div>
   <div class="steps">
@@ -849,6 +943,64 @@ ${pageHero('Services &amp; pricing','Services &amp; pricing','Transparent, fixed
 <section><div class="wrap"><div class="sec-head center reveal"><span class="eyebrow">In their words</span><h2 class="serif">Worth every cent.</h2></div>
 <div class="rev-grid">${[REVIEWS[2],REVIEWS[1],REVIEWS[0]].map(revCard).join('')}</div></div></section>
 ${ctaBand}`;
+
+/* ---------------- WHY NO PRICE (new 12 Oct 2026) ----------------
+   Landing page for the $11,500 ad: a no-price ad must land on a no-price page,
+   not a fee table. Legal statements checked against the Acts on 12 Oct 2026:
+   QLD Property Occupations Act 2014 ss 214, 216 (binds the agent and the
+   auctioneer, not the seller); SA Land and Business (Sale and Conveyancing)
+   Act 1994 ss 24A(1)(d), 24A(2), 24J(1)(ba). The SA floor is the GREATER of the
+   agent's estimate and the vendor's price in the agency agreement, not the
+   vendor's price alone. Do not simplify it back. */
+const WNP_FAQ = [
+  {q:'Why is there no price on the listing?', a:'Usually one of four reasons. The vendor is testing the market and has not settled on a number. The property is overpriced and a real number would stop the enquiry. Nothing comparable has sold nearby, so it is genuinely hard to price. Or it is going to auction, and in Queensland the selling agent is not allowed to give you a price guide.'},
+  {q:'Can a Queensland agent give a price guide for an auction property?', a:'No. Under the Property Occupations Act 2014 (Qld), the real estate agent and the auctioneer must not give a price guide, the reserve, or an amount they think will be a successful bid to anyone other than a person acting for the seller.'},
+  {q:'What does a price range mean in South Australia?', a:'The bottom of the range cannot be lower than the higher of the agent’s estimate and the price the vendor will accept, both as recorded in the sales agency agreement, and the top cannot exceed 110 per cent of the bottom. It describes the seller’s floor, not the ceiling on what the property will sell for.'}
+];
+const whyNoPriceBody = `
+${pageHero('Why there is no price','Buying without a price','Why there is no price on the listing','&ldquo;Contact agent&rdquo;, &ldquo;offers over&rdquo;, &ldquo;auction&rdquo;. Four reasons a listing hides its price in Queensland and South Australia, and what each one means for you as the buyer.')}
+<section><div class="wrap"><div class="article">
+  <h3>The four reasons</h3>
+  <p>Most listings without a price are not going to auction. On those, the missing number is a decision somebody made, and there are three usual reasons for it.</p>
+  <h4>The vendor is testing the market</h4>
+  <p>They have not settled on what they will accept. The campaign is the research: the enquiry and the offers tell them what the number should be.</p>
+  <h4>It is overpriced</h4>
+  <p>A real number would stop the enquiry. No number keeps the inspections coming, in the hope that someone falls for it before they check the sales.</p>
+  <h4>Nothing comparable has sold</h4>
+  <p>Nothing like it has sold nearby in months, so it is genuinely hard to price. This is where buyers overpay by the most, because there is no recent sale to argue with.</p>
+  <h4>It is going to auction</h4>
+  <p>This is the one case where the missing price is the law rather than the vendor, and the rules differ between Queensland and South Australia.</p>
+
+  <h3>Queensland: the auction rule</h3>
+  <p>If a residential property is to be, may be or is being sold by auction, the selling agent and the auctioneer must not give you a price guide. They also cannot tell you the reserve, or an amount they think would be a successful bid. The only people they can tell are those acting for the seller.</p>
+  <blockquote><p><em>Property Occupations Act 2014 (Qld), ss 214(2) and 216(2)</em></p></blockquote>
+  <p>The same section covers private sales too. If the seller has told the agent not to disclose their price, the agent cannot give you a price guide either. So on a Queensland listing marked &ldquo;contact agent&rdquo;, asking the agent for a number may get you nothing at all, and that is the agent following the law.</p>
+  <blockquote><p><em>Property Occupations Act 2014 (Qld), s 216(3)</em></p></blockquote>
+
+  <h3>South Australia: the range is a floor, not a forecast</h3>
+  <p>South Australian law sets out how a price can be quoted. It must be a single figure, unqualified by words or symbols, or a range of two figures. The bottom of the range cannot be lower than the higher of two numbers in the sales agency agreement: the agent&#39;s estimate of the selling price, and the price the vendor is seeking or will accept. The top cannot exceed 110 per cent of the bottom. Breaching it carries a maximum penalty of $20,000 or a year&#39;s imprisonment.</p>
+  <blockquote><p><em>Land and Business (Sale and Conveyancing) Act 1994 (SA), ss 24A(1) and 24A(2)</em></p></blockquote>
+  <p>At auction there is a second rule. The reserve cannot be set above 110 per cent of the vendor&#39;s selling price in the sales agency agreement, at any point before or during the auction.</p>
+  <blockquote><p><em>Land and Business (Sale and Conveyancing) Act 1994 (SA), s 24J(1)(ba)</em></p></blockquote>
+  <p>Now look at what a range actually describes. The bottom is anchored to the seller&#39;s floor, or the agent&#39;s estimate if that is higher. The top is capped ten per cent above it. The legislation governs what the agent is allowed to <strong>say</strong>, not what the property is allowed to <strong>fetch</strong>.</p>
+  <p>So a quoted range tells you roughly the floor plus ten per cent. It tells you nothing whatsoever about the ceiling.</p>
+  <p>Which is why properties can clear the top of the range, and why buyers who treat the top of the range as their budget keep losing. The range was never a prediction. It is a disclosure about the seller, read by buyers as a forecast about the market.</p>
+  <p>What it cannot tell you is what this particular property is worth. That takes comparable sales, and it is the work we do before you make an offer.</p>
+
+  <h3>What to do about it</h3>
+  <p>Treat the missing price as information. Work out which of the four reasons applies before you spend a second Saturday on the property, because each one changes how you should approach it.</p>
+  <p>Then find your own number. Pull the recent settled sales of genuinely comparable properties nearby, adjust for what is different about this one, and read the building and pest report for anything that changes the figure. Set that number before the auction or before your first offer, not after the campaign has had a few weeks to work on you.</p>
+  <p>And in South Australia, do not treat the top of a quoted range as your budget. It is ten per cent above the floor in the agency agreement, which is a statement about the sale, not the property.</p>
+
+  <p style="margin-top:1.8rem">Buying in South Australia? See our <a style="color:var(--emerald);font-weight:600" href="buyers-agent-adelaide.html">Adelaide buyers agent</a> page. Buying in South East Queensland? See our <a style="color:var(--emerald);font-weight:600" href="buyers-agent-brisbane.html">Brisbane buyers agent</a> page. Or see what our <a style="color:var(--emerald);font-weight:600" href="services.html">services cost</a>.</p>
+  <p class="disc">General information only, not legal or financial advice. Legislative references are to the Property Occupations Act 2014 (Qld) and the Land and Business (Sale and Conveyancing) Act 1994 (SA) as in force on 12 October 2026, from the Queensland and South Australian legislation registers. Check the current versions before relying on them, and get advice on your own circumstances.</p>
+</div></div></section>
+<section id="book" style="padding-top:0"><div class="wrap"><div class="cta reveal">
+  <span class="eyebrow" style="color:#4fc2c2">Free, no obligation</span>
+  <h2 class="serif">Send us a listing and we will tell you what it is worth.</h2>
+  <p>On a free strategy call we look at the listing you are weighing up and talk through how we would price it.</p>
+  <div class="hero-actions"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div>
+</div></div></section>`;
 
 /* ---------------- TRACKER ---------------- */
 const feat = t => `<div class="feat-item"><span class="tick">✓</span> ${t}</div>`;
@@ -893,7 +1045,7 @@ ${pageHero('Team','Your investment team','The people behind every purchase.','De
   <div class="member wide reveal" id="brad"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.brad}" alt="Brad Reece"><div><div class="nm">Brad Reece</div><div class="rl">Founder &amp; CEO</div><p>Property investor since 2004 with a substantial personal portfolio that reflects his strategic acumen and eye for opportunity. Leads our investment clients, the data-driven approach and the CapitalVue Dashboard platform.</p><p class="contact"><a href="mailto:brad@capitalvue.com.au">brad@capitalvue.com.au</a></p></div></div>
   <div class="member wide reveal" id="andrew"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.andrew}" alt="Andrew Friebe"><div><div class="nm">Andrew Friebe</div><div class="rl">Advisor</div><p>A real estate veteran since 2005 and currently Harcourts CEO for Queensland. Previously LJ Hooker Managing Director (SA/WA) and Harcourts International COO.</p><p>At CapitalVue his focus is technology and partnerships, including the PortfolioLogic platform behind our trackers. He takes no part in client property purchases, and CapitalVue is never paid by a seller, agency or developer.</p><p class="contact"><a href="mailto:andrew@capitalvue.com.au">andrew@capitalvue.com.au</a></p></div></div>
   <div class="member reveal" id="tony"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.tony}" alt="Tony Eaton"><div class="nm">Tony Eaton</div><div class="rl">Buyers Agent</div><p>Former law-enforcement professional known for honesty, integrity and advocacy. Works across both investment and owner-occupier purchases, and specialises in relocations to Brisbane from interstate or overseas.</p><p style="font-size:.86rem;color:var(--muted);margin-top:.5rem">您真诚，专业，值得信赖的房屋顾问</p><p class="contact"><a href="tel:+61400630674">0400 630 674</a><br><a href="mailto:tony@capitalvue.com.au">tony@capitalvue.com.au</a><br><span class="lbl">WeChat:</span> AntEater64</p></div>
-  <div class="member reveal" id="dr-rebecca-cox"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.bec}" alt="Dr Rebecca Cox"><div class="nm">Dr Rebecca Cox</div><div class="rl">Owner-Occupier Buyers Agent</div><p>Clinical optometrist and researcher, PhD, still practising at the Queensland Eye Institute. She reads a building and pest report the way she reads a clinical file: what actually matters, and what only sounds alarming. Leads our owner-occupier purchases. Her research background is reading evidence for what has been left out, which is the same job as reading a seller disclosure.</p><p class="contact"><a href="mailto:bec@capitalvue.com.au">bec@capitalvue.com.au</a></p></div>
+  <div class="member reveal" id="dr-rebecca-cox"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.bec}" alt="Dr Rebecca Cox"><div class="nm">Dr Rebecca Cox</div><div class="rl">Owner-Occupier Buyers Agent</div><p>Clinical optometrist (PhD) and researcher at the Queensland Eye Institute. At CapitalVue she represents owner-occupiers who run their own search. She prices unpriced listings against recent sales before they inspect, costs the repairs in the building and pest report, and runs the negotiation or the auction bid. She only takes on two or three clients at a time.</p><p class="contact"><a href="mailto:bec@capitalvue.com.au">bec@capitalvue.com.au</a></p></div>
   <div class="member reveal" id="chris"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.chris}" alt="Chris van Rensburg"><div class="nm">Chris van Rensburg</div><div class="rl">Founder &amp; Construction Director</div><p>Finance and accounting background applied to building and construction, with a portfolio spanning short-term rentals and commercial property.</p><p class="contact"><a href="mailto:chris@capitalvue.com.au">chris@capitalvue.com.au</a></p></div>
   <div class="member reveal" id="nolan"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.nolan}" alt="Nolan Fuazudeen"><div class="nm">Nolan Fuazudeen</div><div class="rl">Business Development Director</div><p>Property investor and long-time CapitalVue client whose network and belief in the mission make him a vital part of the team.</p><p class="contact"><a href="mailto:nolan@capitalvue.com.au">nolan@capitalvue.com.au</a></p></div>
 </div>
@@ -1749,7 +1901,8 @@ const EVALNEG_SCHEMA = {"@context":"https://schema.org","@type":"Service","name"
 const pages = {
   'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 27 Google reviews.', indexBody,'index.html','index.html',{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE}),
   'about.html':   page('About CapitalVue | Licensed Buyers Agency (QLD, SA)','CapitalVue pairs a licensed buyers agency with real-time portfolio technology to make buying an investment property or a home simple, transparent and provable.', aboutBody,'about.html','about.html'),
-  'services.html':page('Services &amp; Pricing | CapitalVue Buyers Agency','Transparent fixed fees: full buyers agent service $19,500, owner-occupier support $11,500, auction bidding $2,200, plus ongoing property strategy.', servicesBody,'services.html','services.html'),
+  'services.html':page('Buyers Agent Fees, Published | CapitalVue','Buyers agent fees, published. $19,500 full service, $11,500 if you search yourself. Adelaide and SEQ. No seller commission, same agent to settlement.', servicesBody,'services.html','services.html',[SVC_SCHEMA, faqSchema(SVC_FAQ)]),
+  'why-no-price.html':page('Why There&#39;s No Price on the Listing | CapitalVue','No price, offers over, contact agent. Four reasons a listing hides its price in Queensland and South Australia, and what each one means for a buyer.', whyNoPriceBody,'services.html','why-no-price.html',faqSchema(WNP_FAQ)),
   'tracker.html': page('Property Portfolio Trackers | CapitalVue','Track your property portfolio in real time: market value, equity, yield, LVR and tax. Free Property Tracker plus CapitalVue Portfolio for clients, powered by PortfolioLogic.', trackerBody,'tracker.html','tracker.html'),
   'team.html':    page('Our Team | CapitalVue Buyers Agents','Meet the CapitalVue team: buyers agents for investors and home buyers, backed by decades of real estate, finance and construction experience.', teamBody,'team.html','team.html'),
   'blog.html':    page('The Vue | Property Investment Blog | CapitalVue','The Vue: market updates, strategy and buying frameworks for Australian property investors and home buyers, from CapitalVue.', blogBody,'blog.html','blog.html'),
