@@ -555,7 +555,23 @@ document.querySelectorAll("form[data-hs]").forEach(function(f){
 });
 </script>`;
 
-const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@id":BASE+"#organisation","name":"CapitalVue","description":"Licensed Australian buyers agency helping busy Australians buy investment property and homes, with real-time portfolio tracking.","url":BASE,"logo":BASE+"assets/cv-logo-stacked.png","image":BASE+"assets/og.jpg","telephone":"+61499484727","email":"info@capitalvue.com.au","priceRange":"$$$","address":{"@type":"PostalAddress","streetAddress":"28 Bovelles St","addressLocality":"Camp Hill","addressRegion":"QLD","postalCode":"4152","addressCountry":"AU"},"areaServed":[{"@type":"State","name":"Queensland"},{"@type":"State","name":"South Australia"}],"aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"27"},"sameAs":["https://www.facebook.com/capitalvueinvestments","https://www.instagram.com/capitalvueinvestments/"]};
+// Service area: Adelaide and South East Queensland only. Never WA. Kept as
+// cities/regions, not whole states, so answer engines do not infer statewide cover.
+const AREA_SERVED = [
+  {"@type":"City","name":"Adelaide","containedInPlace":{"@type":"State","name":"South Australia"}},
+  {"@type":"AdministrativeArea","name":"South East Queensland","containedInPlace":{"@type":"State","name":"Queensland"}}
+];
+// People who author content or represent clients. Andrew is deliberately
+// left out until his consent to public naming is confirmed (HANDOVER.md).
+const PEOPLE = {
+  brad:{"@type":"Person","@id":BASE+"team.html#brad","name":"Brad Reece","jobTitle":"Founder & CEO","url":BASE+"team.html#brad","image":BASE+"assets/team-brad.png","worksFor":{"@id":BASE+"#organisation"}},
+  rebecca:{"@type":"Person","@id":BASE+"team.html#dr-rebecca-cox","name":"Dr Rebecca Cox","honorificPrefix":"Dr","jobTitle":"Owner-Occupier Buyers Agent","url":BASE+"team.html#dr-rebecca-cox","image":BASE+"assets/team-bec.png","worksFor":{"@id":BASE+"#organisation"}},
+  tony:{"@type":"Person","@id":BASE+"team.html#tony","name":"Tony Eaton","jobTitle":"Buyers Agent","url":BASE+"team.html#tony","image":BASE+"assets/team-tony.png","worksFor":{"@id":BASE+"#organisation"}}
+};
+const PEOPLE_REFS = Object.values(PEOPLE).map(x=>({"@id":x["@id"]}));
+// Visible byline name -> schema person. Default byline is "Brad".
+const AUTHOR_KEY = n => /rebecca/i.test(n||'') ? 'rebecca' : /tony/i.test(n||'') ? 'tony' : 'brad';
+const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@id":BASE+"#organisation","name":"CapitalVue","description":"Licensed Australian buyers agency helping busy Australians buy investment property and homes, with real-time portfolio tracking.","url":BASE,"logo":BASE+"assets/cv-logo-stacked.png","image":BASE+"assets/og.jpg","telephone":"+61499484727","email":"info@capitalvue.com.au","priceRange":"$$$","address":{"@type":"PostalAddress","streetAddress":"28 Bovelles St","addressLocality":"Camp Hill","addressRegion":"QLD","postalCode":"4152","addressCountry":"AU"},"areaServed":AREA_SERVED,"knowsAbout":["Buyers agent services","Residential property valuation","Property due diligence","Auction bidding","Property investment"],"founder":{"@id":BASE+"team.html#brad"},"employee":PEOPLE_REFS,"aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"27"},"sameAs":["https://www.facebook.com/capitalvueinvestments","https://www.instagram.com/capitalvueinvestments/","https://www.linkedin.com/company/capitalvue-pty-ltd/","https://maps.google.com/?cid=11747579062209486214"]};
 const esc = s => String(s).replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/"/g,'&quot;');
 const CRUMB = {
   'about.html':'About','services.html':'Services & pricing','tracker.html':'Property Trackers',
@@ -1056,6 +1072,9 @@ ${pageHero('Team','Your investment team','The people behind every purchase.','De
 ${ctaBand}`;
 
 /* ---------------- BLOG ---------------- */
+// Optional per-article fields: author (visible byline, maps to a PEOPLE schema
+// entry), updated (ISO date) + updatedLabel ('12 October 2026'). Set updated
+// only for a substantive content change, never for a link or typo fix.
 const ARTICLES = [
     {slug:'adelaide-property-market-update-september-2026', date:'3 October 2026', iso:'2026-10-03', cat:'Market update', title:'Adelaide Property Market Update: September 2026', seo:'Adelaide Property Market Update, Sep 2026', og:'assets/og-adelaide-market-update-sep-2026.jpg', file:'adelaide-market-update-september-2026.html'},
   {slug:'brisbane-flood-risk-flood-maps', date:'22 September 2026', iso:'2026-09-22', cat:'Due diligence', author:'Dr Rebecca Cox', title:'Brisbane Flood Risk: What the Flood Maps Do Not Tell You', seo:'Brisbane Flood Risk: What Flood Maps Miss', og:'assets/og-brisbane-flood-risk.jpg', file:'brisbane-flood-risk.html'},  
@@ -1069,14 +1088,14 @@ const ARTICLES = [
   {slug:'cgt-discount-review', date:'5 February 2026', iso:'2026-02-05', cat:'Policy', title:'Australia&#39;s CGT Discount Is Under Formal Government Review', seo:'CGT Discount Review: What It Means', file:'cgt-review.html'},
   {slug:'benefits-of-rentvesting', date:'24 November 2025', iso:'2025-11-24', cat:'Strategy', title:'The Benefits of Rentvesting Explained', file:'rentvesting.html'},
 ];
-const articleSchema = a => ({"@context":"https://schema.org","@type":"BlogPosting","headline":esc(a.title),"datePublished":a.iso,"dateModified":a.iso,"author":{"@type":"Organization","name":"CapitalVue"},"publisher":{"@type":"Organization","name":"CapitalVue","logo":{"@type":"ImageObject","url":BASE+"assets/cv-logo-stacked.png"}},"image":BASE+BLOGIMG[a.slug],"articleSection":a.cat,"mainEntityOfPage":{"@type":"WebPage","@id":BASE+"post-"+a.slug+".html"}});
+const articleSchema = a => ({"@context":"https://schema.org","@type":"BlogPosting","headline":esc(a.title),"datePublished":a.iso,"dateModified":a.updated||a.iso,"author":PEOPLE[AUTHOR_KEY(a.author)],"publisher":{"@type":"Organization","name":"CapitalVue","logo":{"@type":"ImageObject","url":BASE+"assets/cv-logo-stacked.png"}},"image":BASE+BLOGIMG[a.slug],"articleSection":a.cat,"mainEntityOfPage":{"@type":"WebPage","@id":BASE+"post-"+a.slug+".html"}});
 const postCard = a => `<a class="post reveal" href="post-${a.slug}.html"><div class="thumb"><img src="${BLOGIMG[a.slug]}" alt="${esc(a.title)}" loading="lazy" decoding="async" width="820" height="470"><span class="cat">${a.cat}</span></div><div class="pb"><span class="dt">${a.date}</span><h3>${a.title}</h3><span class="rd">Read article →</span></div></a>`;
 const articleBody = a => `
 <section class="page-hero"><div class="wrap" style="max-width:820px;margin:0 auto">
   <div class="crumb"><a href="index.html">Home</a> / <a href="blog.html">Blog</a></div>
   <span class="eyebrow">${a.cat}</span>
   <h1 class="serif" style="font-size:clamp(1.8rem,3.8vw,2.6rem)">${a.title}</h1>
-  <div class="article-meta">${a.date} · By ${a.author||'Brad'} · CapitalVue</div>
+  <div class="article-meta">${a.date}${a.updated?` · Updated ${a.updatedLabel||a.updated}`:''} · By ${a.author||'Brad'} · CapitalVue</div>
 </div></section>
 <section><div class="wrap"><div class="article">
 <img src="${BLOGIMG[a.slug]}" alt="${esc(a.title)}" decoding="async" style="width:100%;border-radius:16px;margin-bottom:2rem;aspect-ratio:16/8;object-fit:cover;box-shadow:var(--shadow-sm)">
@@ -1898,7 +1917,7 @@ const CALC_SCHEMA = [
 ];
 
 /* ---------------- WRITE ---------------- */
-const EVALNEG_SCHEMA = {"@context":"https://schema.org","@type":"Service","name":"Evaluate and Negotiate","serviceType":"Buyers agent evaluation and negotiation","provider":{"@id":BASE+"#organisation"},"areaServed":[{"@type":"State","name":"Queensland"},{"@type":"State","name":"South Australia"}],"description":"Owner-occupier service: price range from comparable settled sales, flood, bushfire, zoning and planning overlay checks on every shortlisted property, then negotiation or auction bidding through to signing.","offers":{"@type":"Offer","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee. Auction attendance and bidding included."}};
+const EVALNEG_SCHEMA = {"@context":"https://schema.org","@type":"Service","name":"Evaluate and Negotiate","serviceType":"Buyers agent evaluation and negotiation","provider":{"@id":BASE+"#organisation"},"areaServed":AREA_SERVED,"description":"Owner-occupier service: price range from comparable settled sales, flood, bushfire, zoning and planning overlay checks on every shortlisted property, then negotiation or auction bidding through to signing.","offers":{"@type":"Offer","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee. Auction attendance and bidding included."}};
 
 const pages = {
   'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 27 Google reviews.', indexBody,'index.html','index.html',{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE}),
@@ -1906,7 +1925,7 @@ const pages = {
   'services.html':page('Buyers Agent Fees, Published | CapitalVue','Buyers agent fees, published. $19,500 full service, $11,500 if you search yourself. Adelaide and SEQ. No seller commission, same agent to settlement.', servicesBody,'services.html','services.html',[SVC_SCHEMA, faqSchema(SVC_FAQ)]),
   'why-no-price.html':page('Why There&#39;s No Price on the Listing | CapitalVue','No price, offers over, contact agent. Four reasons a listing hides its price in Queensland and South Australia, and what each one means for a buyer.', whyNoPriceBody,'services.html','why-no-price.html',faqSchema(WNP_FAQ)),
   'tracker.html': page('Property Portfolio Trackers | CapitalVue','Track your property portfolio in real time: market value, equity, yield, LVR and tax. Free Property Tracker plus CapitalVue Portfolio for clients, powered by PortfolioLogic.', trackerBody,'tracker.html','tracker.html'),
-  'team.html':    page('Our Team | CapitalVue Buyers Agents','Meet the CapitalVue team: buyers agents for investors and home buyers, backed by decades of real estate, finance and construction experience.', teamBody,'team.html','team.html'),
+  'team.html':    page('Our Team | CapitalVue Buyers Agents','Meet the CapitalVue team: buyers agents for investors and home buyers, backed by decades of real estate, finance and construction experience.', teamBody,'team.html','team.html',Object.values(PEOPLE)),
   'blog.html':    page('The Vue | Property Investment Blog | CapitalVue','The Vue: market updates, strategy and buying frameworks for Australian property investors and home buyers, from CapitalVue.', blogBody,'blog.html','blog.html'),
   'contact.html': page('Book a Strategy Call | Contact CapitalVue','Book a free, no-obligation property strategy call with CapitalVue, buyers agents for investors and home buyers in Brisbane and Adelaide.', contactBody,'contact.html','contact.html'),
   'buyers-agent-brisbane.html': page('Buyers Agent Brisbane for Investors | CapitalVue','Licensed Brisbane buyers agent for property investors. Fixed fees from $2,200, no seller commissions, Camp Hill office. Current Brisbane market data and real client results.', brisbaneBody,'','buyers-agent-brisbane.html',[svcAreaSchema('Brisbane','QLD',['Brisbane','Morningside','Camp Hill','Carina Heights','Chapel Hill','Keperra','Taigum','Kangaroo Point','Woolloongabba','Chermside']), faqSchema(BNE_FAQ)],{ogTitle:'Buyers Agent Brisbane | CapitalVue',ogDesc:'Licensed Brisbane buyers agency for investors. Fixed fees, no seller commissions, and current market data on where Brisbane actually sits.'}),
@@ -1972,7 +1991,9 @@ const today = new Date().toISOString().slice(0,10);
 const sm = Object.keys(pages).filter(f=>f!=='404.html').map(f=>{
   const loc = BASE + (f==='index.html'?'':f);
   const pr = f==='index.html'?'1.0':(f.indexOf('post-')===0?'0.70':(/terms|privacy|aml-ctf/.test(f)?'0.30':'0.80'));
-  return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>${pr}</priority></url>`;
+  const art = f.indexOf('post-')===0 ? ARTICLES.find(a=>'post-'+a.slug+'.html'===f) : null;
+  const lm = art ? (art.updated||art.iso) : today;
+  return `  <url><loc>${loc}</loc><lastmod>${lm}</lastmod><changefreq>weekly</changefreq><priority>${pr}</priority></url>`;
 }).join('\n');
 fs.writeFileSync(path.join(DIR,'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sm}\n</urlset>\n`);
 
@@ -1987,7 +2008,46 @@ fs.writeFileSync(path.join(DIR,'robots.txt'), `User-agent: *\nAllow: /\nDisallow
 fs.writeFileSync(path.join(DIR,'ai.txt'), `# ai.txt — AI crawler guidance for capitalvue.com.au\nUser-agent: *\nAllow: /\n\n# CapitalVue permits AI assistants and answer engines to read and cite public pages with attribution and a link back.\nContact: info@capitalvue.com.au\nSitemap: ${BASE}sitemap.xml\nLLM-Content: ${BASE}llms.txt\n`);
 
 // ---- llms.txt (structured summary for LLMs) ----
-fs.writeFileSync(path.join(DIR,'llms.txt'), `# CapitalVue\n\n> Licensed buyers agency (QLD, SA) that finds, negotiates and secures the right property, investment or home, for busy Australians, with real-time portfolio tracking. Rated 5.0 from 27 Google reviews. $21.31M secured across 23 client purchases.\n\n## Key pages\n- [Home](${BASE}): buyers agency for investors and home buyers.\n- [About](${BASE}about.html): story, mission and values.\n- [Services & Pricing](${BASE}services.html): full buyers agent $19,500, owner-occupier $11,500, auction bidding $2,200, ongoing property strategy.\n- [Why there is no price on the listing](${BASE}why-no-price.html): why listings hide their price in QLD and SA, the QLD auction rule and what an SA price range means.\n- [Property Trackers](${BASE}tracker.html): free Property Tracker plus the client-only CapitalVue Portfolio, powered by PortfolioLogic.\n- [Team](${BASE}team.html): Brad Reece (investment), Dr Rebecca Cox (owner-occupier / homes), Tony Eaton (both, relocations), plus Andrew Friebe (advisor), Chris van Rensburg and Nolan Fuazudeen.\n- [The Vue Blog](${BASE}blog.html): Australian property market updates and strategy.\n- [Contact](${BASE}contact.html): book a free strategy call.\n\n## Contact\n- Phone: 0499 484 727\n- Email: info@capitalvue.com.au\n- Office: 28 Bovelles St, Camp Hill QLD 4152\n- Licensed: QLD 4769773 | SA 335016\n`);
+{
+const postLines = ARTICLES.map(x=>`- [${x.title.replace(/&amp;/g,'&').replace(/&#39;/g,"'")}](${BASE}post-${x.slug}.html): ${x.cat}, ${x.date}${x.author?`, by ${x.author}`:''}.`).join('\n');
+fs.writeFileSync(path.join(DIR,'llms.txt'), `# CapitalVue
+
+> Licensed Australian buyers agency (QLD licence 4769773, SA licence 335016) buying residential property for investors and owner-occupiers in Adelaide and South East Queensland. Fixed published fees, no commission from sellers.
+
+## Key facts
+- Service area: Adelaide (SA) and South East Queensland (QLD) only. CapitalVue is licensed in Queensland and South Australia and does not buy outside these two markets.
+- Fees, inc GST, fixed (not a percentage of the price): full buyers agent service $19,500; Owner-Occupier Evaluation & Negotiation $11,500; auction bidding only $2,200.
+- The full service includes choosing the market and suburbs, on and off-market search, inspections, valuation against comparable sales, due diligence, negotiation or auction bidding, and contract and settlement management.
+- The $11,500 service is for buyers who find the listings themselves: CapitalVue assesses every listing sent, values it against comparable sales, runs due diligence and negotiates or bids.
+- Each agent takes on two or three clients at a time, and the same agent runs the engagement from first call to settlement.
+- Track record: $21.31M secured across 23 settled client purchases, as at July 2026.
+- Google rating: 5.0 from 27 reviews, as at October 2026.
+
+## Key pages
+- [Services & Pricing](${BASE}services.html): published fees, what each service includes, and when a buyer does not need one.
+- [Buyers agent Brisbane](${BASE}buyers-agent-brisbane.html): South East Queensland submarkets, client purchases and current market data.
+- [Buyers agent Adelaide](${BASE}buyers-agent-adelaide.html): Adelaide market, client purchases and the $700,000 minimum.
+- [Evaluate & Negotiate](${BASE}evaluate-and-negotiate.html): the $11,500 owner-occupier service in detail.
+- [Why there is no price on the listing](${BASE}why-no-price.html): why listings hide their price in QLD and SA, the QLD auction rule and what an SA price range means.
+- [Buying power calculator](${BASE}buying-power.html): free indicative borrowing and budget estimate.
+- [Property readiness snapshot](${BASE}property-readiness.html): free 90-second readiness check.
+- [Property Trackers](${BASE}tracker.html): free Property Tracker plus the client-only CapitalVue Portfolio, powered by PortfolioLogic.
+- [Team](${BASE}team.html): Brad Reece (founder, investment purchases), Dr Rebecca Cox (owner-occupier purchases), Tony Eaton (buyers agent, relocations to Brisbane).
+- [About](${BASE}about.html): story, mission and values.
+- [Contact](${BASE}contact.html): book a free strategy call.
+
+## Articles
+${postLines}
+
+## Contact
+- Phone: 0499 484 727
+- Email: info@capitalvue.com.au
+- Office: 28 Bovelles St, Camp Hill QLD 4152
+- Licensed: QLD 4769773 | SA 335016
+
+General information only. Nothing on capitalvue.com.au is financial, credit, legal or tax advice.
+`);
+}
 
 // ---- _redirects (301s from old WordPress URLs, applied at domain cutover) ----
 // Old URLs sourced from the live Yoast sitemaps (page / post / category).
