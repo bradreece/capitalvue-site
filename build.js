@@ -1584,7 +1584,7 @@ const evalNegBody = `
         <button class="btn btn-primary en-go" type="button">Add these details</button>
       </div>
       <div class="en-alt">
-        <a class="btn btn-ghost" href="contact.html#book" style="width:100%;justify-content:center;border-color:var(--navy);color:var(--navy)">Book a 15 minute call</a>
+        <a class="btn btn-ghost" href="contact.html#book" style="width:100%;justify-content:center;border-color:var(--navy);color:var(--navy)">Book a free strategy call</a>
         <p class="en-tel">Or call <a href="tel:+61499484727">0499 484 727</a></p>
       </div>
     </div>
