@@ -425,7 +425,7 @@ const NAV = [
   {label:'Tools', href:'buying-power.html', children:[
     ['buying-power.html','Buying power calculator'],
     ['property-readiness.html','Property readiness snapshot'],
-    ['tracker.html','Property Trackers'],
+    ['tracker.html','CapitalVue Portfolio'],
   ]},
   {href:'team.html', label:'Team'},
   {href:'blog.html', label:'Blog'},
@@ -490,12 +490,11 @@ const footer = () => `
         <a href="buyers-agent-brisbane.html">Buyers agent Brisbane</a>
         <a href="buyers-agent-adelaide.html">Buyers agent Adelaide</a>
         <a href="property-readiness.html">Property readiness snapshot</a>
-        <a href="tracker.html">Property Trackers</a><a href="team.html">Our team</a><a href="blog.html">Blog</a>
+        <a href="tracker.html">CapitalVue Portfolio</a><a href="team.html">Our team</a><a href="blog.html">Blog</a>
       </div>
       <div>
         <h4>Account</h4>
         <a href="https://capitalvue.app.portfoliologic.com.au/" target="_blank" rel="noopener">CapitalVue Portfolio login</a>
-        <a href="https://app.capitalvue.com.au/" target="_blank" rel="noopener">Property Tracker login</a>
         <a href="https://clientportal.capitalvue.com.au/" target="_blank" rel="noopener">Client portal</a>
         <a href="contact.html#book">Book a strategy call</a>
       </div>
@@ -576,7 +575,7 @@ const AUTHOR_KEY = n => /rebecca/i.test(n||'') ? 'rebecca' : /tony/i.test(n||'')
 const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@id":BASE+"#organisation","name":"CapitalVue","description":"Licensed Australian buyers agency helping busy Australians buy investment property and homes, with real-time portfolio tracking.","url":BASE,"logo":BASE+"assets/cv-logo-stacked.png","image":BASE+"assets/og.jpg","telephone":"+61499484727","email":"info@capitalvue.com.au","priceRange":"$$$","address":{"@type":"PostalAddress","streetAddress":"28 Bovelles St","addressLocality":"Camp Hill","addressRegion":"QLD","postalCode":"4152","addressCountry":"AU"},"areaServed":AREA_SERVED,"knowsAbout":["Buyers agent services","Residential property valuation","Property due diligence","Auction bidding","Property investment"],"founder":{"@id":BASE+"team.html#brad"},"employee":PEOPLE_REFS,"aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"27"},"sameAs":["https://www.facebook.com/capitalvueinvestments","https://www.instagram.com/capitalvueinvestments/","https://www.linkedin.com/company/capitalvue-pty-ltd/","https://maps.google.com/?cid=11747579062209486214"]};
 const esc = s => String(s).replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/"/g,'&quot;');
 const CRUMB = {
-  'about.html':'About','services.html':'Services & pricing','tracker.html':'Property Trackers',
+  'about.html':'About','services.html':'Services & pricing','tracker.html':'CapitalVue Portfolio',
   'buying-power.html':'Buying Power Calculator','evaluate-and-negotiate.html':'Evaluate and Negotiate',
   'buyers-agent-brisbane.html':'Buyers Agent Brisbane','buyers-agent-adelaide.html':'Buyers Agent Adelaide',
   'team.html':'Team','blog.html':'Blog','contact.html':'Contact',
@@ -916,9 +915,9 @@ const servicesBody = `
         <p class="svc-cta"><a href="contact.html#book">Book a free strategy call</a></p>
       </div>
       <div class="svc-min reveal" style="background:var(--paper)">
-        <h3>Property Tracker</h3>
-        <div class="p2" style="color:var(--emerald)">Free</div>
-        <p>Track your whole portfolio in real time. Plus CapitalVue Portfolio, our exclusive platform for purchase clients. <a href="tracker.html" style="color:var(--emerald);font-weight:600">Learn more →</a></p>
+        <h3>CapitalVue Portfolio</h3>
+        <div class="p2" style="color:var(--emerald)">Included when you buy</div>
+        <p>Loans, expenses, insurance, equity and EOFY reporting across your whole portfolio, set up for you at settlement. <a href="tracker.html" style="color:var(--emerald);font-weight:600">Learn more →</a></p>
       </div>
     </div>
   </div>
@@ -1020,39 +1019,73 @@ ${pageHero('Why there is no price','Buying without a price','Why there is no pri
   <div class="hero-actions"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div>
 </div></div></section>`;
 
-/* ---------------- TRACKER ---------------- */
+/* ---------------- TRACKER (CapitalVue Portfolio) ---------------- */
+// The original Property Tracker (app.capitalvue.com.au) is retired 16 November 2026.
+// This page now covers CapitalVue Portfolio only. Copy follows the CapitalVue Portfolio feature and benefit sheet (Oct 2026).
+// URL kept as tracker.html for existing links and redirects.
 const feat = t => `<div class="feat-item"><span class="tick">✓</span> ${t}</div>`;
+const shot = (f,w,h,alt) => `<img src="${A(f)}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async" style="width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow)">`;
 const trackerBody = `
-${pageHero('Property Trackers','CapitalVue Dashboard','The only buyers agency that hands you the data to prove it worked.','Real-time visibility into your portfolio\'s key financial metrics, powered by live valuations and market rates. No spreadsheets, no guesswork.')}
+${pageHero('CapitalVue Portfolio','For CapitalVue clients','Your whole portfolio, run from one login.','CapitalVue Portfolio is the platform we set up for clients once they have bought with us. Live market value, rent, expenses, loans, insurance, equity and tax records for every property you own, in one secure place, ready for you and your accountant.')}
+<div style="background:#e3f4f4;border-bottom:1px solid var(--line)"><div class="wrap" style="padding:14px 0;font-size:.9rem;color:#33465f;text-align:center">The original CapitalVue Property Tracker closes on 16 November 2026. Questions about an existing tracker account: <a href="mailto:info@capitalvue.com.au" style="color:var(--emerald);font-weight:600">info@capitalvue.com.au</a></div></div>
 <section><div class="wrap feat">
   <div class="reveal">
-    <span class="eyebrow">Real-time portfolio intelligence</span>
-    <h2 class="serif">Every number that matters, in one place.</h2>
-    <p style="margin-top:1rem">The CapitalVue Dashboard gives Australian property investors a live view of value, equity, yield and tax, so decisions are based on current data, not outdated estimates.</p>
+    <span class="eyebrow">Client-only platform</span>
+    <h2 class="serif">See how it performs, what is coming up, and where the next opportunity sits.</h2>
+    <p style="margin-top:1rem">When you settle, we load the property into CapitalVue Portfolio. It replaces the spreadsheet, the bank logins and the folder of PDFs with one current view, and it tells you when a rate, a renewal or your equity position needs a decision.</p>
     <div class="feat-list">
-      ${feat('Live market value (REIP Nexus)')}${feat('Comprehensive yield analysis')}
-      ${feat('Loan-to-value ratio (LVR)')}${feat('Usable equity visibility')}
-      ${feat('Cash-on-cash return')}${feat('Interest rate comparison')}
-      ${feat('Tax reporting')}${feat('Automatic rate-change alerts')}
+      ${feat('Live market value')}${feat('Every loan, fixed and variable')}
+      ${feat('Rate-drop alerts')}${feat('Equity opportunity flags')}
+      ${feat('Auto-categorised expenses')}${feat('Insurance read from the PDF')}
+      ${feat('EOFY report for your accountant')}${feat('Lease and renewal reminders')}
     </div>
-    <div class="hero-actions" style="margin-top:1.8rem"><a class="btn btn-navy" href="https://app.capitalvue.com.au/" target="_blank" rel="noopener">Property Tracker Login</a></div>
-    <p style="color:var(--muted);font-size:.88rem;margin-top:.9rem">Existing clients, log in to your CapitalVue Property Tracker. Our next-generation platform, CapitalVue Portfolio, is below.</p>
-    <p style="color:var(--muted);font-size:.88rem;margin-top:.5rem">The tracker covers you after settlement. During the search you work in your client portal. <a href="portal-demo.html" style="color:var(--emerald);font-weight:600">See the portal demo</a>.</p>
+    <div class="hero-actions" style="margin-top:1.8rem"><a class="btn btn-navy" href="https://capitalvue.app.portfoliologic.com.au/" target="_blank" rel="noopener">CapitalVue Portfolio Login</a></div>
+    <p style="color:var(--muted);font-size:.88rem;margin-top:.9rem">Access is set up for you at settlement and sign-in is protected by two-factor authentication. It is not available for purchase separately.</p>
   </div>
-  <div class="feat-visual reveal" style="padding:12px">
-    <img src="${DASH}" alt="CapitalVue Property Tracker dashboard showing market value, equity, yield and tax metrics" loading="lazy" decoding="async" style="width:100%;border-radius:12px;display:block">
+  <div class="reveal">
+    ${shot('portfolio-insurance.jpg',1190,796,'Insurance report showing annual cost, active policies, expiry counts and alerts for an uninsured property and a possible under-insurance')}
   </div>
+</div>
 </div></section>
 <section class="bg-paper"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Platform capabilities</span><h2 class="serif">Every metric that matters, in one place.</h2><p>CapitalVue Portfolio, our next-generation platform powered by PortfolioLogic, available exclusively to clients who have purchased a property with CapitalVue.</p></div>
+  <div class="sec-head center reveal"><span class="eyebrow">Platform features</span><h2 class="serif">Everything you need to run the portfolio.</h2><p>Built for Australian property investors. Powered by PortfolioLogic.</p></div>
   <div class="prob-grid">
-    <div class="prob reveal"><h3>Mortgage Dashboard</h3><p>Track every loan across all lenders in one view. Monitor rates, repayment schedules, fixed-rate expiry dates and outstanding balances with precision.</p></div>
-    <div class="prob reveal"><h3>Equity Tracker</h3><p>Calculate available equity across the entire portfolio in real time. See when LVR thresholds are crossed and equity becomes accessible for the next acquisition.</p></div>
-    <div class="prob reveal"><h3>Cash Flow Analysis</h3><p>Understand the true cash-flow position of each property and the portfolio as a whole. Rental income, repayments, rates, insurance and fees in a single figure.</p></div>
-    <div class="prob reveal"><h3>Market Rate Benchmarking</h3><p>Compare current mortgage rates against live market benchmarks, and automatically flag loans where refinancing may improve your borrowing position.</p></div>
-    <div class="prob reveal"><h3>Portfolio Net Worth</h3><p>A single, consolidated view of total asset value minus total debt, updated on demand with a full historical timeline of your growth over time.</p></div>
+    <div class="prob reveal"><h3>Residential and commercial, side by side</h3><p>Houses, units, townhouses and commercial assets sit in one portfolio, each with metrics suited to its type.</p></div>
+    <div class="prob reveal"><h3>Add a property in minutes</h3><p>Pull the listing image in and the market value is fetched automatically, then kept current through a live valuation feed.</p></div>
+    <div class="prob reveal"><h3>Loans and rate alerts</h3><p>Every loan, fixed and variable, with balance, repayment schedule, fixed-rate expiry and amortisation. You are alerted when market rates fall below your current rate.</p></div>
+    <div class="prob reveal"><h3>Equity tracker</h3><p>Equity built from live market value and principal paydown, and a flag on each property that has equity available for the next purchase or a refinance.</p></div>
+    <div class="prob reveal"><h3>Expenses that code themselves</h3><p>Income and expenses logged against ATO categories. Recurring items such as council rates, strata and management fees are matched and categorised from the description.</p></div>
+    <div class="prob reveal"><h3>Insurance from one upload</h3><p>Drop in a renewal PDF and the insurer, policy number, premium, sum insured and renewal date are filled in, then rolled up into a portfolio-wide insurance view.</p></div>
+    <div class="prob reveal"><h3>Cash flow and EOFY reporting</h3><p>Rental yield, net cash flow and cash-on-cash return per property. At year end, one report summarises income, expenses, depreciation and loan interest to send to your accountant.</p></div>
+    <div class="prob reveal"><h3>Document vault</h3><p>Leases, contracts, insurance certificates, inspection reports and tax records stored together, ready for the next deal.</p></div>
+    <div class="prob reveal"><h3>Tenancy and renewal dates</h3><p>Lease agreements, tenancy reviews and renewal dates tracked with automatic reminders.</p></div>
   </div>
-  <div style="text-align:center;margin-top:40px"><a class="btn btn-primary" href="https://capitalvue.app.portfoliologic.com.au/" target="_blank" rel="noopener">CapitalVue Portfolio Login</a><p style="color:var(--muted);font-size:.85rem;margin-top:.9rem">Exclusive to CapitalVue clients. Access is unlocked once you have purchased a property with us.</p></div>
+</div></section>
+<section><div class="wrap">
+  <div class="sec-head center reveal"><span class="eyebrow">Inside the platform</span><h2 class="serif">Real screens, not mock-ups.</h2><p>Taken from a live CapitalVue Portfolio account, with addresses and lender names removed.</p></div>
+  <div class="reveal" style="margin-top:8px">
+    <div class="feat" style="align-items:end;gap:32px;margin-bottom:22px"><div><span class="eyebrow">Portfolio net worth</span><h3 class="serif" style="font-size:1.6rem;margin-top:.4rem">Every property, one number.</h3></div><p>Total assets less total debt across the portfolio, with offset balances applied, gain against acquisition cost including stamp duty, and the history of both over time. Exportable for your accountant or lender.</p></div>
+    ${shot('portfolio-networth.jpg',1400,548,'Portfolio net worth screen showing total assets, net debt after offset, offset applied, total gain and portfolio value over time')}
+  </div>
+  <div class="reveal" style="margin-top:64px">
+    <div class="feat" style="align-items:end;gap:32px;margin-bottom:22px"><div><span class="eyebrow">Mortgage dashboard</span><h3 class="serif" style="font-size:1.6rem;margin-top:.4rem">Every loan, measured against the market.</h3></div><p>Balance, rate, repayment, term and fixed-rate expiry for each loan, with the weighted average rate set against the current market rate. Loans sitting above market are flagged so the refinance conversation happens when it is worth having.</p></div>
+    ${shot('portfolio-mortgage.jpg',1400,442,'Mortgage dashboard listing five loans with balance, rate, repayment, term and comparison to market rate')}
+  </div>
+  <div class="reveal" style="margin-top:64px">
+    <div class="feat" style="align-items:end;gap:32px;margin-bottom:22px"><div><span class="eyebrow">Property view</span><h3 class="serif" style="font-size:1.6rem;margin-top:.4rem">Value, equity and LVR on every property.</h3></div><p>Live market value, net wealth and loan-to-value ratio, with an equity and debt chart you can scrub year by year. Loans, valuation history, transactions, depreciation, documents, cash flow and rent history sit one tab away.</p></div>
+    ${shot('portfolio-property.jpg',1400,524,'Single property screen showing property value, net wealth, loan-to-value ratio and an equity and debt chart by financial year')}
+  </div>
+  <p class="disc" style="max-width:860px;margin:40px auto 0;text-align:center">Screens are from one private portfolio, shown to illustrate the platform. They are not client purchase results and do not indicate future performance. The equity and debt chart projects forward from assumptions entered in the platform; it is not a forecast.</p>
+</div></section>
+<section class="bg-paper"><div class="wrap">
+  <div class="sec-head center reveal"><span class="eyebrow">Two portals, one engagement</span><h2 class="serif">Before settlement and after it.</h2><p>Every client works in a secure client portal during the search. Once you buy, CapitalVue Portfolio takes over.</p></div>
+  <div class="prob-grid two" style="align-items:stretch">
+    <div class="prob reveal" style="display:flex;flex-direction:column"><span class="eyebrow">During the search</span><h3 style="margin-top:.5rem">Client portal</h3><p>Your brief, shortlist, offers and contract stages in one place, with identity and AML checks completed inside it.</p><p style="margin-top:auto;padding-top:.8rem"><a href="portal-demo.html" style="color:var(--emerald);font-weight:600">Try the portal demo →</a></p></div>
+    <div class="prob reveal" style="display:flex;flex-direction:column"><span class="eyebrow">From settlement</span><h3 style="margin-top:.5rem">CapitalVue Portfolio</h3><p>The property moves into your portfolio so you can track its performance, alongside anything else you own.</p><p style="margin-top:auto;padding-top:.8rem"><a href="https://capitalvue.app.portfoliologic.com.au/" target="_blank" rel="noopener" style="color:var(--emerald);font-weight:600">Client login →</a></p></div>
+  </div>
+</div></section>
+<section class="bg-paper" style="padding-top:0"><div class="wrap">
+  <p class="disc" style="max-width:860px;margin:36px auto 0;text-align:center">CapitalVue Portfolio provides information only. Market values are automated estimates updated from a third-party data feed and may differ from a sale price or a lender's valuation. Rate alerts and equity flags are not credit advice; speak with a licensed credit provider or broker before changing a loan. EOFY reports are a summary for your accountant and are not tax advice. The insurance view records your policies and is not insurance advice.</p>
 </div></section>
 ${ctaBand}`;
 
@@ -1937,7 +1970,7 @@ const pages = {
   'about.html':   page('About CapitalVue | Licensed Buyers Agency (QLD, SA)','CapitalVue pairs a licensed buyers agency with real-time portfolio technology to make buying an investment property or a home simple, transparent and provable.', aboutBody,'about.html','about.html'),
   'services.html':page('Buyers Agent Fees, Published | CapitalVue','Buyers agent fees, published. $19,500 full service, $11,500 if you search yourself. Adelaide and SEQ. No seller commission, same agent to settlement.', servicesBody,'services.html','services.html',[SVC_SCHEMA, faqSchema(SVC_FAQ)]),
   'why-no-price.html':page('Why There&#39;s No Price on the Listing | CapitalVue','No price, offers over, contact agent. Four reasons a listing hides its price in Queensland and South Australia, and what each one means for a buyer.', whyNoPriceBody,'services.html','why-no-price.html',faqSchema(WNP_FAQ)),
-  'tracker.html': page('Property Portfolio Trackers | CapitalVue','Track your property portfolio in real time: value, equity, yield, LVR and tax. Free Property Tracker, plus CapitalVue Portfolio for clients via PortfolioLogic.', trackerBody,'tracker.html','tracker.html'),
+  'tracker.html': page('CapitalVue Portfolio | Client Property Tracking','CapitalVue Portfolio puts loans, expenses, insurance, equity and EOFY reporting for every property in one login, set up for clients at settlement.', trackerBody,'tracker.html','tracker.html'),
   'team.html':    page('Our Team | CapitalVue Buyers Agents','Meet the CapitalVue team: buyers agents for investors and home buyers, backed by decades of real estate, finance and construction experience.', teamBody,'team.html','team.html',Object.values(PEOPLE)),
   'blog.html':    page('The Vue | Property Investment Blog | CapitalVue','The Vue: market updates, strategy and buying frameworks for Australian property investors and home buyers, from CapitalVue.', blogBody,'blog.html','blog.html'),
   'contact.html': page('Book a Strategy Call | Contact CapitalVue','Book a free, no-obligation property strategy call with CapitalVue, buyers agents for investors and home buyers in Brisbane and Adelaide.', contactBody,'contact.html','contact.html'),
@@ -2044,7 +2077,7 @@ fs.writeFileSync(path.join(DIR,'llms.txt'), `# CapitalVue
 - [Why there is no price on the listing](${BASE}why-no-price.html): why listings hide their price in QLD and SA, the QLD auction rule and what an SA price range means.
 - [Buying power calculator](${BASE}buying-power.html): free indicative borrowing and budget estimate.
 - [Property readiness snapshot](${BASE}property-readiness.html): free 90-second readiness check.
-- [Property Trackers](${BASE}tracker.html): free Property Tracker plus the client-only CapitalVue Portfolio, powered by PortfolioLogic.
+- [CapitalVue Portfolio](${BASE}tracker.html): client-only portfolio platform (loans and rate alerts, equity, expenses, insurance, documents, EOFY reporting) set up at settlement, powered by PortfolioLogic.
 - [Team](${BASE}team.html): Brad Reece (founder, investment purchases), Dr Rebecca Cox (owner-occupier purchases), Tony Eaton (buyers agent, relocations to Brisbane).
 - [About](${BASE}about.html): story, mission and values.
 - [Contact](${BASE}contact.html): book a free strategy call.
