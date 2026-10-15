@@ -572,7 +572,7 @@ const PEOPLE = {
 const PEOPLE_REFS = Object.values(PEOPLE).map(x=>({"@id":x["@id"]}));
 // Visible byline name -> schema person. Default byline is "Brad".
 const AUTHOR_KEY = n => /rebecca/i.test(n||'') ? 'rebecca' : /tony/i.test(n||'') ? 'tony' : 'brad';
-const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@id":BASE+"#organisation","name":"CapitalVue","description":"Licensed Australian buyers agency helping busy Australians buy investment property and homes, with real-time portfolio tracking.","url":BASE,"logo":BASE+"assets/cv-logo-stacked.png","image":BASE+"assets/og.jpg","telephone":"+61499484727","email":"info@capitalvue.com.au","priceRange":"$$$","address":{"@type":"PostalAddress","streetAddress":"28 Bovelles St","addressLocality":"Camp Hill","addressRegion":"QLD","postalCode":"4152","addressCountry":"AU"},"areaServed":AREA_SERVED,"knowsAbout":["Buyers agent services","Residential property valuation","Property due diligence","Auction bidding","Property investment"],"founder":{"@id":BASE+"team.html#brad"},"employee":PEOPLE_REFS,"aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"27"},"sameAs":["https://www.facebook.com/capitalvueinvestments","https://www.instagram.com/capitalvueinvestments/","https://www.linkedin.com/company/capitalvue-pty-ltd/","https://maps.google.com/?cid=11747579062209486214"]};
+const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@id":BASE+"#organisation","name":"CapitalVue","description":"Licensed Australian buyers agency helping busy Australians buy investment property and homes, with real-time portfolio tracking.","url":BASE,"logo":BASE+"assets/cv-logo-stacked.png","image":BASE+"assets/og.jpg","telephone":"+61499484727","email":"info@capitalvue.com.au","priceRange":"$$$","address":{"@type":"PostalAddress","streetAddress":"28 Bovelles St","addressLocality":"Camp Hill","addressRegion":"QLD","postalCode":"4152","addressCountry":"AU"},"areaServed":AREA_SERVED,"knowsAbout":["Buyers agent services","Residential property valuation","Property due diligence","Auction bidding","Property investment"],"founder":{"@id":BASE+"team.html#brad"},"employee":PEOPLE_REFS,"sameAs":["https://www.facebook.com/capitalvueinvestments","https://www.instagram.com/capitalvueinvestments/","https://www.linkedin.com/company/capitalvue-pty-ltd/","https://maps.google.com/?cid=11747579062209486214"]};
 const esc = s => String(s).replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/"/g,'&quot;');
 const CRUMB = {
   'about.html':'About','services.html':'Services & pricing','tracker.html':'CapitalVue Portfolio',
@@ -1195,11 +1195,9 @@ ${pageHero('Blog','Property Investment Blog – The Vue','Insight for Australian
 
 /* ---------------- CONTACT ---------------- */
 const contactBody = `
-${pageHero('Contact','Get in touch','Book a free strategy call.','Tell us where you\'re at. We\'ll pressure-test your goals, show you what\'s possible, and tell you honestly whether we can help. No pressure, no obligation.')}
+${pageHero('Contact','Get in touch','Book a free strategy call.','Not sure where to start, or been in the market and stepped back? Tell us where you are at and we will tell you what we would look at next. If we are not the right people for it, we will say that too.')}
 <section id="book"><div class="wrap">
   <div class="reveal" style="max-width:860px;margin:0 auto 52px">
-    <h2 class="serif" style="font-size:1.7rem;margin-bottom:.5rem;text-align:center">Book your free strategy call</h2>
-    <p style="color:var(--muted);text-align:center;margin-bottom:1.6rem">Pick a time that suits you. No obligation, no hard sell.</p>
     <div class="meetings-iframe-container" data-src="https://meetings-ap1.hubspot.com/brad660/ba-brad-reece?embed=true" style="min-height:720px"></div>
     <script type="text/javascript" src="https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js"></script>
     <noscript><p style="text-align:center"><a class="btn btn-primary" href="https://meetings-ap1.hubspot.com/brad660/ba-brad-reece" target="_blank" rel="noopener">Open the booking calendar</a></p></noscript>
@@ -1208,7 +1206,7 @@ ${pageHero('Contact','Get in touch','Book a free strategy call.','Tell us where 
   <div class="contact-grid">
   <div class="reveal">
     <h2 class="serif" style="font-size:1.6rem;margin-bottom:.6rem">Prefer to send a message?</h2>
-    <p style="color:var(--muted);margin-bottom:1.3rem;font-size:.96rem">Not ready to pick a time? Send us a note and we'll reply within one business day, with no obligation and no hard sell.</p>
+    <p style="color:var(--muted);margin-bottom:1.3rem;font-size:.96rem">Not ready to pick a time? Send us a note and we'll reply within one business day.</p>
     <div class="hs-form-frame" data-region="ap1" data-form-id="9732e175-6e3c-4fd5-be4c-0ea2341cd65e" data-portal-id="45491120"></div>
     <script src="https://js-ap1.hsforms.net/forms/embed/45491120.js" defer></script>
     <p style="color:var(--muted);font-size:.8rem;margin-top:.9rem;line-height:1.5">This site uses cookies and tracking (Google, Meta and HubSpot) to measure traffic and advertising. See our <a href="privacy-policy.html" style="color:var(--emerald);text-decoration:underline">Privacy Policy</a>.</p>
@@ -1493,8 +1491,10 @@ const MKT_ASOF = 'August 2026';
 const faqHtml = items => `<div class="faq">${items.map(f=>`<div class="fq"><h3>${f.q}</h3><p>${f.a}</p></div>`).join('')}</div>`;
 const faqSchema = items => ({"@context":"https://schema.org","@type":"FAQPage","mainEntity":items.map(f=>({"@type":"Question","name":esc(f.q.replace(/<[^>]+>/g,'')),"acceptedAnswer":{"@type":"Answer","text":esc(f.a.replace(/<[^>]+>/g,''))}}))});
 // A Service node that points back at the single RealEstateAgent entity (#organisation).
-// Deliberately no second aggregateRating or address: duplicating those across two
-// entities is a rich-results problem, not a bonus.
+// Deliberately no address duplicated here: repeating it across two entities is a
+// rich-results problem, not a bonus. No aggregateRating anywhere: the 27 reviews are
+// Google reviews, and marking up reviews collected on another site breaks Google's
+// review snippet guidelines (removed 15 Oct 2026).
 const svcAreaSchema = (city,state,areas) => ({"@context":"https://schema.org","@type":"Service","@id":BASE+`buyers-agent-${city.toLowerCase()}.html#service`,"name":`Buyers agent services in ${city}`,"serviceType":"Buyers agent","description":`Licensed buyers agency helping property investors search, assess, negotiate and secure property in ${city}, ${state}.`,"url":BASE+`buyers-agent-${city.toLowerCase()}.html`,"provider":{"@id":BASE+"#organisation"},"areaServed":[{"@type":"City","name":city},...areas.filter(a=>a!==city).map(a=>({"@type":"Place","name":a}))],"offers":[{"@type":"Offer","name":"Full buyers agent service (investors)","price":"19500","priceCurrency":"AUD"},{"@type":"Offer","name":"Owner-occupier support","price":"11500","priceCurrency":"AUD"},{"@type":"Offer","name":"Auction bidding only","price":"2200","priceCurrency":"AUD"}]});
 const statCard = (ic,col,bg,n,l,nc) => `<div class="hc-stat"><div class="ic" style="background:${bg};color:${col}">${ic}</div><div class="n"${nc?` style="color:${nc}"`:''}>${n}</div><div class="l">${l}</div></div>`;
 const buyRow = p => `<div class="prob"><div class="q">${p.loc}</div><p style="margin-bottom:.5rem"><strong>${p.type}</strong></p><p>Purchased ${p.paid} &middot; now valued ${p.value}<br><span style="color:var(--emerald);font-weight:700">${p.grow} since purchase</span></p></div>`;
@@ -1830,6 +1830,7 @@ ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','B
     <p>The income side of the ledger tells a different story. Brisbane's vacancy rate sits at 0.9%, asking rents average roughly $752 a week, and rents rose about 9.1% over the year to June 2026, the strongest rental profile of any Australian capital in that release. Median house values are around $1,225,350 and units around $885,132, with units having run harder than houses over the past year.</p>
     <p>Put together, that is a market where the price side has softened while the income side has held. Vendors who listed expecting last year's result are meeting buyers who have read this year's data. That gap is where a buyers agent earns their fee, and it is why we are having more honest conversations with sellers now than at any point in the last two years.</p>
     <p>The other number that matters is the cost of money. The RBA cash rate is 4.35%, held at the June 2026 meeting after three consecutive increases earlier in the year. Higher rates compress borrowing capacity, which is precisely why knowing your genuine buying position before you start looking is worth more than another weekend of open homes. Our <a href="buying-power.html">buying power calculator</a> gives you an indicative figure in about a minute.</p>
+    <p>For the full read on where values and rents moved, see our <a href="post-brisbane-property-market-update-august-2026.html">Brisbane property market update, August 2026</a>.</p>
   </div>
   ${dataNote}
 </div></section>
@@ -1855,7 +1856,7 @@ ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','B
   <div class="steps">
     <div class="step"><div class="num">1</div><h3>Strategy</h3><p>We establish your borrowing position, timeframe, risk tolerance and what the property actually needs to do. If the honest answer is that you are not ready, we say so.</p></div>
     <div class="step"><div class="num">2</div><h3>Search</h3><p>We work our agent relationships across the four submarkets, including stock that never reaches portals, and shortlist against your brief rather than what is available this weekend.</p></div>
-    <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, flood and overlay checks, body corporate records where relevant, and a defensible price ceiling we will not exceed on your behalf.</p></div>
+    <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, <a href="post-brisbane-flood-risk-flood-maps.html">flood</a> and overlay checks, body corporate records where relevant, and a defensible price ceiling we will not exceed on your behalf.</p></div>
     <div class="step"><div class="num">4</div><h3>Negotiate and settle</h3><p>We negotiate or bid, manage the contract through to settlement, then load the asset into your CapitalVue tracker so you can see how it performs from day one.</p></div>
   </div>
   <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">Find out what you can actually buy in Brisbane.</h2><p style="margin-top:.8rem">A free, no-obligation strategy call. If Brisbane is the wrong market for your brief, we will tell you that on the call.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
