@@ -678,9 +678,9 @@ const revCard = r => `<div class="rev reveal"><div class="stars">★★★★★
 
 const ctaBand = `
 <section id="book"><div class="wrap"><div class="cta reveal">
-  <span class="eyebrow" style="color:#4fc2c2">Free, no obligation</span>
+  <span class="eyebrow" style="color:#4fc2c2">Get in touch</span>
   <h2 class="serif">Let's talk about your next property.</h2>
-  <p>Book a free strategy call. We'll pressure-test your goals, show you what's possible, and tell you honestly whether we can help.</p>
+  <p>Tell us where you are at and we will tell you what we would look at next. You will hang up with a plan, not more questions.</p>
   <div class="hero-actions"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div>
 </div></div></section>`;
 
@@ -1013,7 +1013,7 @@ ${pageHero('Why there is no price','Buying without a price','Why there is no pri
   <p class="disc">General information only, not legal or financial advice. Legislative references are to the Property Occupations Act 2014 (Qld) and the Land and Business (Sale and Conveyancing) Act 1994 (SA) as in force on 12 October 2026, from the Queensland and South Australian legislation registers. Check the current versions before relying on them, and get advice on your own circumstances.</p>
 </div></div></section>
 <section id="book" style="padding-top:0"><div class="wrap"><div class="cta reveal">
-  <span class="eyebrow" style="color:#4fc2c2">Free, no obligation</span>
+  <span class="eyebrow" style="color:#4fc2c2">Get in touch</span>
   <h2 class="serif">Send us a listing and we will tell you what it is worth.</h2>
   <p>On a free strategy call we look at the listing you are weighing up and talk through how we would price it.</p>
   <div class="hero-actions"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div>
@@ -1094,7 +1094,7 @@ const teamBody = `
 ${pageHero('Team','Your investment team','The people behind every purchase.','Decades of real estate leadership, finance, construction and negotiation, all on your side of the table.')}
 <section><div class="wrap"><div class="team-grid">
   <div class="member wide reveal" id="brad"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.brad}" alt="Brad Reece"><div><div class="nm">Brad Reece</div><div class="rl">Founder &amp; CEO</div><p>Property investor since 2004 with a substantial personal portfolio that reflects his strategic acumen and eye for opportunity. Leads our investment clients, the data-driven approach and the CapitalVue Dashboard platform.</p><p class="contact"><a href="mailto:brad@capitalvue.com.au">brad@capitalvue.com.au</a></p></div></div>
-  <div class="member wide reveal" id="andrew"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.andrew}" alt="Andrew Friebe"><div><div class="nm">Andrew Friebe</div><div class="rl">Advisor</div><p>A real estate veteran since 2005 and currently Harcourts CEO for Queensland. Previously LJ Hooker Managing Director (SA/WA) and Harcourts International COO.</p><p>At CapitalVue his focus is technology and partnerships, including the PortfolioLogic platform behind our trackers. He takes no part in client property purchases.</p><p class="contact"><a href="mailto:andrew@capitalvue.com.au">andrew@capitalvue.com.au</a></p></div></div>
+  <div class="member wide reveal" id="andrew"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.andrew}" alt="Andrew Friebe"><div><div class="nm">Andrew Friebe</div><div class="rl">Advisor</div><p>A real estate veteran since 2005 and currently Harcourts CEO for Queensland. Previously LJ Hooker Managing Director (SA/WA) and Harcourts International COO.</p><p>At CapitalVue his focus is technology and partnerships, including the PortfolioLogic platform behind CapitalVue Portfolio. He takes no part in client property purchases.</p><p class="contact"><a href="mailto:andrew@capitalvue.com.au">andrew@capitalvue.com.au</a></p></div></div>
   <div class="member reveal" id="tony"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.tony}" alt="Tony Eaton"><div class="nm">Tony Eaton</div><div class="rl">Buyers Agent</div><p>Former law-enforcement professional known for honesty, integrity and advocacy. Works across both investment and owner-occupier purchases, and specialises in relocations to Brisbane from interstate or overseas.</p><p style="font-size:.86rem;color:var(--muted);margin-top:.5rem">您真诚，专业，值得信赖的房屋顾问</p><p class="contact"><a href="tel:+61400630674">0400 630 674</a><br><a href="mailto:tony@capitalvue.com.au">tony@capitalvue.com.au</a><br><span class="lbl">WeChat:</span> AntEater64</p></div>
   <div class="member reveal" id="dr-rebecca-cox"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.bec}" alt="Dr Rebecca Cox"><div class="nm">Dr Rebecca Cox</div><div class="rl">Owner-Occupier Buyers Agent</div><p>Clinical optometrist (PhD) and researcher at the Queensland Eye Institute. At CapitalVue she represents owner-occupiers who run their own search. She prices unpriced listings against recent sales before they inspect, costs the repairs in the building and pest report, and runs the negotiation or the auction bid. She only takes on two or three clients at a time.</p><p class="contact"><a href="mailto:bec@capitalvue.com.au">bec@capitalvue.com.au</a></p></div>
   <div class="member reveal" id="chris"><img class="photo" loading="lazy" decoding="async" src="${PHOTO.chris}" alt="Chris van Rensburg"><div class="nm">Chris van Rensburg</div><div class="rl">Founder &amp; Construction Director</div><p>Finance and accounting background applied to building and construction, with a portfolio spanning short-term rentals and commercial property.</p><p class="contact"><a href="mailto:chris@capitalvue.com.au">chris@capitalvue.com.au</a></p></div>
@@ -1164,10 +1164,10 @@ const notFoundBody = `
 <section><div class="wrap"><div class="team-grid" style="max-width:900px;margin:0 auto">
   <div class="member"><div><div class="nm"><a href="services.html">Services &amp; pricing</a></div><p>Fixed-fee buyers agent packages for investors and home buyers across QLD and SA.</p></div></div>
   <div class="member"><div><div class="nm"><a href="buying-power.html">Buying power calculator</a></div><p>Estimate what you could buy, your repayments and an illustrative growth picture in 60 seconds.</p></div></div>
-  <div class="member"><div><div class="nm"><a href="tracker.html">Property trackers</a></div><p>Track market value, equity, yield and LVR on your portfolio in real time.</p></div></div>
+  <div class="member"><div><div class="nm"><a href="tracker.html">CapitalVue Portfolio</a></div><p>Value, equity, loans and cash flow across your portfolio, set up for clients at settlement.</p></div></div>
   <div class="member"><div><div class="nm"><a href="team.html">Our team</a></div><p>Meet the buyers agents behind every CapitalVue purchase.</p></div></div>
   <div class="member"><div><div class="nm"><a href="blog.html">The Vue blog</a></div><p>Market updates, strategy and buying frameworks for Australian property.</p></div></div>
-  <div class="member"><div><div class="nm"><a href="contact.html">Contact us</a></div><p>Call 0499 484 727 or book a free, no-obligation strategy call.</p></div></div>
+  <div class="member"><div><div class="nm"><a href="contact.html">Contact us</a></div><p>Call 0499 484 727 or book a free strategy call.</p></div></div>
 </div></div></section>
 ${ctaBand}`;
 
@@ -1857,9 +1857,9 @@ ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','B
     <div class="step"><div class="num">1</div><h3>Strategy</h3><p>We establish your borrowing position, timeframe, risk tolerance and what the property actually needs to do. If the honest answer is that you are not ready, we say so.</p></div>
     <div class="step"><div class="num">2</div><h3>Search</h3><p>We work our agent relationships across the four submarkets, including stock that never reaches portals, and shortlist against your brief rather than what is available this weekend.</p></div>
     <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, <a href="post-brisbane-flood-risk-flood-maps.html">flood</a> and overlay checks, body corporate records where relevant, and a defensible price ceiling we will not exceed on your behalf.</p></div>
-    <div class="step"><div class="num">4</div><h3>Negotiate and settle</h3><p>We negotiate or bid, manage the contract through to settlement, then load the asset into your CapitalVue tracker so you can see how it performs from day one.</p></div>
+    <div class="step"><div class="num">4</div><h3>Negotiate and settle</h3><p>We negotiate or bid, manage the contract through to settlement, then load the asset into CapitalVue Portfolio so you can see how it performs from day one.</p></div>
   </div>
-  <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">Find out what you can actually buy in Brisbane.</h2><p style="margin-top:.8rem">A free, no-obligation strategy call. If Brisbane is the wrong market for your brief, we will tell you that on the call.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
+  <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">Find out what you can actually buy in Brisbane.</h2><p style="margin-top:.8rem">A free strategy call on what your brief can buy in Brisbane, and where.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
 </div></section>
 
 <section><div class="wrap" style="max-width:860px">
@@ -1941,9 +1941,9 @@ ${pageHero('Buyers Agent Adelaide','Adelaide &middot; Investor buyers agency','B
     <div class="step"><div class="num">1</div><h3>Strategy</h3><p>Borrowing position, timeframe and objective first. This is also where we test whether Adelaide, Brisbane or neither is the right market for you right now.</p></div>
     <div class="step"><div class="num">2</div><h3>Search</h3><p>Agent relationships across the four clusters, including off-market and pre-market stock, shortlisted against your brief rather than against what is listed.</p></div>
     <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, the Form 1 read in full, strata records where relevant, and a price ceiling we will not exceed on your behalf.</p></div>
-    <div class="step"><div class="num">4</div><h3>Negotiate and settle</h3><p>We negotiate or bid, run the contract through to settlement, then load the property into your CapitalVue tracker so performance is visible from day one.</p></div>
+    <div class="step"><div class="num">4</div><h3>Negotiate and settle</h3><p>We negotiate or bid, run the contract through to settlement, then load the property into CapitalVue Portfolio so performance is visible from day one.</p></div>
   </div>
-  <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">Is Adelaide right for your next purchase?</h2><p style="margin-top:.8rem">A free, no-obligation strategy call. We will give you our honest read on the market, including when the answer is to wait.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
+  <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">Is Adelaide right for your next purchase?</h2><p style="margin-top:.8rem">A free strategy call. We will give you our read on the market, including when the answer is to wait.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
 </div></section>
 
 <section><div class="wrap" style="max-width:860px">
@@ -1985,11 +1985,11 @@ for (const a of ARTICLES) {
   const desc = a.desc || (clean + '. Property insight from CapitalVue for Australian investors and home buyers.');
   pages['post-'+a.slug+'.html'] = page((a.seo||clean)+' | CapitalVue', desc, articleBody(a), 'blog.html', 'post-'+a.slug+'.html', articleSchema(a), a.og?{ogImage:a.og}:null);
 }
-pages['terms-and-conditions.html'] = page('Terms &amp; Conditions | CapitalVue','Terms and conditions of use for the CapitalVue website and Property Tracker dashboard. CapitalVue is a licensed buyers agency in Queensland and South Australia.', legalBody('Terms &amp; Conditions','terms.html'),'','terms-and-conditions.html',null,{bare:true});
+pages['terms-and-conditions.html'] = page('Terms &amp; Conditions | CapitalVue','Terms and conditions of use for the CapitalVue website. CapitalVue is a licensed buyers agency in Queensland and South Australia.', legalBody('Terms &amp; Conditions','terms.html'),'','terms-and-conditions.html',null,{bare:true});
 pages['privacy-policy.html'] = page('Privacy Policy | CapitalVue Buyers Agency','How CapitalVue collects, holds and manages your personal information under the Australian Privacy Principles.', legalBody('Privacy Policy','privacy.html'),'','privacy-policy.html',null,{bare:true});
 pages['aml-ctf-statement.html'] = page('AML/CTF Compliance Statement | CapitalVue','How CapitalVue meets its obligations under the AML/CTF Act 2006, what identification we ask for and how we handle it.', legalBody('AML/CTF Compliance Statement','aml-ctf.html'),'','aml-ctf-statement.html',null,{bare:true});
 
-pages['404.html'] = page('Page not found | CapitalVue','That page has moved or no longer exists. Find CapitalVue services, the buying power calculator, property trackers and contact details here.', notFoundBody,'','404.html',null,{noindex:true,baseHref:true});
+pages['404.html'] = page('Page not found | CapitalVue','That page has moved or no longer exists. Find CapitalVue services, the buying power calculator, CapitalVue Portfolio and contact details here.', notFoundBody,'','404.html',null,{noindex:true,baseHref:true});
 
 // ---- Property Readiness Snapshot landing page ----
 // Self-contained quiz funnel with its own CSS/JS, so it deliberately does NOT go

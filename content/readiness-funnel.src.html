@@ -7,9 +7,9 @@
 <style>
   :root{
     color-scheme:light;
-    --plane:#f9f9f7; --surface:#ffffff; --surface-2:#fcfcfb;
-    --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
-    --grid:#e1e0d9; --baseline:#c3c2b7;
+    --plane:#f6f8fb; --surface:#ffffff; --surface-2:#fbfcfe;
+    --ink:#071f38; --ink-2:#33465f; --muted:#57687f;
+    --grid:#dde3ec; --baseline:#c3cddb;
     --series:#148f8f; --series-soft:rgba(20,143,143,0.10);
     --brand-navy:#092a4b; --brand-gold:#c9a24b;
     --accent:#092a4b; --accent-soft:rgba(9,42,75,0.08);
@@ -23,6 +23,8 @@
   @font-face{font-family:'Poppins';src:url('assets/fonts/poppins-400.woff2') format('woff2');font-weight:400;font-display:swap}
   @font-face{font-family:'Poppins';src:url('assets/fonts/poppins-600.woff2') format('woff2');font-weight:600;font-display:swap}
   @font-face{font-family:'Poppins';src:url('assets/fonts/poppins-700.woff2') format('woff2');font-weight:700;font-display:swap}
+  @font-face{font-family:'Fraunces';src:url('assets/fonts/fraunces-var.woff2') format('woff2-variations');font-weight:400 700;font-display:swap}
+  button,input,select,textarea{font-family:inherit}
   .intro h1,.q h2,.arch-name,.cta h3{font-family:var(--serif);font-weight:700}
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -46,7 +48,7 @@
   .intro{text-align:center;padding:48px 8px 8px}
   .logo-lg{height:46px;width:auto;margin:0 auto 20px;display:block}
   .intro h1{font-size:32px;line-height:1.15;letter-spacing:-0.01em;margin:0 0 14px}
-  .intro .tag{font-size:13px;letter-spacing:.14em;color:var(--brand-gold);font-weight:700;margin:0 0 8px;text-transform:uppercase}
+  .intro .tag{font-size:13px;letter-spacing:.14em;color:var(--series);font-weight:700;margin:0 auto 8px;text-transform:uppercase}
   .intro p{font-size:17px;color:var(--ink-2);max-width:48ch;margin:0 auto 10px}
   .intro .meta{font-size:13px;color:var(--muted);margin-top:18px}
 
@@ -156,9 +158,8 @@
       <img class="logo-lg" src="assets/logo-2.png" alt="CapitalVue">
       <p class="tag">Build a portfolio. Create a legacy.</p>
       <h1>Where are you really at with property?</h1>
-      <p>Answer a few quick questions and get a personalised readiness snapshot in under two minutes. No jargon, no pressure.</p>
+      <p>7 quick questions, about 2 minutes. See where you stand, and what to look at next.</p>
       <button class="btn" id="startBtn" style="margin-top:22px">Start</button>
-      <p class="meta">Takes ~90 seconds · Your details stay private</p>
     </div>
   </section>
 
