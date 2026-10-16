@@ -81,6 +81,8 @@ h2{font-size:clamp(1.8rem,4vw,2.7rem)}
 h3{font-size:1.25rem}
 p{color:var(--muted)}
 a{color:inherit;text-decoration:none}
+/* In-text links: visible by colour AND underline (WCAG 1.4.1). Buttons excluded. */
+.article a:not(.btn),section p a:not(.btn),section li a:not(.btn){color:var(--emerald);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
 img{max-width:100%;display:block}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
 .eyebrow{font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--emerald)}
@@ -1830,7 +1832,7 @@ ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','B
     <p>The income side of the ledger tells a different story. Brisbane's vacancy rate sits at 0.9%, asking rents average roughly $752 a week, and rents rose about 9.1% over the year to June 2026, the strongest rental profile of any Australian capital in that release. Median house values are around $1,225,350 and units around $885,132, with units having run harder than houses over the past year.</p>
     <p>Put together, that is a market where the price side has softened while the income side has held. Vendors who listed expecting last year's result are meeting buyers who have read this year's data. That gap is where a buyers agent earns their fee, and it is why we are having more honest conversations with sellers now than at any point in the last two years.</p>
     <p>The other number that matters is the cost of money. The RBA cash rate is 4.35%, held at the June 2026 meeting after three consecutive increases earlier in the year. Higher rates compress borrowing capacity, which is precisely why knowing your genuine buying position before you start looking is worth more than another weekend of open homes. Our <a href="buying-power.html">buying power calculator</a> gives you an indicative figure in about a minute.</p>
-    <p>For the full read on where values and rents moved, see our <a href="post-brisbane-property-market-update-august-2026.html">Brisbane property market update, August 2026</a>.</p>
+    <p>For the full read on where values and rents moved, see our <a href="post-brisbane-property-market-update-august-2026.html">Brisbane property market update, August 2026</a>, and for timing, <a href="post-wait-or-buy-brisbane-2026.html">wait or buy</a>.</p>
   </div>
   ${dataNote}
 </div></section>
@@ -1852,11 +1854,11 @@ ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','B
 </div></section>
 
 <section class="bg-paper"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">How it works</span><h2 class="serif">Four stages, fixed fee, no surprises.</h2></div>
+  <div class="sec-head center reveal"><span class="eyebrow">How it works</span><h2 class="serif">Four stages, fixed fee, no surprises.</h2><p>Fixed fee, percentage or hybrid? How each model works, and what it rewards: <a href="post-buyers-agent-fees-australia.html">buyers agent fees in Australia</a>.</p></div>
   <div class="steps">
     <div class="step"><div class="num">1</div><h3>Strategy</h3><p>We establish your borrowing position, timeframe, risk tolerance and what the property actually needs to do. If the honest answer is that you are not ready, we say so.</p></div>
     <div class="step"><div class="num">2</div><h3>Search</h3><p>We work our agent relationships across the four submarkets, including stock that never reaches portals, and shortlist against your brief rather than what is available this weekend.</p></div>
-    <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, <a href="post-brisbane-flood-risk-flood-maps.html">flood</a> and overlay checks, body corporate records where relevant, and a defensible price ceiling we will not exceed on your behalf.</p></div>
+    <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, <a href="post-brisbane-flood-risk-flood-maps.html">flood and overlay checks</a>, body corporate records where relevant, and a defensible price ceiling we will not exceed on your behalf.</p></div>
     <div class="step"><div class="num">4</div><h3>Negotiate and settle</h3><p>We negotiate or bid, manage the contract through to settlement, then load the asset into CapitalVue Portfolio so you can see how it performs from day one.</p></div>
   </div>
   <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">Find out what you can actually buy in Brisbane.</h2><p style="margin-top:.8rem">A free strategy call on what your brief can buy in Brisbane, and where.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
@@ -1895,8 +1897,9 @@ ${pageHero('Buyers Agent Adelaide','Adelaide &middot; Investor buyers agency','B
     <p>Adelaide spent two years outperforming while larger capitals stalled. That phase is ending. Cotality's July 2026 index shows Adelaide dwelling values down 0.2% for the month, the second consecutive monthly fall, against annual growth of 10.5%. Cotality's own commentary described the preceding month as the first sign the most resilient capital of the past two years was topping out.</p>
     <p>Two numbers explain why. First, price: the median Adelaide house is now around $1,007,684 and the median unit around $692,861. Adelaide is no longer the affordable capital, and the affordability gap that powered the last cycle has largely closed. Second, rates: with the RBA cash rate at 4.35% after three increases in the first half of 2026, borrowing capacity has tightened for exactly the buyer cohort that drove Adelaide's run.</p>
     <p>What has not softened is the rental market. Adelaide's vacancy rate of roughly 0.7% is the tightest of the mainland capitals, with asking rents averaging around $644 a week. Rental growth of about 3.4% over the year is slower than Brisbane's, so Adelaide currently offers scarcity without the same rent momentum.</p>
-    <p>The most actionable detail in the current data is the yield gap. Adelaide units are returning roughly 4.3% gross against roughly 3.4% for houses. That is a wide spread by historical standards, and it means the house-versus-unit decision in Adelaide right now is a genuine strategic choice rather than a default. Get your borrowing position clear first with our <a href="buying-power.html">buying power calculator</a>, then the choice gets easier.</p>
+    <p>The most actionable detail in the current data is the yield gap. Adelaide units are returning roughly 4.3% gross against roughly 3.4% for houses. That is a wide spread by historical standards, and it means the house-versus-unit decision in Adelaide right now is a genuine strategic choice rather than a default. We work through the numbers in <a href="post-adelaide-house-vs-unit-yield-gap.html">Adelaide's house vs unit yield gap</a>. Get your borrowing position clear first with our <a href="buying-power.html">buying power calculator</a>, then the choice gets easier.</p>
     <p><strong>Where we buy now.</strong> Our South Australian mandate starts at $700,000. We have bought well below that historically and the results table further down this page shows it, but in a market where values have stopped rising, the cheapest stock is where quality problems get exposed first. Above $700,000 we can be genuinely selective on land, position and tenant appeal instead of buying whatever the budget reaches.</p>
+    <p>For the full read on where values and rents moved, see our <a href="post-adelaide-property-market-update-september-2026.html">Adelaide property market update, September 2026</a>.</p>
   </div>
   ${dataNote}
 </div></section>
@@ -1936,11 +1939,11 @@ ${pageHero('Buyers Agent Adelaide','Adelaide &middot; Investor buyers agency','B
 </div></section>
 
 <section class="bg-paper"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">How it works</span><h2 class="serif">The same four stages, wherever we buy.</h2></div>
+  <div class="sec-head center reveal"><span class="eyebrow">How it works</span><h2 class="serif">The same four stages, wherever we buy.</h2><p>Fixed fee, percentage or hybrid? How each model works, and what it rewards: <a href="post-buyers-agent-fees-australia.html">buyers agent fees in Australia</a>.</p></div>
   <div class="steps">
     <div class="step"><div class="num">1</div><h3>Strategy</h3><p>Borrowing position, timeframe and objective first. This is also where we test whether Adelaide, Brisbane or neither is the right market for you right now.</p></div>
     <div class="step"><div class="num">2</div><h3>Search</h3><p>Agent relationships across the four clusters, including off-market and pre-market stock, shortlisted against your brief rather than against what is listed.</p></div>
-    <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, the Form 1 read in full, strata records where relevant, and a price ceiling we will not exceed on your behalf.</p></div>
+    <div class="step"><div class="num">3</div><h3>Due diligence</h3><p>Comparable sales, building and pest, <a href="post-property-due-diligence-checklist.html">the Form 1 read in full</a>, strata records where relevant, and a price ceiling we will not exceed on your behalf.</p></div>
     <div class="step"><div class="num">4</div><h3>Negotiate and settle</h3><p>We negotiate or bid, run the contract through to settlement, then load the property into CapitalVue Portfolio so performance is visible from day one.</p></div>
   </div>
   <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">Is Adelaide right for your next purchase?</h2><p style="margin-top:.8rem">A free strategy call. We will give you our read on the market, including when the answer is to wait.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
