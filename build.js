@@ -41,6 +41,7 @@ const featBand = `
 const readContent = f => fs.readFileSync(path.join(DIR,'content',f),'utf8');
 const DASH = A('tracker-shot.jpg');
 const BLOGIMG = {
+  'borrowing-capacity-housing-cycles': A('blog-borrowing-capacity-cycles.jpg'),
   'adelaide-property-market-update-september-2026': A('blog-adelaide-market-update-sep-2026.jpg'),
   'brisbane-flood-risk-flood-maps': A('blog-brisbane-flood-risk.jpg'),
   'brisbane-property-market-update-august-2026': A('blog-brisbane-market-update-aug-2026.jpg'),
@@ -1113,6 +1114,7 @@ ${ctaBand}`;
 // entry), updated (ISO date) + updatedLabel ('12 October 2026'). Set updated
 // only for a substantive content change, never for a link or typo fix.
 const ARTICLES = [
+  {slug:'borrowing-capacity-housing-cycles', desc:'A full point of cash rate removed about 8.5% of borrowing capacity in 2026. What eight past cycles, consumer confidence and the housing supply gap say next.', date:'20 October 2026', iso:'2026-10-20', cat:'Market update', title:'Borrowing Capacity, Past Cycles and the Supply Gap', seo:'Housing Cycles and Borrowing Power 2026', og:'assets/og-borrowing-capacity-cycles.jpg', file:'borrowing-capacity-cycles.html'},
     {slug:'adelaide-property-market-update-september-2026', desc:'Adelaide fell 1.3% and Brisbane 1.5% in September 2026, yet both are still up over the year. What the fourth RBA rate rise of 2026 means for buyers.', date:'3 October 2026', iso:'2026-10-03', cat:'Market update', title:'Adelaide Property Market Update: September 2026', seo:'Adelaide Property Market Update, Sep 2026', og:'assets/og-adelaide-market-update-sep-2026.jpg', file:'adelaide-market-update-september-2026.html'},
   {slug:'brisbane-flood-risk-flood-maps', desc:'A council flood map is a screening test, not a diagnosis. What the Brisbane Flood Awareness Map leaves out, and the checks to run before you buy.', date:'22 September 2026', iso:'2026-09-22', cat:'Due diligence', author:'Dr Rebecca Cox', title:'Brisbane Flood Risk: What the Flood Maps Do Not Tell You', seo:'Brisbane Flood Risk: What Flood Maps Miss', og:'assets/og-brisbane-flood-risk.jpg', file:'brisbane-flood-risk.html'},  
     {slug:'brisbane-property-market-update-august-2026', desc:'Brisbane values are up 10.8% over the year and down 2.7% over three months. Why the quarterly figure describes the market you would buy into.', date:'8 September 2026', iso:'2026-09-08', cat:'Market update', title:'Brisbane Property Market Update: What the August 2026 Data Says', seo:'Brisbane Property Market Update, August 2026', og:'assets/og-brisbane-market-update-aug-2026.jpg', file:'brisbane-market-update-august-2026.html'},
@@ -1244,9 +1246,10 @@ ${pageHero('Calculator','Borrowing &amp; buying power calculator','What can you 
       <div class="cf"><label>Total credit card limits</label><input id="cc" inputmode="numeric" placeholder="$0"></div>
     </div>
     <div class="cf-row">
-      <div class="cf"><label>Interest rate (%)</label><input id="rate" inputmode="decimal" value="6.2"></div>
+      <div class="cf"><label>Interest rate (%)</label><input id="rate" inputmode="decimal" value="6.63"></div>
       <div class="cf"><label>Loan term (years)</label><input id="term" inputmode="numeric" value="30"></div>
     </div>
+    <p class="ca-note" style="margin:-.4rem 0 1.1rem">The rate is prefilled with the average variable owner-occupier rate, 6.63% (Canstar, 2 October 2026). Replace it with the rate you have actually been quoted. Your assessed rate is this figure plus the 3% serviceability buffer.</p>
     <div class="calc-assume">
       <div class="ca-head">Your growth assumption <span class="opt">(you choose)</span></div>
       <div class="cf-row">
@@ -1388,7 +1391,7 @@ ${pageHero('Calculator','Borrowing &amp; buying power calculator','What can you 
     var net=(netAnnual(num('inc1'))+netAnnual(num('inc2')))/12;
     var floor=num('inc2')>0?3500:2400;              // HEM-style minimum household living expenses
     var exp=Math.max(num('exp'),floor);
-    var rate=num('rate')||6.2,term=num('term')||30;
+    var rate=num('rate')||6.63,term=num('term')||30;
     var surplus=net-exp-num('debt')-num('cc')*0.038;
     var dep=num('dep'),usable=0;
     if(el('own')&&el('own').checked){               // existing-property investor
