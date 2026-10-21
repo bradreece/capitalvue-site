@@ -3,10 +3,13 @@
  *
  * Emails the lead their readiness snapshot, and the team an internal alert.
  *
- * Deliberately does NOT write to HubSpot. CRM capture happens on the page via
- * the existing HubSpot Forms API submission. A second write path here would
- * create duplicate contacts from two sources of truth. Do not re-add it, and
- * do not add a HUBSPOT_TOKEN env var: it would do nothing and imply otherwise.
+ * CRM capture happens on the page via the HubSpot Forms API submission; that
+ * is the lead record and the consent record. This function additionally writes
+ * the cv_ Snapshot properties through the Contacts API (upsert by email, so
+ * HubSpot dedupes onto the same contact). It never creates the lead itself
+ * except as a 404 fallback when the Forms post has not landed yet. Never add
+ * properties to the page's Forms payload: form 9f419495-172c-4c2b-9578-e0e87d37fbbe
+ * does not carry them and the Forms API rejects the whole submission.
  *
  * The two emails carry different content by design. The lead's copy contains
  * the archetype, their answers, the peer statistics and the disclaimers. It
@@ -22,6 +25,8 @@
  *   MAIL_TO_INTERNAL   where lead alerts go, e.g. info@capitalvue.com.au
  *   MAIL_REPLY_TO      optional; defaults to brad@capitalvue.com.au (reply-to and unsubscribe)
  *   MAIL_BCC           optional; defaults to brad@capitalvue.com.au (copy of every lead email)
+ *   HUBSPOT_TOKEN      private app token, scopes crm.objects.contacts.read + write.
+ *                      Missing token = property write skipped and logged; email unaffected.
  *   BRAND_PRIVACY_URL  privacy policy URL for the email footer
  *   ALLOWED_ORIGIN     optional override; defaults to the capitalvue.com.au origins
  */
@@ -33,7 +38,7 @@
    Upstream 1.0.0 accepts any POST and emails any address in the body, which
    makes it an open relay on a verified sending domain. Do not "upgrade" back
    to a build without these three controls. */
-const VERSION = "1.3.1";
+const VERSION = "1.4.0";
 const BUILD = "2026-10-21";
 const BASED_ON = "1.0.0";
 const HARDENING = ["origin-allowlist", "honeypot", "field-length-caps"];
@@ -50,7 +55,12 @@ const PENDING = ["rate-limit (configured, not enforcing on this plan)"];
    keyed on purpose, archetype link, Brad's closing, "Book a time" button, BCC
    copy to Brad, plain-text part, Spam Act footer. No illustration, no fee, no
    service description in the lead's copy.
-   1.3.1: reflection branches on answers.missed (searching vs starting). */
+   1.3.1: reflection branches on answers.missed (searching vs starting).
+   1.4.0: writes the cv_ contact properties through the HubSpot Contacts API
+   after the email send (spec "Snapshot answers to HubSpot properties",
+   21 Oct 2026, option B). Accepts stage:"partial" from the contact step:
+   no email, status partial, purpose and timeframe only. The Forms API
+   payload on the page is untouched. */
 
 const SITE = "https://www.capitalvue.com.au/";
 const ABN = "56 671 085 028";
@@ -324,6 +334,83 @@ function internalEmailHtml(payload) {
   </div>`;
 }
 
+/* ---- HubSpot cv_ properties (Contacts API, not Forms API) ---- */
+const HS_API = "https://api.hubapi.com/crm/v3/objects/contacts";
+const TIMEFRAME_LABEL = {
+  now: "Ready now", "3_6": "3 to 6 months", "6_12": "6 to 12 months",
+  "12plus": "12 months or more", exploring: "Just exploring",
+};
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* Keys are omitted when the answer is missing; an empty string would clear
+   the property in HubSpot. cv_timeframe_stated stores labels (it predates the
+   quiz); everything else stores the quiz code. */
+function hubspotProperties(payload, stage) {
+  const a = payload.answers || {};
+  const p = {};
+  const put = (k, v) => { if (v !== undefined && v !== null && v !== "") p[k] = String(v); };
+  put("cv_purpose", a.purpose);
+  put("cv_timeframe_stated", TIMEFRAME_LABEL[a.timeframe]);
+  if (stage === "partial") {
+    p.cv_snapshot_status = "partial";
+    return p;
+  }
+  const d = derive(payload);
+  put("cv_position", a.position);
+  put("cv_state", a.state);
+  put("cv_deposit_readiness", a.readiness);
+  put("cv_finance_position", a.finance);
+  put("cv_missed_out", a.missed);
+  put("cv_sell_first", a.sell);
+  put("cv_archetype", d.archetype);
+  p.cv_ready_now = d.readyNow ? "true" : "false";
+  p.cv_snapshot_status = "completed";
+  return p;
+}
+
+async function hsRequest(method, url, token, body) {
+  const res = await fetch(url, {
+    method,
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return { status: res.status, text: res.ok ? "" : await res.text() };
+}
+
+/* Upsert by email. 404 means the page's Forms post has not created the
+   contact yet (fast completions): wait two seconds and retry once, then
+   create the contact; HubSpot merges on the next Forms post. Every outcome is
+   logged. Nothing here may throw into the handler. */
+async function hubspotWrite(payload, stage) {
+  const token = process.env.HUBSPOT_TOKEN;
+  const email = String(payload.contact?.email || "").trim().toLowerCase();
+  if (!token) { console.warn("[submit] hubspot: HUBSPOT_TOKEN not set, properties not written"); return "skipped"; }
+  const properties = hubspotProperties(payload, stage);
+  const patchUrl = `${HS_API}/${encodeURIComponent(email)}?idProperty=email`;
+  try {
+    let r = await hsRequest("PATCH", patchUrl, token, { properties });
+    if (r.status === 404) {
+      await sleep(2000);
+      r = await hsRequest("PATCH", patchUrl, token, { properties });
+    }
+    if (r.status === 404) {
+      const c = payload.contact || {};
+      r = await hsRequest("POST", HS_API, token, {
+        properties: { ...properties, email, firstname: c.firstName || "", mobilephone: c.mobile || "" },
+      });
+      if (r.status >= 200 && r.status < 300) { console.info("[submit] hubspot: created contact", stage); return "created"; }
+    } else if (r.status >= 200 && r.status < 300) {
+      console.info("[submit] hubspot: patched contact", stage, Object.keys(properties).length, "props");
+      return "patched";
+    }
+    console.error("[submit] hubspot: write failed", r.status, r.text.slice(0, 300));
+    return "failed:" + r.status;
+  } catch (e) {
+    console.error("[submit] hubspot: write threw", e?.message || e);
+    return "failed:exception";
+  }
+}
+
 async function sendEmail({ to, subject, html, text, replyTo, bcc }) {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.MAIL_FROM;
@@ -409,6 +496,13 @@ export default async (req) => {
     return new Response(JSON.stringify({ error: "Consent required", version: VERSION }), { status: 400, headers });
   }
 
+  // Contact-captured step (option B). No email: the snapshot is not finished.
+  // Writes status partial with purpose and timeframe; completion overwrites it.
+  if (payload.stage === "partial") {
+    const hs = await hubspotWrite(payload, "partial");
+    return new Response(JSON.stringify({ ok: true, stage: "partial", hubspot: hs, version: VERSION }), { status: 200, headers });
+  }
+
   const privacyUrl = process.env.BRAND_PRIVACY_URL || "";
   const internalTo = process.env.MAIL_TO_INTERNAL;
   // Reply-to and BCC are a person, not info@. Replies are the CTA and Brad
@@ -444,12 +538,15 @@ export default async (req) => {
 
   if (failures.length) console.error("[submit] partial failure", failures, results);
 
+  // Housekeeping, strictly after the send. Logged and swallowed inside.
+  const hubspot = await hubspotWrite(payload, "completed");
+
   // The lead's copy is what the page promised. If that failed, report failure so
   // the page shows its retry path. Team failures are logged, not surfaced.
   if (leadMail.status === "rejected") {
-    return new Response(JSON.stringify({ ok: false, failed: failures, version: VERSION }), { status: 502, headers });
+    return new Response(JSON.stringify({ ok: false, failed: failures, hubspot, version: VERSION }), { status: 502, headers });
   }
-  return new Response(JSON.stringify({ ok: true, degraded: failures, version: VERSION }), { status: 200, headers });
+  return new Response(JSON.stringify({ ok: true, degraded: failures, hubspot, version: VERSION }), { status: 200, headers });
 };
 
 /* Netlify platform rate limit. Enforced at the edge before this function runs,

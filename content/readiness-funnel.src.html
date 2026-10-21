@@ -453,6 +453,28 @@ function hsSubmit(reason){
 function persistProgress(reason){
   if (DEV) console.debug("[progress]", reason, JSON.parse(JSON.stringify(state)));
   if (reason === "contact-captured" || reason.indexOf("completed:") === 0) hsSubmit(reason);
+  // Contact step: tell the function so the cv_ properties read "partial" until
+  // the quiz is finished. Fire and forget, no email is sent for this stage, and
+  // it goes nowhere near the HubSpot Forms post above. Not via
+  // sendSnapshotEmail, whose state machine and status banner are for the
+  // completion send only.
+  if (reason === "contact-captured" && location.protocol !== "file:") {
+    try {
+      var hp2 = document.getElementById("cv_hp2");
+      fetch("/api/snapshot-submit", {
+        method: "POST", keepalive: true,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stage: "partial",
+          contact: state.contact,
+          consent: state.consent === true,
+          answers: { purpose: state.answers.purpose, timeframe: state.answers.timeframe },
+          source: location.href,
+          cv_hp2: hp2 ? (hp2.value || "") : ""
+        })
+      }).catch(function(){});
+    } catch (e) { if (DEV) console.debug("[snapshot-partial] failed", e); }
+  }
   // Email add-on. Completion only, and strictly after the HubSpot post above.
   // Fire and forget: it must never block or alter CRM capture.
   if (reason.indexOf("completed:") === 0) {
