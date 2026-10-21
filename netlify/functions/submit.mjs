@@ -33,7 +33,7 @@
    Upstream 1.0.0 accepts any POST and emails any address in the body, which
    makes it an open relay on a verified sending domain. Do not "upgrade" back
    to a build without these three controls. */
-const VERSION = "1.3.0";
+const VERSION = "1.3.1";
 const BUILD = "2026-10-21";
 const BASED_ON = "1.0.0";
 const HARDENING = ["origin-allowlist", "honeypot", "field-length-caps"];
@@ -49,7 +49,8 @@ const PENDING = ["rate-limit (configured, not enforcing on this plan)"];
    (ready_mover removed, "Ready to move" is derived), answers block, peer stats
    keyed on purpose, archetype link, Brad's closing, "Book a time" button, BCC
    copy to Brad, plain-text part, Spam Act footer. No illustration, no fee, no
-   service description in the lead's copy. */
+   service description in the lead's copy.
+   1.3.1: reflection branches on answers.missed (searching vs starting). */
 
 const SITE = "https://www.capitalvue.com.au/";
 const ABN = "56 671 085 028";
@@ -83,15 +84,19 @@ const ARCHETYPES = {
   strategic_upgrader: {
     name: "Strategic Upgrader",
     tagline: "You already own, and the next one has to be a step up, not a sideways move.",
-    reflection:
+    reflection_searching:
       "You told us you own and you're planning your next home. People in this position usually aren't short on effort. They've been to the inspections, they've watched a few go for more than they expected, and the question has shifted from \"can we buy\" to \"how do we stop losing the ones we want\".",
+    reflection_starting:
+      "You told us you own and you're thinking about the next home, without having started the search in earnest. That is the right order. The people who get hurt in an upgrade are the ones who fall for a house before they've worked out the sale, the borrowing and what they'd actually pay for it. You haven't done that yet, which means the sequencing is still yours to set.",
     next:
       "You'll want the sale and the purchase sequenced before you fall for anything, a clear read on what a place is worth from the sales evidence before you offer, and a plan for the one that matters so it isn't decided on the day.",
   },
   foundation_builder: {
     name: "Foundation Builder",
     tagline: "You're getting the groundwork in place for your first home.",
-    reflection:
+    reflection_searching:
+      "You told us you're renting, working toward your first home, and you've already lost one or more. That is more common than it feels, and it is rarely about the offer. First-home buyers tend to lose on timing and on not knowing what a place is worth before the open home, and both of those are fixable before the next one.",
+    reflection_starting:
       "You told us you're renting and working toward your first purchase. Most people at this stage benefit most from clarity: what's realistic, what to sort first, and what the path actually looks like from here to keys.",
     next:
       "You'll want finance taken to pre-approval rather than a conversation, the areas that fit your budget settled, and a way of knowing what a place is worth before you walk into the open home.",
@@ -99,7 +104,9 @@ const ARCHETYPES = {
   growth_investor: {
     name: "Growth-Focused Investor",
     tagline: "You're buying for the long term and thinking in years, not months.",
-    reflection:
+    reflection_searching:
+      "You told us your next move is your first investment property and you've already missed out at least once. For a first investment that usually means the budget or the finance wasn't settled before the search started, so the decision had to be made under pressure. The asset matters, but the order matters more.",
+    reflection_starting:
       "You told us your next move is your first investment property. People with this mindset care most about buying an asset that holds and builds value, and about making the first one count.",
     next:
       "You'll want to be clear on what a strong long-term asset looks like for you, how it sits alongside your home and your borrowing, and a timeline that suits you rather than the market.",
@@ -107,7 +114,9 @@ const ARCHETYPES = {
   portfolio_expander: {
     name: "Portfolio Expander",
     tagline: "You already hold property and you're looking to keep building.",
-    reflection:
+    reflection_searching:
+      "You told us you hold property, you want to keep building, and you've lost one or more along the way. Experienced investors rarely lose on nerve. They lose on borrowing capacity that wasn't confirmed, or on a number that was set before the comparable sales were in. Both are worth checking before the next one.",
+    reflection_starting:
       "You told us you hold property and want to keep growing. Experienced investors at this stage focus on where the next acquisition is, and on keeping momentum without overextending.",
     next:
       "You'll want your borrowing capacity confirmed before the next one rather than after, a clear view of where it sits against what you already hold, and a strategy that still makes sense as the portfolio grows.",
@@ -176,6 +185,11 @@ function answerRows(answers) {
   return out;
 }
 
+/* Reflection variant (bug note 21 Oct 2026): chosen by answers.missed.
+   not_yet, not_started and a missing answer take the starting variant. */
+const searching = (a) => a.missed === "multi" || a.missed === "once";
+const reflectionFor = (arch, a) => (searching(a) ? arch.reflection_searching : arch.reflection_starting);
+
 /* Derived values (spec section 3). */
 function derive(payload) {
   const a = payload.answers || {};
@@ -232,7 +246,7 @@ function leadEmailHtml({ firstName, payload, privacyUrl, unsubscribeTo }) {
         </table>
       </td></tr>
       <tr><td style="height:18px;"></td></tr>
-      <tr><td style="font-size:15px;">${esc(a.reflection)}</td></tr>
+      <tr><td style="font-size:15px;">${esc(reflectionFor(a, payload.answers || {}))}</td></tr>
       <tr><td style="height:18px;"></td></tr>
       <tr><td style="${box}">
         <div style="${lbl}">People in your position</div>
@@ -275,7 +289,7 @@ function leadEmailText({ firstName, payload, privacyUrl, unsubscribeTo }) {
   L.push(a.tagline, "");
   L.push("WHAT YOU TOLD US");
   d.rows.forEach(([k, v]) => L.push(`${k}: ${v}`));
-  L.push("", a.reflection, "");
+  L.push("", reflectionFor(a, payload.answers || {}), "");
   L.push("PEOPLE IN YOUR POSITION", peer.stats, peer.line, PEER_SOURCE, "");
   L.push(`Where you go from here: ${lcFirst(a.next)}`);
   L.push(`${lk.t} ${linkUrl}`, "");

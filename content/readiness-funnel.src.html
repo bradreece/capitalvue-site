@@ -325,19 +325,23 @@ const QUESTIONS = [
 const ARCHETYPES = {
   strategic_upgrader:{ name:"Strategic Upgrader", leadIn:"Based on your answers, you look like a",
     tagline:"You already own, and the next one has to be a step up, not a sideways move.",
-    reflection:"You told us you own and you're planning your next home. People in this position usually aren't short on effort. They've been to the inspections, they've watched a few go for more than they expected, and the question has shifted from \"can we buy\" to \"how do we stop losing the ones we want\".",
+    reflection_searching:"You told us you own and you're planning your next home. People in this position usually aren't short on effort. They've been to the inspections, they've watched a few go for more than they expected, and the question has shifted from \"can we buy\" to \"how do we stop losing the ones we want\".",
+    reflection_starting:"You told us you own and you're thinking about the next home, without having started the search in earnest. That is the right order. The people who get hurt in an upgrade are the ones who fall for a house before they've worked out the sale, the borrowing and what they'd actually pay for it. You haven't done that yet, which means the sequencing is still yours to set.",
     next:"You'll want the sale and the purchase sequenced before you fall for anything, a clear read on what a place is worth from the sales evidence before you offer, and a plan for the one that matters so it isn't decided on the day." },
   foundation_builder:{ name:"Foundation Builder", leadIn:"Based on your answers, you look like a",
     tagline:"You're getting the groundwork in place for your first home.",
-    reflection:"You told us you're renting and working toward your first purchase. Most people at this stage benefit most from clarity: what's realistic, what to sort first, and what the path actually looks like from here to keys.",
+    reflection_searching:"You told us you're renting, working toward your first home, and you've already lost one or more. That is more common than it feels, and it is rarely about the offer. First-home buyers tend to lose on timing and on not knowing what a place is worth before the open home, and both of those are fixable before the next one.",
+    reflection_starting:"You told us you're renting and working toward your first purchase. Most people at this stage benefit most from clarity: what's realistic, what to sort first, and what the path actually looks like from here to keys.",
     next:"You'll want finance taken to pre-approval rather than a conversation, the areas that fit your budget settled, and a way of knowing what a place is worth before you walk into the open home." },
   growth_investor:{ name:"Growth-Focused Investor", leadIn:"Based on your answers, you look like a",
     tagline:"You're buying for the long term and thinking in years, not months.",
-    reflection:"You told us your next move is your first investment property. People with this mindset care most about buying an asset that holds and builds value, and about making the first one count.",
+    reflection_searching:"You told us your next move is your first investment property and you've already missed out at least once. For a first investment that usually means the budget or the finance wasn't settled before the search started, so the decision had to be made under pressure. The asset matters, but the order matters more.",
+    reflection_starting:"You told us your next move is your first investment property. People with this mindset care most about buying an asset that holds and builds value, and about making the first one count.",
     next:"You'll want to be clear on what a strong long-term asset looks like for you, how it sits alongside your home and your borrowing, and a timeline that suits you rather than the market." },
   portfolio_expander:{ name:"Portfolio Expander", leadIn:"Based on your answers, you look like a",
     tagline:"You already hold property and you're looking to keep building.",
-    reflection:"You told us you hold property and want to keep growing. Experienced investors at this stage focus on where the next acquisition is, and on keeping momentum without overextending.",
+    reflection_searching:"You told us you hold property, you want to keep building, and you've lost one or more along the way. Experienced investors rarely lose on nerve. They lose on borrowing capacity that wasn't confirmed, or on a number that was set before the comparable sales were in. Both are worth checking before the next one.",
+    reflection_starting:"You told us you hold property and want to keep growing. Experienced investors at this stage focus on where the next acquisition is, and on keeping momentum without overextending.",
     next:"You'll want your borrowing capacity confirmed before the next one rather than after, a clear view of where it sits against what you already hold, and a strategy that still makes sense as the portfolio grows." }
 };
 
@@ -370,6 +374,10 @@ function computeReadiness(a){
   const tag = a.missed || "unknown";
   return { tag, missed:a.missed||"", sell:a.sell||"" };
 }
+/* The reflection depends on whether they have lost a property yet. not_yet and
+   not_started (and a missing answer) take the starting variant. */
+function searching(a){ return a.missed==="multi" || a.missed==="once"; }
+function reflectionFor(arch, a){ return searching(a) ? arch.reflection_searching : arch.reflection_starting; }
 function readyNow(a){ return (a.timeframe==="now"||a.timeframe==="3_6") && a.readiness==="ready"; }
 
 function computeArchetype(a){
@@ -720,7 +728,7 @@ function renderOutcome(){
   document.getElementById("o-leadin").textContent = fn ? `${fn}, based on your answers you look like a` : a.leadIn;
   document.getElementById("o-name").textContent = a.name;
   document.getElementById("o-tag").textContent = a.tagline;
-  document.getElementById("o-reflection").textContent = a.reflection;
+  document.getElementById("o-reflection").textContent = reflectionFor(a, state.answers);
   document.getElementById("o-next").textContent = a.next;
   document.getElementById("o-mod").hidden = !readyNow(state.answers);
   const inv = (state.answers.purpose==="first_ip" || state.answers.purpose==="another_ip");
