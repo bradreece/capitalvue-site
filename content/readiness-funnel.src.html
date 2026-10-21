@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Property Readiness Snapshot — CapitalVue</title>
+<title>Property Readiness Snapshot | CapitalVue</title>
 <style>
   :root{
     color-scheme:light;
@@ -130,6 +130,18 @@
   .cta h3{font-size:22px;margin:0 0 8px;letter-spacing:-0.01em;color:var(--ink)}
   .cta p{margin:0 auto 20px;color:var(--ink-2);max-width:46ch}
   .cal-slot{margin-top:18px;font-size:12px;color:var(--muted)}
+  .arch-mod[hidden]{display:none}
+  .arch-mod{display:block;width:max-content;margin:0 auto 14px;font-size:12.5px;font-weight:600;color:var(--brand-navy);background:var(--series-soft);border-radius:99px;padding:4px 12px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:4px 0 14px}
+  @media (max-width:560px){.stats{grid-template-columns:1fr}}
+  .stat{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 14px 12px;min-width:0}
+  .stat .n{font-family:var(--serif);font-size:32px;font-weight:700;line-height:1;color:var(--brand-navy);font-variant-numeric:tabular-nums}
+  .stat .l{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.4}
+  .src{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
+  .card p.peer{color:var(--ink-2)}
+  .next-link{margin-top:12px}
+  .next-link a{color:var(--series);font-weight:600;text-decoration:none}
+  .cta .or{font-size:13px;color:var(--muted);margin:14px 0 0}
   footer.legal{max-width:760px;margin:8px auto 0;padding:20px 4px 0;border-top:1px solid var(--border)}
   footer.legal p{font-size:11.5px;line-height:1.6;color:var(--muted);margin:0 0 10px}
   footer.legal strong{color:var(--ink-2)}
@@ -157,9 +169,9 @@
     <div class="intro">
       <img class="logo-lg" src="assets/logo-2.png" alt="CapitalVue">
       <p class="tag">Build a portfolio. Create a legacy.</p>
-      <h1>Where are you really at with property?</h1>
-      <p>7 quick questions, about 2 minutes. See where you stand, and what to look at next.</p>
-      <button class="btn" id="startBtn" style="margin-top:22px">Start</button>
+      <h1>How ready are you to buy?</h1>
+      <p>Two minutes. Your position, how it compares with others at the same stage, and what to sort next.</p>
+      <button class="btn" id="startBtn" style="margin-top:22px">Check your position</button>
     </div>
   </section>
 
@@ -171,13 +183,15 @@
     <div class="wide" style="margin:0 auto">
       <p class="kicker">Your Property Readiness Snapshot</p>
       <h2 class="arch-name"><span class="lead-in" id="o-leadin"></span><span id="o-name"></span></h2>
+      <span class="arch-mod" id="o-mod" hidden>Ready to move</span>
       <p class="arch-tag" id="o-tag"></p>
       <div id="snapshot-email-status"></div>
 
       <div class="card"><h3>What you told us</h3><p id="o-reflection"></p></div>
-      <div class="card"><h3>What people at this stage often focus on next</h3><p id="o-next"></p></div>
+      <div class="card"><h3>People in your position</h3><div class="stats" id="o-stats"></div><p class="peer" id="o-peer"></p><p class="src">Source: CapitalVue Property Readiness Snapshot responses. Our own data, not a market statistic.</p></div>
+      <div class="card"><h3>Where you go from here</h3><p id="o-next"></p><p class="next-link"><a id="o-link" href="#"></a></p></div>
 
-      <div class="card">
+      <div class="card" id="o-illus">
         <p class="illus-title">A general illustration: property values over 10 years</p>
         <p class="illus-sub">Fixed assumption of 5% growth per year. Not based on your answers.</p>
         <div class="chart-holder">
@@ -193,9 +207,10 @@
       </div>
 
       <div class="cta">
-        <h3 id="o-cta-h">Stuck on the next step?</h3>
-        <p id="o-cta-p">That is what the call is for. Tell us where you are at and we will tell you what we would look at next. You will hang up with a plan, not more questions.</p>
-        <button class="btn" id="bookBtn">Book a free strategy call</button>
+        <h3 id="o-cta-h">Stuck somewhere in this?</h3>
+        <p id="o-cta-p">Book some time and we'll work out what's actually in the way. You'll leave knowing what to do next.</p>
+        <button class="btn" id="bookBtn">Book some time</button>
+        <p class="or">Or reply to the email we've just sent you.</p>
       </div>
     </div>
   </section>
@@ -250,24 +265,26 @@ const QUESTIONS = [
     ]},
   { id:"contact", type:"contact", eyebrow:"Almost there",
     title:"Where should we send your snapshot?",
-    sub:"We'll show it on the next screen and send you a copy." },
+    sub:"We'll send you a copy." },
   { id:"position", type:"single", eyebrow:"Your situation",
     title:"Which best describes you today?",
     options:[
       {v:"renting",     label:"Renting", desc:"I don't own property yet"},
       {v:"own_home",    label:"I own my home", desc:"No investment properties"},
-      {v:"own_home_ip", label:"I own my home and at least one investment property"}
+      {v:"own_home_ip", label:"I own my home and at least one investment property"},
+      {v:"rentvest",    label:"Rentvesting", desc:"I rent where I live and already own an investment property or two"}
     ]},
-  { id:"existingIPs", type:"single", eyebrow:"Your situation",
-    title:"How many investment properties do you already own?",
+  { id:"state", type:"single", eyebrow:"Where",
+    title:"Where are you looking to buy?",
     options:[
-      {v:"0",     label:"None yet"},
-      {v:"1",     label:"One"},
-      {v:"2plus", label:"Two or more"}
+      {v:"adelaide", label:"Adelaide"},
+      {v:"seq",      label:"Brisbane or South East Queensland"},
+      {v:"other",    label:"Somewhere else"},
+      {v:"unsure",   label:"Not sure yet"}
     ]},
   { id:"readiness", type:"single", eyebrow:"Your position",
-    title:"How's your deposit or equity position?",
-    sub:"Your best estimate is fine.",
+    title:"Where does your deposit or usable equity actually sit right now?",
+    sub:"A realistic baseline. No need for verified broker figures.",
     options:[
       {v:"ready",    label:"Ready to go", desc:"Deposit or usable equity is sorted"},
       {v:"mostly",   label:"Mostly there", desc:"Close, with a bit more to do"},
@@ -275,22 +292,29 @@ const QUESTIONS = [
       {v:"unsure",   label:"Not sure where I stand"}
     ]},
   { id:"finance", type:"single", eyebrow:"Your position",
-    title:"Where are you with finance?",
+    title:"Where does your purchasing finance stand?",
     options:[
-      {v:"preapproved", label:"I have pre-approval"},
-      {v:"broker",      label:"I've spoken to a broker or bank"},
-      {v:"cash",        label:"I'm a cash buyer"},
-      {v:"notyet",      label:"Haven't started that yet"}
+      {v:"preapproved", label:"Formal pre-approval in place", desc:"Ready to buy immediately"},
+      {v:"equity",      label:"Refinancing or drawing equity from existing property"},
+      {v:"broker",      label:"Application in progress with a broker or lender"},
+      {v:"cash",        label:"Purchasing with available cash", desc:"No lending required"},
+      {v:"notyet",      label:"Early stages, haven't started yet", desc:"Need broker guidance"}
     ]},
-  { id:"assets", type:"multi", eyebrow:"Your investing background",
-    title:"Which of these have you invested in before?",
-    sub:"Select all that apply. This just helps us understand where you're coming from.",
+  { id:"missed", type:"single", eyebrow:"Your search so far",
+    title:"Have you missed out on a property in the last 12 months?",
+    sub:"An offer that didn't land, an auction, or one you walked away from and regretted.",
     options:[
-      {v:"property", label:"Property"},
-      {v:"shares",   label:"Shares or ETFs"},
-      {v:"crypto",   label:"Crypto"},
-      {v:"smsf",     label:"An SMSF (self-managed super fund)"},
-      {v:"none",     label:"None of these yet"}
+      {v:"multi",       label:"Yes, more than once"},
+      {v:"once",        label:"Yes, once"},
+      {v:"not_yet",     label:"Not yet, but I've been looking"},
+      {v:"not_started", label:"I haven't started looking"}
+    ]},
+  { id:"sell", type:"single", eyebrow:"One more",
+    title:"Will you need to sell before you buy?",
+    options:[
+      {v:"yes",    label:"Yes, I'll need to sell first"},
+      {v:"no",     label:"No, I can buy first"},
+      {v:"unsure", label:"Not sure yet"}
     ]}
 ];
 
@@ -299,50 +323,61 @@ const QUESTIONS = [
    Maps property answers to a readiness archetype.
    ========================================================= */
 const ARCHETYPES = {
-  ready_mover:{ name:"Ready Mover", leadIn:"Based on your answers, you look like a",
-    tagline:"You're set up to move, and timing is your main question.",
-    reflection:"From what you told us, your position is largely sorted and you're looking to act in the near term. People at this stage are usually less worried about whether they can buy, and more focused on buying well: the right area, the right asset, and not overpaying in a competitive market.",
-    next:"Common things people work through here: shortlisting locations against their goals, getting a clear read on current buying conditions, and having their finance and team ready so they can move quickly when the right property appears." },
-  growth_investor:{ name:"Growth-Focused Investor", leadIn:"Based on your answers, you look like a",
-    tagline:"You're building for the long term and thinking in years, not months.",
-    reflection:"You told us your focus is long-term growth through property rather than a quick result. People with this mindset tend to care most about buying assets that hold and build value over time, and about making each purchase count.",
-    next:"Common things people work through here: getting clear on what a strong long-term asset looks like for them, how a purchase fits alongside anything they already hold, and the timeline that suits their plans." },
-  foundation_builder:{ name:"Foundation Builder", leadIn:"Based on your answers, you look like a",
-    tagline:"You're getting the groundwork in place for your first move.",
-    reflection:"You told us you're earlier in the journey and building toward your first purchase. Most people at this stage benefit most from clarity: understanding what's realistic, what to prioritise, and what the path actually looks like.",
-    next:"Common things people work through here: getting a clear picture of their position, understanding the steps ahead, and sidestepping the common early mistakes." },
   strategic_upgrader:{ name:"Strategic Upgrader", leadIn:"Based on your answers, you look like a",
-    tagline:"You have a base already, and you're planning your next step up.",
-    reflection:"You told us you already own and you're thinking about your next move. People in this position often weigh up timing, how to make the transition smoothly, and how to make the next purchase a genuine improvement.",
-    next:"Common things people work through here: sequencing the move, reading current conditions, and being clear on what a better next property actually means for them." },
+    tagline:"You already own, and the next one has to be a step up, not a sideways move.",
+    reflection:"You told us you own and you're planning your next home. People in this position usually aren't short on effort. They've been to the inspections, they've watched a few go for more than they expected, and the question has shifted from \"can we buy\" to \"how do we stop losing the ones we want\".",
+    next:"You'll want the sale and the purchase sequenced before you fall for anything, a clear read on what a place is worth from the sales evidence before you offer, and a plan for the one that matters so it isn't decided on the day." },
+  foundation_builder:{ name:"Foundation Builder", leadIn:"Based on your answers, you look like a",
+    tagline:"You're getting the groundwork in place for your first home.",
+    reflection:"You told us you're renting and working toward your first purchase. Most people at this stage benefit most from clarity: what's realistic, what to sort first, and what the path actually looks like from here to keys.",
+    next:"You'll want finance taken to pre-approval rather than a conversation, the areas that fit your budget settled, and a way of knowing what a place is worth before you walk into the open home." },
+  growth_investor:{ name:"Growth-Focused Investor", leadIn:"Based on your answers, you look like a",
+    tagline:"You're buying for the long term and thinking in years, not months.",
+    reflection:"You told us your next move is your first investment property. People with this mindset care most about buying an asset that holds and builds value, and about making the first one count.",
+    next:"You'll want to be clear on what a strong long-term asset looks like for you, how it sits alongside your home and your borrowing, and a timeline that suits you rather than the market." },
   portfolio_expander:{ name:"Portfolio Expander", leadIn:"Based on your answers, you look like a",
     tagline:"You already hold property and you're looking to keep building.",
-    reflection:"You told us you hold one or more properties and want to keep growing. Experienced investors at this stage usually focus on where the next opportunity is, and on keeping momentum without overextending.",
-    next:"Common things people work through here: identifying the next acquisition, reading current market conditions, and keeping the overall strategy coherent as it grows." }
+    reflection:"You told us you hold property and want to keep growing. Experienced investors at this stage focus on where the next acquisition is, and on keeping momentum without overextending.",
+    next:"You'll want your borrowing capacity confirmed before the next one rather than after, a clear view of where it sits against what you already hold, and a strategy that still makes sense as the portfolio grows." }
 };
 
-/* Aggregates the assets answer into a single experience tag
-   used for CRM lead routing. */
+/* Peer statistics by next move, from CapitalVue's own Snapshot responses.
+   Refresh monthly from the responses spreadsheet (the dated substantiation record). */
+const PEER_ASOF = "2026-10-20";
+const PEER = {
+  next_home:  { stats:[["41%","of people who've taken this are buying their next home. The biggest group we see."],["7 in 10","want to move within six months."],["Fewer than 1 in 10","have pre-approval in hand."]],
+                line:"Most people in this group already own. Timing and the sale are usually the sticking points, not the deposit." },
+  first_home: { stats:[["1 in 4","of people who've taken this are buying their first home."],["Nearly all","are renting right now."],["About half","have talked to a broker. A third haven't started on finance."]],
+                line:"Deposit is usually close. Finance is usually the thing that hasn't been done yet." },
+  first_ip:   { stats:[["Most","first-time investors we see already own their home."],["9 in 10","want to buy within six months."],["Fewer than half","have spoken to a broker."]],
+                line:"The timeframe is short and the finance conversation hasn't happened. That gap is the one to close first." },
+  another_ip: { stats:[["Half","of the experienced investors we see are ready now."],["Most","have equity sorted."],["1 in 12","had pre-approval."]],
+                line:"Experience doesn't change the pattern: equity is ready, borrowing capacity hasn't been confirmed." }
+};
+const LINK = {
+  strategic_upgrader:{ t:"How we work with people buying their next home", u:"evaluate-and-negotiate.html" },
+  foundation_builder:{ t:"How we work with first-home buyers",              u:"evaluate-and-negotiate.html" },
+  growth_investor:   { t:"How we work with investors",                      u:"services.html" },
+  portfolio_expander:{ t:"How we work with investors",                      u:"services.html" }
+};
+const CTA = {
+  next_home:  { h:"The next one you fall for will sell too.", p:"If you'd rather it sold to you, book some time and we'll go through what to change before it hits the market." },
+  other:      { h:"Stuck somewhere in this?", p:"Book some time and we'll work out what's actually in the way. You'll leave knowing what to do next." }
+};
+
+/* Search-experience tag used for CRM lead routing: the missed-out answer. */
 function computeReadiness(a){
-  const raw = Array.isArray(a.assets) ? a.assets : [];
-  const assets = raw.filter(x=>x!=="none");
-  const breadth = assets.length;
-  let tag;
-  if(raw.includes("none")) tag="new";
-  else if(breadth===0) tag="unknown";
-  else if(breadth===1) tag="single-asset";
-  else if(breadth===2) tag="diversifying";
-  else tag="experienced-multi-asset";
-  return { breadth, assets, tag, hasSMSF:assets.includes("smsf"), hasCrypto:assets.includes("crypto") };
+  const tag = a.missed || "unknown";
+  return { tag, missed:a.missed||"", sell:a.sell||"" };
 }
+function readyNow(a){ return (a.timeframe==="now"||a.timeframe==="3_6") && a.readiness==="ready"; }
 
 function computeArchetype(a){
-  // Precedence matters — first match wins.
-  if(a.existingIPs==="2plus" || a.purpose==="another_ip") return "portfolio_expander";
-  if(a.purpose==="first_ip") return "growth_investor";
-  if((a.timeframe==="now"||a.timeframe==="3_6") && a.readiness==="ready") return "ready_mover";
-  if(a.purpose==="next_home" && (a.position==="own_home"||a.position==="own_home_ip")) return "strategic_upgrader";
-  if(a.purpose==="first_home") return "foundation_builder";
+  // The person's own description of their next move decides the type.
+  // "Ready to move" is a modifier (readyNow), not a type.
+  if(a.purpose==="another_ip") return "portfolio_expander";
+  if(a.purpose==="first_ip")   return "growth_investor";
+  if(a.purpose==="next_home")  return "strategic_upgrader";
   return "foundation_builder";
 }
 
@@ -352,8 +387,8 @@ function computeArchetype(a){
    ========================================================= */
 const HS_ENDPOINT = "https://api-ap1.hsforms.com/submissions/v3/integration/submit/45491120/9f419495-172c-4c2b-9578-e0e87d37fbbe";
 const LABELS = {
-  purpose:"Next move", timeframe:"Timeframe", position:"Situation",
-  existingIPs:"Investment properties owned", readiness:"Deposit/equity", finance:"Finance", assets:"Invested in before"
+  purpose:"Next move", timeframe:"Timeframe", position:"Situation", state:"Buying in",
+  readiness:"Deposit/equity", finance:"Finance", missed:"Missed out", sell:"Sell first"
 };
 function labelFor(qid, val){
   const q = QUESTIONS.find(x=>x.id===qid);
@@ -369,7 +404,7 @@ function buildSummary(reason){
     if(v !== undefined && v !== null && !(Array.isArray(v) && !v.length)) L.push(LABELS[k] + ": " + labelFor(k, v));
   });
   if(state.archetype && ARCHETYPES[state.archetype]) L.push("Archetype: " + ARCHETYPES[state.archetype].name);
-  if(state.readiness) L.push("Investor experience: " + state.readiness.tag);
+  if(state.archetype) L.push("Ready to move: " + (readyNow(state.answers) ? "yes" : "no"));
   L.push("Source: property-readiness quiz");
   return L.join("\n");
 }
@@ -528,8 +563,8 @@ function buildScreens(){
 }
 
 function screenIds(){ return ["s-intro", ...QUESTIONS.map(q=>"s-"+q.id), "outcome"]; }
-/* A renter should never be asked how many investment properties they own. */
-function skipped(id){ return id === "s-existingIPs" && state.answers.position === "renting"; }
+/* The sell-first question is only for people buying their next home. */
+function skipped(id){ return id === "s-sell" && state.answers.purpose !== "next_home"; }
 function liveQuestionCount(){ return QUESTIONS.filter(q=>!skipped("s-"+q.id)).length; }
 
 function show(i){
@@ -687,6 +722,19 @@ function renderOutcome(){
   document.getElementById("o-tag").textContent = a.tagline;
   document.getElementById("o-reflection").textContent = a.reflection;
   document.getElementById("o-next").textContent = a.next;
+  document.getElementById("o-mod").hidden = !readyNow(state.answers);
+  const inv = (state.answers.purpose==="first_ip" || state.answers.purpose==="another_ip");
+  const peer = PEER[state.answers.purpose] || PEER.first_home;
+  document.getElementById("o-stats").innerHTML = peer.stats.map(s=>'<div class="stat"><div class="n">'+s[0]+'</div><div class="l">'+s[1]+'</div></div>').join("");
+  document.getElementById("o-peer").textContent = peer.line;
+  const lk = LINK[state.archetype];
+  const link = document.getElementById("o-link");
+  link.textContent = lk.t + " \u2192";
+  link.href = lk.u + "?utm_source=snapshot&utm_medium=result&utm_content=" + encodeURIComponent(state.archetype);
+  document.getElementById("o-illus").style.display = inv ? "" : "none";
+  const cta = state.answers.purpose==="next_home" ? CTA.next_home : CTA.other;
+  document.getElementById("o-cta-h").textContent = cta.h;
+  document.getElementById("o-cta-p").textContent = cta.p;
   state.readiness = computeReadiness(state.answers);
   persistProgress("completed:"+state.archetype+"|readiness:"+state.readiness.tag);
 }

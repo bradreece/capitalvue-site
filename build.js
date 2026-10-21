@@ -2004,7 +2004,7 @@ pages['404.html'] = page('Page not found | CapitalVue','That page has moved or n
 {
   const FUNNEL_PATH = 'property-readiness.html';
   const FUNNEL_TITLE = 'Property Readiness Snapshot | CapitalVue';
-  const FUNNEL_DESC = 'Answer eight quick questions and get a free, personalised property readiness snapshot in under two minutes, from licensed buyers agency CapitalVue.';
+  const FUNNEL_DESC = 'Answer a few quick questions and get a free, personalised property readiness snapshot in about two minutes, from licensed buyers agency CapitalVue.';
   const url = BASE + FUNNEL_PATH;
   const ld = [ORG_SCHEMA, {"@context":"https://schema.org","@type":"WebPage","name":"Property Readiness Snapshot","description":FUNNEL_DESC,"url":url,"isPartOf":{"@id":BASE+"#organisation"},"publisher":{"@id":BASE+"#organisation"}}, bcList([{name:'Home',url:BASE},{name:'Property Readiness Snapshot',url}])];
   const head = `<meta name="description" content="${esc(FUNNEL_DESC)}">
