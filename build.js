@@ -41,6 +41,8 @@ const featBand = `
 const readContent = f => fs.readFileSync(path.join(DIR,'content',f),'utf8');
 const DASH = A('tracker-shot.jpg');
 const BLOGIMG = {
+  'why-you-lost-the-last-one': A('blog-why-you-lost-the-last-one.jpg'),
+  'home-loan-pre-approval-explained': A('blog-pre-approval-explained.jpg'),
   'borrowing-capacity-housing-cycles': A('blog-borrowing-capacity-cycles.jpg'),
   'adelaide-property-market-update-september-2026': A('blog-adelaide-market-update-sep-2026.jpg'),
   'brisbane-flood-risk-flood-maps': A('blog-brisbane-flood-risk.jpg'),
@@ -1113,7 +1115,9 @@ ${ctaBand}`;
 // Optional per-article fields: author (visible byline, maps to a PEOPLE schema
 // entry), updated (ISO date) + updatedLabel ('12 October 2026'). Set updated
 // only for a substantive content change, never for a link or typo fix.
-const ARTICLES = [
+const ALL_ARTICLES = [
+  {slug:'why-you-lost-the-last-one', desc:'The reasons buyers lose repeat, and almost none are about money. Offer rejected, passed in, walked away: five patterns and what changes next time.', date:'28 October 2026', iso:'2026-10-28', cat:'Strategy', title:'Why You Lost the Last One', seo:'Why you keep missing out on properties', og:'assets/og-why-you-lost-the-last-one.jpg', file:'why-you-lost-the-last-one.html'},
+  {slug:'home-loan-pre-approval-explained', desc:'What pre-approval is, what it isn\'t, how long it lasts, and why most people who say they\'re ready to buy don\'t have one yet. CapitalVue, Adelaide and SEQ.', date:'21 October 2026', iso:'2026-10-21', cat:'Due diligence', title:'Pre-approval, Explained by Someone Who Isn\'t Selling You a Loan', seo:'Pre-approval, explained without a loan to sell', og:'assets/og-pre-approval-explained.jpg', file:'pre-approval-explained.html', faq:[{q:'What is home loan pre-approval?',a:'A conditional indication from a lender that, on the income, expenses, debts and deposit you have provided, it would be prepared to lend you up to a stated amount. It is not final approval. The property still has to be accepted and valued, and your circumstances have to be unchanged at contract.'},{q:'How long does pre-approval last?',a:'Published lender and broker guidance puts the range at three to six months, and individual lender certificates commonly run 90 days from issue. A change in income, employment, debts, lender policy or interest rates can end it earlier. Check the date on your letter.'},{q:'Does pre-approval guarantee my loan will be approved?',a:'No. Pre-approval is conditional. Final approval only comes after the lender has valued the specific property and completed its own checks on it. A valuation below the contract price or a property the lender will not accept can both result in a decline.'}]},
   {slug:'borrowing-capacity-housing-cycles', desc:'A full point of cash rate removed about 8.5% of borrowing capacity in 2026. What eight past cycles, consumer confidence and the housing supply gap say next.', date:'20 October 2026', iso:'2026-10-20', cat:'Market update', title:'Borrowing Capacity, Past Cycles and the Supply Gap', seo:'Housing Cycles and Borrowing Power 2026', og:'assets/og-borrowing-capacity-cycles.jpg', file:'borrowing-capacity-cycles.html'},
     {slug:'adelaide-property-market-update-september-2026', desc:'Adelaide fell 1.3% and Brisbane 1.5% in September 2026, yet both are still up over the year. What the fourth RBA rate rise of 2026 means for buyers.', date:'3 October 2026', iso:'2026-10-03', cat:'Market update', title:'Adelaide Property Market Update: September 2026', seo:'Adelaide Property Market Update, Sep 2026', og:'assets/og-adelaide-market-update-sep-2026.jpg', file:'adelaide-market-update-september-2026.html'},
   {slug:'brisbane-flood-risk-flood-maps', desc:'A council flood map is a screening test, not a diagnosis. What the Brisbane Flood Awareness Map leaves out, and the checks to run before you buy.', date:'22 September 2026', iso:'2026-09-22', cat:'Due diligence', author:'Dr Rebecca Cox', title:'Brisbane Flood Risk: What the Flood Maps Do Not Tell You', seo:'Brisbane Flood Risk: What Flood Maps Miss', og:'assets/og-brisbane-flood-risk.jpg', file:'brisbane-flood-risk.html'},  
@@ -1127,6 +1131,15 @@ const ARTICLES = [
   {slug:'cgt-discount-review', desc:'The 50% CGT discount is under formal government review. What it costs, who it benefits, and what a change would mean for Australian property investors.', date:'5 February 2026', iso:'2026-02-05', cat:'Policy', title:'Australia&#39;s CGT Discount Is Under Formal Government Review', seo:'CGT Discount Review: What It Means', file:'cgt-review.html'},
   {slug:'benefits-of-rentvesting', desc:'Rentvesting explained: rent where you want to live, buy where you can afford to invest. How it works, a Brisbane and Melbourne case study, and the risks.', date:'24 November 2025', iso:'2025-11-24', cat:'Strategy', title:'The Benefits of Rentvesting Explained', file:'rentvesting.html'},
 ];
+// Publish-date guard. An entry whose iso date is after today in Brisbane is left
+// out of every surface (page, blog grid, related links, sitemap, llms.txt) and
+// appears on the first build on or after that date. Trigger that build with any
+// push, or "Trigger deploy" in Netlify. Queensland has no daylight saving, so
+// Brisbane is a fixed UTC+10 and the arithmetic below is exact.
+const TODAY_BNE = new Date(Date.now() + 10*3600*1000).toISOString().slice(0,10);
+const ARTICLES = ALL_ARTICLES.filter(a => a.iso <= TODAY_BNE);
+ALL_ARTICLES.filter(a => a.iso > TODAY_BNE).forEach(a => console.log('Scheduled, not yet published:', a.slug, a.iso));
+
 const articleSchema = a => ({"@context":"https://schema.org","@type":"BlogPosting","headline":esc(a.title),"datePublished":a.iso,"dateModified":a.updated||a.iso,"author":PEOPLE[AUTHOR_KEY(a.author)],"publisher":{"@type":"Organization","name":"CapitalVue","logo":{"@type":"ImageObject","url":BASE+"assets/cv-logo-stacked.png"}},"image":BASE+BLOGIMG[a.slug],"articleSection":a.cat,"mainEntityOfPage":{"@type":"WebPage","@id":BASE+"post-"+a.slug+".html"}});
 const postCard = a => `<a class="post reveal" href="post-${a.slug}.html"><div class="thumb"><img src="${BLOGIMG[a.slug]}" alt="${esc(a.title)}" loading="lazy" decoding="async" width="820" height="470"><span class="cat">${a.cat}</span></div><div class="pb"><span class="dt">${a.date}</span><h3>${a.title}</h3><span class="rd">Read article →</span></div></a>`;
 // Three more posts for the end of each article: the next three in the
@@ -1989,7 +2002,7 @@ const pages = {
 for (const a of ARTICLES) {
   const clean = a.title.replace(/&amp;/g,'&').replace(/&#39;/g,"'");
   const desc = a.desc || (clean + '. Property insight from CapitalVue for Australian investors and home buyers.');
-  pages['post-'+a.slug+'.html'] = page((a.seo||clean)+' | CapitalVue', desc, articleBody(a), 'blog.html', 'post-'+a.slug+'.html', articleSchema(a), a.og?{ogImage:a.og}:null);
+  pages['post-'+a.slug+'.html'] = page((a.seo||clean)+' | CapitalVue', desc, articleBody(a), 'blog.html', 'post-'+a.slug+'.html', a.faq?[articleSchema(a),faqSchema(a.faq)]:articleSchema(a), a.og?{ogImage:a.og}:null);
 }
 pages['terms-and-conditions.html'] = page('Terms &amp; Conditions | CapitalVue','Terms and conditions of use for the CapitalVue website. CapitalVue is a licensed buyers agency in Queensland and South Australia.', legalBody('Terms &amp; Conditions','terms.html'),'','terms-and-conditions.html',null,{bare:true});
 pages['privacy-policy.html'] = page('Privacy Policy | CapitalVue Buyers Agency','How CapitalVue collects, holds and manages your personal information under the Australian Privacy Principles.', legalBody('Privacy Policy','privacy.html'),'','privacy-policy.html',null,{bare:true});
