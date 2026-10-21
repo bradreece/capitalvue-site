@@ -19,6 +19,13 @@ git push
 Netlify sees the push, clones the repo, runs `node build.js`, and publishes.
 Takes about a minute. Watch it under Deploys.
 
+**Commit source only.** The generated pages, `style.css`, `sitemap.xml`,
+`robots.txt`, `ai.txt`, `llms.txt`, `_redirects`, `_headers` and
+`snapshot-email.js` are all written by `build.js` and are gitignored. A fresh
+clone has no HTML in it until you run the build; that is expected. Netlify
+keeps every deploy at a permalink if you need to see what a page looked like
+on a given date.
+
 `netlify.toml` holds the whole configuration:
 
 ```toml
@@ -79,7 +86,9 @@ login and takes the site off the internet. The GitHub repo is the thing that
 should be private.
 
 **The publish directory is the repo root.** Anything committed here is served
-publicly, including `build.js`. There is no such thing as a private folder;
+publicly, including `build.js` and everything in `content/`, which means a
+post's fragment is readable on GitHub from the moment it is committed, even
+while the publish-date guard is holding the page back. There is no such thing as a private folder;
 `_private/` was readable by anyone for five weeks. Do not commit anything you
 would not publish.
 
