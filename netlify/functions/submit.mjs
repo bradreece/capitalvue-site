@@ -38,7 +38,7 @@
    Upstream 1.0.0 accepts any POST and emails any address in the body, which
    makes it an open relay on a verified sending domain. Do not "upgrade" back
    to a build without these three controls. */
-const VERSION = "1.4.0";
+const VERSION = "1.4.1";
 const BUILD = "2026-10-21";
 const BASED_ON = "1.0.0";
 const HARDENING = ["origin-allowlist", "honeypot", "field-length-caps"];
@@ -83,9 +83,44 @@ const esc = (s) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
   );
 
-const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
-const isAuMobile = (v) =>
-  /^(?:\+?61|0)4\d{8}$/.test(String(v || "").replace(/[\s()-]/g, ""));
+/* Junk guards. Mirror validName / validEmail / validMobile on the page
+   (content/readiness-funnel.src.html). Change both together. The page copy
+   protects the HubSpot Forms post; this copy protects the email send and the
+   Contacts API write, and holds when the page is bypassed. */
+const JUNK_NAME = /^(test|testing|tester|asdf|qwerty|abc|xyz|aaa|na|n\/a|none|null|undefined|anon|anonymous|user|admin|first|name|firstname|first name|me)$/i;
+const JUNK_EMAIL_DOMAIN = /(^|\.)(test|example|example\.com|example\.net|example\.org|test\.com|test\.net|test\.org|email\.com|mail\.com|fake\.com|asdf\.com|abc\.com|aaa\.com|xyz\.com|localhost|invalid|mailinator\.com|guerrillamail\.com|10minutemail\.com|tempmail\.com|temp-mail\.org|yopmail\.com|sharklasers\.com|trashmail\.com|dispostable\.com|getnada\.com|maildrop\.cc)$/i;
+const JUNK_EMAIL_LOCAL = /^(test|testing|tester|asdf|qwerty|abc|xyz|aaa|fake|none|null|noreply|no-reply|email|mail|user|admin|example|a|x)[0-9]*$/i;
+const SHORT_NAMES = /^(jo|ty|bo|al|ed|vi|di|su|lu|mo|ky|aj|jb|jp|tj|cj|dj|rj|pj|jd|kc|bj|jj|ki|li|ai|an|yu|wu|xu|hu|lu|ng|om|ox|el|em|ev|ia|io|ja|ju|ka|ko|la|le|lo|ma|mi|na|ni|no|ra|re|ri|ro|ru|sa|si|so|ta|ti|to|tu|ya|yo|zo)$/i;
+const isName = (v) => {
+  const t = String(v ?? "").trim();
+  if (t.length < 2 || t.length > 40) return false;
+  if (t.length === 2 && !SHORT_NAMES.test(t)) return false;
+  if (!/^[A-Za-z\u00C0-\u024F][A-Za-z\u00C0-\u024F' .-]*$/.test(t)) return false;
+  if (!SHORT_NAMES.test(t) && !/[aeiouyAEIOUY\u00C0-\u024F]/.test(t)) return false;
+  if (/^(.)\1+$/.test(t)) return false;
+  if (JUNK_NAME.test(t)) return false;
+  return true;
+};
+const isEmail = (v) => {
+  const t = String(v ?? "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/.test(t)) return false;
+  const [local, domain] = t.split("@");
+  if (JUNK_EMAIL_DOMAIN.test(domain)) return false;
+  if (JUNK_EMAIL_LOCAL.test(local)) return false;
+  if (/^(.)\1{2,}@/.test(t)) return false;
+  if (/^([a-z])\1*[0-9]*$/.test(local) && local.length <= 3) return false;
+  return true;
+};
+const isAuMobile = (v) => {
+  const d = String(v ?? "").replace(/[\s()-]/g, "").replace(/^\+?61/, "0");
+  if (!/^04\d{8}$/.test(d)) return false;
+  const tail = d.slice(2);
+  if (/^(\d)\1{7}$/.test(tail)) return false;
+  if (/^(\d)\1{5,}/.test(tail)) return false;
+  if ("0123456789".includes(tail) || "9876543210".includes(tail)) return false;
+  if (/^(\d{2})\1{3}$/.test(tail) || /^(\d{4})\1$/.test(tail)) return false;
+  return true;
+};
 
 /* Archetype copy is held server-side so the emailed copy cannot drift from
    what the page displayed. Mirrors ARCHETYPES in content/readiness-funnel.src.html.
@@ -482,7 +517,7 @@ export default async (req) => {
 
   // Validate server-side. Never trust the client's own checks.
   if (
-    !contact.firstName ||
+    !isName(contact.firstName) ||
     String(contact.firstName).length > MAX.firstName ||
     !isEmail(contact.email) ||
     String(contact.email).length > MAX.email ||

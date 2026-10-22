@@ -560,19 +560,19 @@ function buildScreens(){
             <div class="field" id="f-firstName">
               <label for="i-firstName">First name</label>
               <input id="i-firstName" type="text" autocomplete="given-name" placeholder="e.g. Alex">
-              <div class="msg">Please enter your first name.</div>
+              <div class="msg">Please enter your first name (letters only).</div>
             </div>
             <div class="field" id="f-email">
               <label for="i-email">Email</label>
               <input id="i-email" type="email" autocomplete="email" placeholder="you@example.com">
-              <div class="msg">Please enter a valid email address.</div>
+              <div class="msg">Please enter the email address you actually use. We send your snapshot there.</div>
             </div>
             <div class="hp-field" aria-hidden="true"><label for="cv_hp2">Company</label><input id="cv_hp2" name="cv_hp2" type="text" tabindex="-1" autocomplete="off"></div>
             <div class="field" id="f-mobile">
               <label for="i-mobile">Mobile</label>
               <input id="i-mobile" type="tel" autocomplete="tel" placeholder="04XX XXX XXX">
               <div class="hint">So we can send your snapshot and follow up if you'd like.</div>
-              <div class="msg">Please enter a valid Australian mobile number.</div>
+              <div class="msg">Please enter a real Australian mobile number.</div>
             </div>
           </div>
           <div class="consent-notice">
@@ -656,10 +656,42 @@ qWrap.addEventListener("click", e=>{
 /* =========================================================
    5. CONTACT VALIDATION
    ========================================================= */
-function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+/* Junk guards. These mirror the server-side rules in submit.mjs; the page
+   copy exists because the HubSpot Forms post happens here, before the
+   function ever sees the lead. Change both together. */
+const JUNK_NAME = /^(test|testing|tester|asdf|qwerty|abc|xyz|aaa|na|n\/a|none|null|undefined|anon|anonymous|user|admin|first|name|firstname|first name|me)$/i;
+const JUNK_EMAIL_DOMAIN = /(^|\.)(test|example|example\.com|example\.net|example\.org|test\.com|test\.net|test\.org|email\.com|mail\.com|fake\.com|asdf\.com|abc\.com|aaa\.com|xyz\.com|localhost|invalid|mailinator\.com|guerrillamail\.com|10minutemail\.com|tempmail\.com|temp-mail\.org|yopmail\.com|sharklasers\.com|trashmail\.com|dispostable\.com|getnada\.com|maildrop\.cc)$/i;
+const JUNK_EMAIL_LOCAL = /^(test|testing|tester|asdf|qwerty|abc|xyz|aaa|fake|none|null|noreply|no-reply|email|mail|user|admin|example|a|x)[0-9]*$/i;
+const SHORT_NAMES = /^(jo|ty|bo|al|ed|vi|di|su|lu|mo|ky|aj|jb|jp|tj|cj|dj|rj|pj|jd|kc|bj|jj|ki|li|ai|an|yu|wu|xu|hu|lu|ng|om|ox|el|em|ev|ia|io|ja|ju|ka|ko|la|le|lo|ma|mi|na|ni|no|ra|re|ri|ro|ru|sa|si|so|ta|ti|to|tu|ya|yo|zo)$/i;
+function validName(v){
+  const t = v.trim();
+  if(t.length < 2 || t.length > 40) return false;
+  if(t.length === 2 && !SHORT_NAMES.test(t)) return false;                           // "Se": two letters only if a known short name
+  if(!/^[A-Za-z\u00C0-\u024F][A-Za-z\u00C0-\u024F' .-]*$/.test(t)) return false;   // letters, apostrophe, hyphen, space
+  if(!SHORT_NAMES.test(t) && !/[aeiouyAEIOUY\u00C0-\u024F]/.test(t)) return false;                           // "Se", "Xz": needs a vowel
+  if(/^(.)\1+$/.test(t)) return false;                                               // "aaa"
+  if(JUNK_NAME.test(t)) return false;
+  return true;
+}
+function validEmail(v){
+  const t = v.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/.test(t)) return false;
+  const [local, domain] = t.split("@");
+  if(JUNK_EMAIL_DOMAIN.test(domain)) return false;
+  if(JUNK_EMAIL_LOCAL.test(local)) return false;
+  if(/^(.)\1{2,}@/.test(t)) return false;                                            // "seee@", "aaaa@"
+  if(/^([a-z])\1*[0-9]*$/.test(local) && local.length <= 3) return false;              // "a@", "aa1@"
+  return true;
+}
 function validMobile(v){
-  const d = v.replace(/[\s()-]/g,"");
-  return /^(?:\+?61|0)4\d{8}$/.test(d);   // AU mobile
+  const d = v.replace(/[\s()-]/g,"").replace(/^\+?61/,"0");
+  if(!/^04\d{8}$/.test(d)) return false;                                             // AU mobile
+  const tail = d.slice(2);                                                           // 8 digits after 04
+  if(/^(\d)\1{7}$/.test(tail)) return false;                                         // 0411111111, 0400000000
+  if(/^(\d)\1{5,}/.test(tail)) return false;                                         // 0411111123
+  if("0123456789".includes(tail) || "9876543210".includes(tail)) return false;       // 0412345678, 0498765432
+  if(/^(\d{2})\1{3}$/.test(tail) || /^(\d{4})\1$/.test(tail)) return false;          // 0412121212, 0412341234
+  return true;
 }
 function wireContact(){
   const fn=document.getElementById("i-firstName");
@@ -668,7 +700,7 @@ function wireContact(){
   const cs=document.getElementById("i-consent");
   const btn=document.getElementById("contactNext");
   function check(){
-    const ok = fn.value.trim() && validEmail(em.value) && validMobile(mo.value) && cs.checked;
+    const ok = validName(fn.value) && validEmail(em.value) && validMobile(mo.value) && cs.checked;
     btn.disabled = !ok;
     return ok;
   }
@@ -676,7 +708,7 @@ function wireContact(){
   cs.addEventListener("change",check);
   btn.addEventListener("click",()=>{
     let ok=true;
-    if(!fn.value.trim()){document.getElementById("f-firstName").classList.add("invalid");ok=false;}
+    if(!validName(fn.value)){document.getElementById("f-firstName").classList.add("invalid");ok=false;}
     if(!validEmail(em.value)){document.getElementById("f-email").classList.add("invalid");ok=false;}
     if(!validMobile(mo.value)){document.getElementById("f-mobile").classList.add("invalid");ok=false;}
     if(!ok || !cs.checked) return;
