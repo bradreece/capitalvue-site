@@ -1139,7 +1139,7 @@ const ALL_ARTICLES = [
 // push, or "Trigger deploy" in Netlify. Queensland has no daylight saving, so
 // Brisbane is a fixed UTC+10 and the arithmetic below is exact.
 const TODAY_BNE = new Date(Date.now() + 10*3600*1000).toISOString().slice(0,10);
-const ARTICLES = ALL_ARTICLES.filter(a => a.iso <= TODAY_BNE);
+const ARTICLES = ALL_ARTICLES.filter(a => a.iso <= TODAY_BNE).sort((a, b) => b.iso.localeCompare(a.iso));
 ALL_ARTICLES.filter(a => a.iso > TODAY_BNE).forEach(a => console.log('Scheduled, not yet published:', a.slug, a.iso));
 
 const articleSchema = a => ({"@context":"https://schema.org","@type":"BlogPosting","headline":esc(a.title),"datePublished":a.iso,"dateModified":a.updated||a.iso,"author":PEOPLE[AUTHOR_KEY(a.author)],"publisher":{"@type":"Organization","name":"CapitalVue","logo":{"@type":"ImageObject","url":BASE+"assets/cv-logo-stacked.png"}},"image":BASE+BLOGIMG[a.slug],"articleSection":a.cat,"mainEntityOfPage":{"@type":"WebPage","@id":BASE+"post-"+a.slug+".html"}});
