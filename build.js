@@ -668,7 +668,7 @@ const trustbar = `
   <div class="tb-item"><span class="n"><b>$21.31M</b></span><span class="l">Property secured</span></div>
   <div class="tb-item"><span class="n"><b>23</b> settled</span><span class="l">Client purchases</span></div>
   <div class="tb-item"><span class="n"><b>+16.44%</b></span><span class="l">Capital growth (settled)*</span></div>
-  <div class="tb-item"><span class="n">5.0 <span class="stars">★</span></span><span class="l">From 27 Google reviews</span></div>
+  <div class="tb-item"><span class="n">5.0 <span class="stars">★</span></span><span class="l">From 28 Google reviews</span></div>
   <div class="tb-item"><span class="n">QLD · SA</span><span class="l">Fully licensed</span></div>
 </div></div>`;
 
@@ -699,7 +699,7 @@ const indexBody = `
     <p class="slogan">Build a portfolio. Create a legacy.</p>
     <p class="sub">Stop losing out on offers and second-guessing the market. Whether you're building an investment portfolio or buying the home you'll live in, we find, negotiate and secure the right property for you.</p>
     <div class="hero-actions"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="#how">See how it works</a></div>
-    <div class="hero-trust"><span class="stars">★★★★★</span><span>5.0 from 27 Google reviews · $21.31M secured for clients</span></div>
+    <div class="hero-trust"><span class="stars">★★★★★</span><span>5.0 from 28 Google reviews · $21.31M secured for clients</span></div>
   </div>
   <div class="hcard reveal in">
     <div class="hc-top"><div class="hc-badge"><span class="dot">✓</span> Client portfolio · settled</div><span class="hc-tag">Live data</span></div>
@@ -766,7 +766,7 @@ ${trustbar}
   <p style="text-align:center;color:var(--muted);font-size:.8rem;margin-top:22px">Growth reflects current estimated value versus purchase price, as at July 2026. Past performance is not a reliable indicator of future performance.</p>
 </div></section>
 <section id="reviews"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">★★★★★ &nbsp;5.0 from 27 Google reviews</span><h2 class="serif">Clients don't just recommend CapitalVue. They come back.</h2></div>
+  <div class="sec-head center reveal"><span class="eyebrow">★★★★★ &nbsp;5.0 from 28 Google reviews</span><h2 class="serif">Clients don't just recommend CapitalVue. They come back.</h2></div>
   <div class="rev-grid">${REVIEWS.map(revCard).join('')}</div>
   <div class="rev-cta"><a class="btn btn-ghost" href="https://maps.app.goo.gl/s9fyPFnemrxc4oq56" target="_blank" rel="noopener">Read all reviews on Google →</a></div>
 </div></section>
@@ -1133,7 +1133,7 @@ ${pageHero('Team','Your investment team','The people behind every purchase.','De
 </div>
 <div style="margin-top:26px"><div class="cta reveal" style="padding:44px 26px"><h2 class="serif" style="font-size:1.7rem">One agent, first call to settlement.</h2><p style="margin-top:.8rem">Brad joins your first call with the agent who would run your purchase. No hand-offs between stages, and no new names halfway through.</p><div class="hero-actions" style="margin-top:1.3rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="tel:+61499484727">Call 0499 484 727</a></div></div></div>
 </div></section>
-<section class="bg-paper"><div class="wrap"><div class="sec-head center reveal"><span class="eyebrow">★★★★★ 5.0 from 27 Google reviews</span><h2 class="serif">What it's like to work with us.</h2></div>
+<section class="bg-paper"><div class="wrap"><div class="sec-head center reveal"><span class="eyebrow">★★★★★ 5.0 from 28 Google reviews</span><h2 class="serif">What it's like to work with us.</h2></div>
 <div class="rev-grid">${[REVIEWS[0],REVIEWS[3],REVIEWS[4]].map(revCard).join('')}</div></div></section>
 ${ctaBand}`;
 
@@ -1967,7 +1967,7 @@ ${pageHero('Buyers Agent Adelaide','Adelaide &middot; Investor buyers agency','B
     ${statCard('⚖','#6d3bf0','#eef0ff','SA 335016','Current South Australian land agent licence')}
     ${statCard('◈','#6d3bf0','#eef0ff','23','Client properties secured and settled')}
     ${statCard('⌂','#6d3bf0','#eef0ff','$21.31M','Total purchase value across clients')}
-    ${statCard('★','#c9a24b','#faf3e2','5.0','From 27 Google reviews','#c9a24b')}
+    ${statCard('★','#c9a24b','#faf3e2','5.0','From 28 Google reviews','#c9a24b')}
   </div>
   <div class="mkt-copy" style="max-width:820px;margin:2.2rem auto 0">
     <p>We are a Queensland-headquartered agency licensed to act in South Australia, and we are direct about what that means. You get a team that buys across multiple markets and can tell you honestly when Adelaide is not the right answer for your brief, which is not something a single-city agency has any incentive to say.</p>
@@ -2077,7 +2077,7 @@ const evaluateOnlyBody = `
 ${ctaBand}`;
 
 const pages = {
-  'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 27 Google reviews.', indexBody,'index.html','index.html',{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE}),
+  'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 28 Google reviews.', indexBody,'index.html','index.html',{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE}),
   'about.html':   page('About CapitalVue | Licensed Buyers Agency (QLD, SA)','CapitalVue pairs a licensed buyers agency with real-time portfolio technology to make buying an investment property or a home simple, transparent and provable.', aboutBody,'about.html','about.html'),
   'services.html':page('Buyers Agent Fees, Published | CapitalVue','Buyers agent fees, published. $19,500 full service, $11,500 if you search yourself. Adelaide and SEQ. No seller commission, same agent to settlement.', servicesBody,'services.html','services.html',[SVC_SCHEMA, faqSchema(SVC_FAQ)]),
   'why-no-price.html':page('Why There&#39;s No Price on the Listing | CapitalVue','No price, offers over, contact agent. Four reasons a listing hides its price in Queensland and South Australia, and what each one means for a buyer.', whyNoPriceBody,'services.html','why-no-price.html',faqSchema(WNP_FAQ)),
