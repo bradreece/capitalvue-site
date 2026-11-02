@@ -189,7 +189,7 @@
 
       <div class="card"><h3>What you told us</h3><p id="o-reflection"></p></div>
       <div class="card"><h3>People in your position</h3><div class="stats" id="o-stats"></div><p class="peer" id="o-peer"></p><p class="src">Source: CapitalVue Property Readiness Snapshot responses. Our own data, not a market statistic.</p></div>
-      <div class="card"><h3>Where you go from here</h3><p id="o-next"></p><p class="next-link"><a id="o-link" href="#"></a></p></div>
+      <div class="card"><h3>Where you go from here</h3><p id="o-next"></p><p class="next-link"><a id="o-link" href="#"></a></p><p class="next-link" id="o-link2-wrap" hidden><a id="o-link2" href="#"></a></p></div>
 
       <div class="card" id="o-illus">
         <p class="illus-title">A general illustration: property values over 10 years</p>
@@ -359,7 +359,8 @@ const PEER = {
                 line:"Experience doesn't change the pattern: equity is ready, borrowing capacity hasn't been confirmed." }
 };
 const LINK = {
-  strategic_upgrader:{ t:"How we work with people buying their next home", u:"evaluate-and-negotiate.html" },
+  strategic_upgrader:{ t:"How we work with people buying their next home", u:"evaluate-and-negotiate.html",
+                       t2:"Or price it yourself with Evaluate Only",          u2:"evaluate-only.html" },
   foundation_builder:{ t:"How we work with first-home buyers",              u:"evaluate-and-negotiate.html" },
   growth_investor:   { t:"How we work with investors",                      u:"services.html" },
   portfolio_expander:{ t:"How we work with investors",                      u:"services.html" }
@@ -793,6 +794,13 @@ function renderOutcome(){
   const link = document.getElementById("o-link");
   link.textContent = lk.t + " \u2192";
   link.href = lk.u + "?utm_source=snapshot&utm_medium=result&utm_content=" + encodeURIComponent(state.archetype);
+  const wrap2 = document.getElementById("o-link2-wrap");
+  wrap2.hidden = !lk.u2;
+  if (lk.u2) {
+    const link2 = document.getElementById("o-link2");
+    link2.textContent = lk.t2 + " \u2192";
+    link2.href = lk.u2 + "?utm_source=snapshot&utm_medium=result&utm_content=" + encodeURIComponent(state.archetype);
+  }
   document.getElementById("o-illus").style.display = inv ? "" : "none";
   const cta = state.answers.purpose==="next_home" ? CTA.next_home : CTA.other;
   document.getElementById("o-cta-h").textContent = cta.h;
