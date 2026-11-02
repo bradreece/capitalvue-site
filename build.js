@@ -582,7 +582,7 @@ const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@
 const esc = s => String(s).replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/"/g,'&quot;');
 const CRUMB = {
   'about.html':'About','services.html':'Services & pricing','tracker.html':'CapitalVue Portfolio',
-  'buying-power.html':'Buying Power Calculator','evaluate-and-negotiate.html':'Evaluate and Negotiate',
+  'buying-power.html':'Buying Power Calculator','evaluate-and-negotiate.html':'Evaluate and Negotiate','evaluate-only.html':'Evaluate Only',
   'buyers-agent-brisbane.html':'Buyers Agent Brisbane','buyers-agent-adelaide.html':'Buyers Agent Adelaide',
   'team.html':'Team','blog.html':'Blog','contact.html':'Contact',
   'terms-and-conditions.html':'Terms & Conditions','privacy-policy.html':'Privacy Policy','aml-ctf-statement.html':'AML/CTF Statement',
@@ -818,13 +818,18 @@ const li = t => `<li>${check()} ${t}</li>`;
    pricing page. Suburb data is history, never a forecast: do not write "the
    suburbs that will outperform" anywhere on this page. */
 const SVC_FAQ = [
-  {q:'When will a buyers agent tell you not to bother?', a:'You know the street, you have the sales evidence, you are comfortable negotiating and you enjoy the search. Call us anyway and we will say so on the call. We would rather lose the fee than take it from someone who did not need us. And if you only need half of it, we will tell you that too, and quote you the $11,500.'}
+  {q:'When will a buyers agent tell you not to bother?', a:'You know the street, you have the sales evidence, you are comfortable negotiating and you enjoy the search. Call us anyway and we will say so on the call. We would rather lose the fee than take it from someone who did not need us. And if you only need part of it, we will tell you that too, and quote you the $11,500 or the $7,000.'}
 ];
 const SVC_SCHEMA = {"@context":"https://schema.org","@type":"Service","@id":BASE+"services.html#service","name":"Buyers agent services","serviceType":"Buyers agent","provider":{"@id":BASE+"#organisation"},"areaServed":[{"@type":"Place","name":"Adelaide, SA"},{"@type":"Place","name":"South East Queensland"}],"url":BASE+"services.html","offers":[
-  {"@type":"Offer","name":"Full Buyers Agent Service","price":"19500","priceCurrency":"AUD","description":"$19,500 inc GST, fixed fee. Market and suburb selection, on and off-market search, inspections, valuation, due diligence, negotiation and auction bidding, contract review and settlement."},
-  {"@type":"Offer","name":"Owner-Occupier Evaluation & Negotiation","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee. You find the listings and attend inspections. We assess every listing you send, value against comparable sales, run due diligence, negotiate or bid, and manage contract and settlement."},
-  {"@type":"Offer","name":"Auction Bidding Service","price":"2200","priceCurrency":"AUD","description":"$2,200 inc GST per auction."}
+  {"@type":"Offer","name":"Full Buyers Agent Service","price":"19500","priceCurrency":"AUD","description":"$19,500 inc GST, fixed fee: $11,500 on engagement, $8,000 when the contract goes unconditional. Market and suburb selection, on and off-market search, inspections, price evidence from comparable sales, due diligence, negotiation and auction bidding, contract review and settlement."},
+  {"@type":"Offer","name":"Owner-Occupier Evaluate and Negotiate","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee: $8,500 on engagement, $3,000 when the contract goes unconditional. You find the listings and attend inspections. We assess every listing you send against comparable sales, run due diligence, negotiate or bid, and manage contract and settlement."},
+  {"@type":"Offer","name":"Evaluate Only","price":"7000","priceCurrency":"AUD","url":BASE+"evaluate-only.html","description":"$7,000 inc GST, paid on engagement. Up to four property reviews a week for 12 weeks, three offer packs with disclosure review, and an offer strategy. You negotiate."},
+  {"@type":"Offer","name":"Auction Bidding Service","price":"1650","priceCurrency":"AUD","description":"$1,650 inc GST per auction, payable on the day. No success fee."}
 ]};
+/* Shared copy: the after-settlement commitment, on Full Service and E&N. The
+   annual call and the stay-available commitment are live from November 2026.
+   Do not add rate or insurance tracking for owner-occupiers; not live. */
+const AFTER_SETTLEMENT = `<p><strong style="color:var(--ink)">After settlement.</strong> We stay available to talk through any property or related decision, and we call every client once a year to review where things stand. Investors also get CapitalVue Portfolio, which tracks loans, expenses, insurance and equity on every property we have bought for them. No charge for either.</p>`;
 const objQ = (q,body) => `<div class="prob reveal"><h3>&ldquo;${q}&rdquo;</h3>${body}</div>`;
 const servicesBody = `
 <section class="page-hero"><div class="wrap">
@@ -845,25 +850,40 @@ const servicesBody = `
   </div>
 </div></section>
 <section id="fees"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow">Fees</span><h2 class="serif">Transparent, fixed fees. No surprises.</h2><p>The difference between our two services is not how much help you get. It is whether you already know where you are buying.</p></div>
+  <div class="sec-head reveal"><span class="eyebrow">Fees</span><h2 class="serif">Transparent, fixed fees. No surprises.</h2><p>The difference between our services is not how much help you get. It is which parts of the purchase you want to do yourself.</p></div>
   <div class="article reveal" style="max-width:none">
     <div style="overflow-x:auto"><table>
-      <thead><tr><th></th><th>Evaluate &amp; Negotiate<br>$11,500 inc GST</th><th>Full Buyers Agent Service<br>$19,500 inc GST</th></tr></thead>
+      <thead><tr><th>Service</th><th>Fee, inc GST</th><th>Payment</th><th>For</th></tr></thead>
       <tbody>
-        <tr><td><strong>Choosing the market and the suburbs</strong></td><td>You already know, you are buying a life not an asset</td><td>We shortlist areas against twenty years of suburb performance and the metrics in your strategy</td></tr>
-        <tr><td><strong>Finding the listings</strong></td><td>You, on the portals</td><td>Us</td></tr>
-        <tr><td><strong>Off-market access</strong></td><td>No</td><td>Yes</td></tr>
-        <tr><td><strong>Inspections</strong></td><td>You attend</td><td>We inspect and report back, including video walkthroughs</td></tr>
-        <tr><td><strong>Assessing what you send us</strong></td><td>Yes, every listing, no cap</td><td>Not needed, we source it</td></tr>
-        <tr><td><strong>Valuation against comparable sales</strong></td><td>Yes</td><td>Yes</td></tr>
-        <tr><td><strong>Due diligence, building and pest, disclosure</strong></td><td>Yes</td><td>Yes</td></tr>
-        <tr><td><strong>Dealing with the selling agent</strong></td><td>Yes</td><td>Yes</td></tr>
-        <tr><td><strong>Negotiation and auction bidding</strong></td><td>Yes</td><td>Yes</td></tr>
-        <tr><td><strong>Contract review and settlement</strong></td><td>Yes</td><td>Yes</td></tr>
-        <tr><td><strong>Usually suits</strong></td><td>Owner-occupiers buying locally</td><td>Investors, and buyers purchasing interstate or from overseas</td></tr>
+        <tr><td><strong>Full Buyers Agent Service</strong></td><td>$19,500</td><td>$11,500 on engagement, $8,000 when the contract goes unconditional</td><td>Investors and home buyers who want the search, the inspections, the negotiation and settlement handled</td></tr>
+        <tr><td><strong>Owner-Occupier Evaluate and Negotiate</strong></td><td>$11,500</td><td>$8,500 on engagement, $3,000 when the contract goes unconditional</td><td>Home buyers already looking, typically buying above $800,000, who want every listing assessed before they inspect and the negotiation run for them</td></tr>
+        <tr><td><strong><a href="evaluate-only.html" style="color:var(--emerald)">Evaluate Only</a></strong></td><td>$7,000</td><td>$7,000 on engagement</td><td>Home buyers who will negotiate themselves and want the property priced, checked and an offer strategy set first</td></tr>
+        <tr><td><strong>Auction Bidding Service</strong></td><td>$1,650 per auction</td><td>On the day</td><td>Anyone who has found the property and wants it bid for</td></tr>
+        <tr><td><strong>CapitalVue Portfolio</strong></td><td>Included when you buy</td><td></td><td>Every investor client, set up at settlement</td></tr>
       </tbody>
     </table></div>
-    <p>Both services: the same agent from your first call to settlement.</p>
+    <p><strong>The published fee is the whole fee.</strong> There is no percentage of the purchase price, no success fee beyond the balance shown, and no settlement fee. Where a fee is in two parts, the second part is only payable when your contract goes unconditional. We do not take commission from sellers.</p>
+  </div>
+  <div class="article reveal" style="max-width:none;margin-top:2.2rem">
+    <h3>What each one covers</h3>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th></th><th>Evaluate Only<br>$7,000 inc GST</th><th>Evaluate and Negotiate<br>$11,500 inc GST</th><th>Full Buyers Agent Service<br>$19,500 inc GST</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Choosing the market and the suburbs</strong></td><td>You already know</td><td>You already know, you are buying a life not an asset</td><td>We shortlist areas against twenty years of suburb performance and the metrics in your strategy</td></tr>
+        <tr><td><strong>Finding the listings</strong></td><td>You, on the portals</td><td>You, on the portals</td><td>Us</td></tr>
+        <tr><td><strong>Off-market access</strong></td><td>No</td><td>No</td><td>Yes</td></tr>
+        <tr><td><strong>Inspections</strong></td><td>You attend</td><td>You attend</td><td>We inspect and report back, including video walkthroughs</td></tr>
+        <tr><td><strong>Assessing what you send us</strong></td><td>Up to four a week for 12 weeks</td><td>Yes, every listing, no cap</td><td>Not needed, we source it</td></tr>
+        <tr><td><strong>Price evidence from comparable sales</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Due diligence, building and pest, disclosure</strong></td><td>Yes, on three offer packs</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Offer strategy</strong></td><td>Yes, written, before you offer</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Dealing with the selling agent</strong></td><td>You</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Negotiation and auction bidding</strong></td><td>You</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Contract review and settlement</strong></td><td>Disclosure review only</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><strong>Usually suits</strong></td><td>Home buyers who will run their own negotiation</td><td>Owner-occupiers buying locally</td><td>Investors, and buyers purchasing interstate or from overseas</td></tr>
+      </tbody>
+    </table></div>
+    <p>Full Service and Evaluate and Negotiate: the same agent from your first call to settlement. Evaluate Only: the same agent for the whole 12-week term.</p>
   </div>
   <div class="article reveal" style="margin-top:2.2rem">
     <h3>The $8,000 buys four things, and the first is the one that matters most.</h3>
@@ -881,43 +901,48 @@ const servicesBody = `
       <span class="hc-tag" style="background:rgba(20,143,143,.18);color:#4fc2c2">Investors, interstate and overseas buyers</span>
       <h3 style="color:#fff;font-size:1.5rem;margin-top:.9rem">Full Buyers Agent Service</h3>
       <div class="price">$19,500 <span>inc GST</span></div>
-      <p style="color:#c6d2e2">For buyers who do not have a suburb picked out, or cannot run the search themselves. We start with where: twenty years of suburb performance across Adelaide and South East Queensland, narrowed to the areas that match the metrics in your strategy. Then we find the property, including off-market stock that never reaches a portal, inspect it and report back, and take it through to settlement. Clients run this from anywhere; the property is in Adelaide or South East Queensland, you do not have to be.</p>
+      <p style="color:#c6d2e2">$11,500 on engagement, $8,000 when the contract goes unconditional. For buyers who do not have a suburb picked out, or cannot run the search themselves. We start with where: twenty years of suburb performance across Adelaide and South East Queensland, narrowed to the areas that match the metrics in your strategy. Then we find the property, including off-market stock that never reaches a portal, inspect it and report back, and take it through to settlement. Clients run this from anywhere; the property is in Adelaide or South East Queensland, you do not have to be.</p>
       <ul>
         ${li('Personalised investment strategy &amp; structuring')}
         ${li('On &amp; off-market property identification')}
         ${li('Virtual &amp; on-site inspections and full due diligence')}
-        ${li('Price negotiation &amp; auction representation')}
+        ${li('Price negotiation &amp; auction representation, no separate auction fee')}
         ${li('Settlement oversight &amp; vetted property manager')}
         ${li('<a href="portal-demo.html" style="color:#4fc2c2;text-decoration:underline">Secure client portal</a> with AML compliance')}
       </ul>
+      <div style="color:#c6d2e2;margin:0 0 1.4rem">${AFTER_SETTLEMENT.replace('color:var(--ink)','color:#fff')}</div>
       <a class="btn btn-light" href="contact.html#book">Book a free strategy call</a>
     </div>
     <div class="svc-side">
       <div class="svc-min reveal">
-        <h3>Owner-Occupier Evaluation &amp; Negotiation</h3>
+        <h3>Owner-Occupier Evaluate and Negotiate</h3>
         <div class="p2">$11,500 <span style="font-size:.8rem;font-weight:500;color:var(--muted)">inc GST</span></div>
-        <p>Still searching? Send us the listings you find and we will tell you which ones are worth going to see. Most are not: they will sell past your budget, or there is something in the building the photographs are not showing. Then we run the full process on the one you want.</p>
+        <p>$8,500 on engagement, $3,000 when the contract goes unconditional. Still searching? Send us the listings you find and we will tell you which ones are worth going to see. Most are not: they will sell past your budget, or there is something in the building the photographs are not showing. Then we run the full process on the one you want.</p>
+        <p>Designed for purchases from about $800,000. Below that, <a href="evaluate-only.html" style="color:var(--emerald);font-weight:600">Evaluate Only</a> usually fits better; ask us on the call.</p>
         <ul>
           ${li('Every listing you send, for as long as your search takes. No cap')}
-          ${li('Independent valuation read against recent comparable sales, including unpriced and auction listings')}
+          ${li('Price evidence from recent comparable sales, including unpriced and auction listings')}
           ${li('Full due diligence, building and pest and seller disclosure')}
           ${li('All dealings with the selling agent')}
-          ${li('Price negotiation and auction bidding')}
+          ${li('Price negotiation and auction bidding, no separate auction fee')}
           ${li('Contract review and settlement management')}
         </ul>
         <p>You attend the inspections. You are buying a home you will live in, so you were going to anyway.</p>
+        ${AFTER_SETTLEMENT}
         <p class="svc-cta"><a href="evaluate-and-negotiate.html">How we work out what to pay →</a> · <a href="contact.html#book">Book a free strategy call</a></p>
       </div>
       <div class="svc-min reveal">
-        <h3>Auction Bidding Service</h3>
-        <div class="p2">$2,200 <span style="font-size:.8rem;font-weight:500;color:var(--muted)">/ auction</span></div>
-        <p>Standalone, expert auction representation. We set the strategy and bid on your behalf so you never overpay under pressure.</p>
-        <p class="svc-cta"><a href="contact.html#book">Book a free strategy call</a></p>
+        <h3>Evaluate Only</h3>
+        <div class="p2">$7,000 <span style="font-size:.8rem;font-weight:500;color:var(--muted)">inc GST</span></div>
+        <p>$7,000 on engagement. You negotiate. We price every property you send from the sales data, check the overlays and the disclosure documents, and set your offer strategy before you put a number on the table. Up to four reviews a week for 12 weeks and three full offer packs.</p>
+        <p>Move to Evaluate and Negotiate within 90 days and the full $7,000 credits against the $11,500.</p>
+        <p class="svc-cta"><a href="evaluate-only.html">What Evaluate Only covers →</a> · <a href="contact.html#book">Book a free strategy call</a></p>
       </div>
       <div class="svc-min reveal">
-        <h3>Property Strategy Service</h3>
-        <div class="p2">Ongoing advisory</div>
-        <p>Ongoing maintenance, rental and loan reviews to keep your portfolio performing long after you buy.</p>
+        <h3>Auction Bidding Service</h3>
+        <div class="p2">$1,650 <span style="font-size:.8rem;font-weight:500;color:var(--muted)">/ auction</span></div>
+        <p>Standalone auction representation. We set the strategy and bid on your behalf so you do not overpay under pressure.</p>
+        <p>Flat fee, payable on the day. No success fee. Included at no extra charge in Full Service and Evaluate and Negotiate.</p>
         <p class="svc-cta"><a href="contact.html#book">Book a free strategy call</a></p>
       </div>
       <div class="svc-min reveal" style="background:var(--paper)">
@@ -932,7 +957,7 @@ const servicesBody = `
   <span class="eyebrow">The fee objection</span>
   <h3 style="margin-top:.6rem">&ldquo;Anyone can do this themselves&rdquo;</h3>
   <p>Mostly true, and we would rather say so here than argue about it in the comments.</p>
-  <p>You can find the listings. You can walk through them on a Saturday. You can read a contract and bid at an auction. Plenty of people do all of it and buy well. If that is you, do not hire us for the full service. That is exactly why there is an $11,500 version: you keep the parts you are happy doing and pay for the parts that are hard to do once every ten years.</p>
+  <p>You can find the listings. You can walk through them on a Saturday. You can read a contract and bid at an auction. Plenty of people do all of it and buy well. If that is you, do not hire us for the full service. That is exactly why there is an $11,500 version, and a $7,000 one: you keep the parts you are happy doing and pay for the parts that are hard to do once every ten years.</p>
   <p>What is hard is pricing a property that has no price on it, reading a building and pest report against what the repairs actually cost, and negotiating against someone who does it forty times a year while you do it twice in a lifetime.</p>
   <h4>One agent, two or three clients.</h4>
   <p>You deal with the same person from the first call to settlement. Not a principal who signs you and then hands you to someone you have not met, and not a different name for the search, the due diligence and the negotiation.</p>
@@ -1515,14 +1540,14 @@ const faqSchema = items => ({"@context":"https://schema.org","@type":"FAQPage","
 // rich-results problem, not a bonus. No aggregateRating anywhere: the 27 reviews are
 // Google reviews, and marking up reviews collected on another site breaks Google's
 // review snippet guidelines (removed 15 Oct 2026).
-const svcAreaSchema = (city,state,areas) => ({"@context":"https://schema.org","@type":"Service","@id":BASE+`buyers-agent-${city.toLowerCase()}.html#service`,"name":`Buyers agent services in ${city}`,"serviceType":"Buyers agent","description":`Licensed buyers agency helping property investors search, assess, negotiate and secure property in ${city}, ${state}.`,"url":BASE+`buyers-agent-${city.toLowerCase()}.html`,"provider":{"@id":BASE+"#organisation"},"areaServed":[{"@type":"City","name":city},...areas.filter(a=>a!==city).map(a=>({"@type":"Place","name":a}))],"offers":[{"@type":"Offer","name":"Full buyers agent service (investors)","price":"19500","priceCurrency":"AUD"},{"@type":"Offer","name":"Owner-occupier support","price":"11500","priceCurrency":"AUD"},{"@type":"Offer","name":"Auction bidding only","price":"2200","priceCurrency":"AUD"}]});
+const svcAreaSchema = (city,state,areas) => ({"@context":"https://schema.org","@type":"Service","@id":BASE+`buyers-agent-${city.toLowerCase()}.html#service`,"name":`Buyers agent services in ${city}`,"serviceType":"Buyers agent","description":`Licensed buyers agency helping property investors search, assess, negotiate and secure property in ${city}, ${state}.`,"url":BASE+`buyers-agent-${city.toLowerCase()}.html`,"provider":{"@id":BASE+"#organisation"},"areaServed":[{"@type":"City","name":city},...areas.filter(a=>a!==city).map(a=>({"@type":"Place","name":a}))],"offers":[{"@type":"Offer","name":"Full buyers agent service (investors)","price":"19500","priceCurrency":"AUD"},{"@type":"Offer","name":"Owner-occupier Evaluate and Negotiate","price":"11500","priceCurrency":"AUD"},{"@type":"Offer","name":"Evaluate Only","price":"7000","priceCurrency":"AUD","url":BASE+"evaluate-only.html"},{"@type":"Offer","name":"Auction bidding only","price":"1650","priceCurrency":"AUD"}]});
 const statCard = (ic,col,bg,n,l,nc) => `<div class="hc-stat"><div class="ic" style="background:${bg};color:${col}">${ic}</div><div class="n"${nc?` style="color:${nc}"`:''}>${n}</div><div class="l">${l}</div></div>`;
 const buyRow = p => `<div class="prob"><div class="q">${p.loc}</div><p style="margin-bottom:.5rem"><strong>${p.type}</strong></p><p>Purchased ${p.paid} &middot; now valued ${p.value}<br><span style="color:var(--emerald);font-weight:700">${p.grow} since purchase</span></p></div>`;
 const dataNote = `<p class="disclaimer" style="margin-top:1.6rem">Market figures are indicative and current as at ${MKT_ASOF}. Dwelling values and annual growth: Cotality (formerly CoreLogic) Home Value Index, July 2026 release. Vacancy rates and asking rents: SQM Research, June 2026. Cash rate: Reserve Bank of Australia, 4.35% held at the June 2026 meeting. Figures change monthly and are provided as general market context only. Past performance is not a reliable indicator of future performance.</p>
 <p class="disclaimer">CapitalVue Pty Ltd is a licensed buyers agency (QLD 4769773, SA 335016). Nothing on this page is personal financial advice, credit assistance or a recommendation to buy a particular property. Consider your own circumstances and obtain independent financial, credit, legal and tax advice before making a property decision.</p>`;
 
 const BNE_FAQ = [
-  {q:'How much does a buyers agent cost in Brisbane?', a:'CapitalVue charges fixed fees, not a percentage of the purchase price, so our fee does not rise when the price does. Full buyers agent service for investors is $19,500, owner-occupier support is $11,500, and auction bidding only is $2,200. Fees are published in full on our <a href="services.html">services page</a>, and the <a href="evaluate-and-negotiate.html">owner-occupier service is detailed here</a>.'},
+  {q:'How much does a buyers agent cost in Brisbane?', a:'CapitalVue charges fixed fees, not a percentage of the purchase price, so our fee does not rise when the price does. Full buyers agent service for investors is $19,500, owner-occupier Evaluate and Negotiate is $11,500, Evaluate Only is $7,000 if you will run the negotiation yourself, and auction bidding only is $1,650. Fees are published in full on our <a href="services.html">services page</a>, the <a href="evaluate-and-negotiate.html">owner-occupier service is detailed here</a> and <a href="evaluate-only.html">Evaluate Only here</a>.'},
   {q:'Is now a good time to buy an investment property in Brisbane?', a:'Brisbane dwelling values fell 0.6% in July 2026 and 0.6% over the quarter, after rising 14.8% across the year. At the same time vacancy sits near 0.9% and asking rents rose about 9.1% year on year. In plain terms, the capital growth run has paused while rental income has held up, which historically gives buyers more negotiating room. Whether that suits you depends entirely on your borrowing position, timeframe and risk tolerance, which is a conversation, not a blanket answer.'},
   {q:'Which Brisbane suburbs do you buy in?', a:'We focus on four Brisbane submarkets: the inner east (Morningside, Camp Hill, Carina Heights, Cannon Hill, Balmoral), the inner west and north-west (Chapel Hill, Kenmore, Keperra, Mitchelton), the northside corridor (Taigum, Zillmere, Bracken Ridge, Aspley, Chermside) and inner-city apartments (Kangaroo Point, Woolloongabba, South Brisbane, Newstead). We do not buy in a suburb simply because it is trending.'},
   {q:'Do I need to live in Brisbane to use a Brisbane buyers agent?', a:'No. A large share of our clients buy in Brisbane from interstate or overseas without inspecting in person. We inspect, video walk the property, run the due diligence, negotiate and manage settlement. Our office is in Camp Hill, so inspections are local to us rather than a flight away.'},
@@ -1554,7 +1579,7 @@ const evalNegBody = `
   <div class="en-hero-copy">
     <span class="eyebrow">Evaluate and Negotiate service</span>
     <h1 class="serif">No asking price? Here&#39;s how we work out what to pay.</h1>
-    <p>Send us the listings you like. We price each one from the sales data, check the flood and bushfire overlays, and negotiate the one you choose. $11,500 inc GST, published.</p>
+    <p>Send us the listings you like. We price each one from the sales data, check the flood and bushfire overlays, and negotiate the one you choose. $11,500 inc GST, published: $8,500 on engagement, $3,000 when your contract goes unconditional.</p>
   </div>
   <div class="en-hero-card">
     <div id="en-step1" class="en-step">
@@ -1620,10 +1645,12 @@ const evalNegBody = `
       <p style="margin-bottom:1rem"><strong style="color:var(--ink)">When you have chosen one.</strong> We negotiate the purchase: offer strategy, price, terms and conditions, and the back-and-forth with the selling agent, private treaty or auction. If it goes under the hammer we attend and bid for you as part of this fee.</p>
       <p style="margin-bottom:1rem"><strong style="color:var(--ink)">Included.</strong> Pre-contract and post-contract due diligence: we review the contract, the disclosure documents and the building and pest report, and tell you what to look for. We coordinate the building and pest inspection and the conveyancing. We also work with our broker partner so the timing and conditions your finance puts on the contract fit your situation. Each step is set up around you, not run as a standard package.</p>
       <p><strong style="color:var(--ink)">Not included.</strong> Finance advice and the loan itself, which are your broker&#39;s. The inspection, the conveyancing and the finance are carried out and charged by independent professionals, and you pay their fees directly.</p>
+      ${AFTER_SETTLEMENT.replace('<p>','<p style="margin-top:1rem">')}
     </div>
     <div class="en-price reveal">
       <span class="eyebrow" style="color:#4fc2c2">Evaluate and Negotiate</span>
       <div class="price">$11,500 <span>inc GST</span></div>
+      <p style="color:#c6d2e2;margin:-.4rem 0 1rem;font-size:.95rem">$8,500 on engagement, $3,000 when your contract goes unconditional. No percentage, no settlement fee.</p>
       <ul>
         ${li('Price range from comparable settled sales')}
         ${li('Flood, bushfire, zoning and overlay checks on every shortlisted home')}
@@ -1651,7 +1678,9 @@ const evalNegBody = `
 <section class="bg-paper"><div class="wrap" style="max-width:820px">
   <div class="sec-head reveal"><span class="eyebrow">Fit</span><h2 class="serif">Who it&#39;s for, and who it isn&#39;t</h2></div>
   <p>For people still in the market and starting to feel it. You know exactly what you want and where. You have put in an offer on a home you had already mentally moved into, maybe more than one, and watched it go to someone else. Not because you wanted it less. Because you did not know what to actually put on the table.</p>
+  <p style="margin-top:1rem">Designed for purchases from about $800,000. Below that, <a href="evaluate-only.html">Evaluate Only</a> usually fits better; ask us on the call.</p>
   <p style="margin-top:1rem">Not for investors building a portfolio, which is a <a href="services.html">different service with a different fee</a>, and not for anyone who has not started looking yet. If that is you, the free <a href="property-readiness.html">two-minute readiness check</a> is the better first step.</p>
+  <p style="margin-top:1rem">Want to run the negotiation yourself? <a href="evaluate-only.html">Evaluate Only</a> gives you the same price evidence, checks and offer strategy for $7,000, and credits in full if you move to Evaluate and Negotiate within 90 days.</p>
   <p style="margin-top:1.6rem;text-align:center"><a class="btn btn-primary" href="#start">Back to the form</a></p>
 </div></section>
 
@@ -1890,7 +1919,7 @@ ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','B
 ${ctaBand}`;
 
 const ADL_FAQ = [
-  {q:'How much does a buyers agent cost in Adelaide?', a:'The same fixed fees apply regardless of the city: $19,500 for the full investor buyers agent service, $11,500 for owner-occupier support and $2,200 for auction bidding only. We do not charge a percentage of the purchase price, and we do not accept commissions from sellers or developers. The <a href="evaluate-and-negotiate.html">owner-occupier service is detailed here</a>.'},
+  {q:'How much does a buyers agent cost in Adelaide?', a:'The same fixed fees apply regardless of the city: $19,500 for the full investor buyers agent service, $11,500 for owner-occupier Evaluate and Negotiate, $7,000 for Evaluate Only if you will run the negotiation yourself, and $1,650 for auction bidding only. Evaluate Only in Adelaide is for purchases from $700,000. We do not charge a percentage of the purchase price, and we do not accept commissions from sellers or developers. The <a href="evaluate-and-negotiate.html">owner-occupier service is detailed here</a> and <a href="evaluate-only.html">Evaluate Only here</a>.'},
   {q:'Are you licensed to buy property in South Australia?', a:'Yes. CapitalVue holds South Australian land agent licence 335016, alongside Queensland licence 4769773. Anyone acting as a buyers agent in South Australia must hold a current SA licence, so it is worth asking any agency you speak with to show you theirs.'},
   {q:'Is Adelaide still a good investment market in 2026?', a:'Adelaide dwelling values eased 0.2% in July 2026 after an annual rise of 10.5%, so like Brisbane the growth run has flattened rather than collapsed. The distinguishing feature is the rental market: vacancy sits at roughly 0.7%, the tightest of the mainland capitals. Adelaide has also become expensive relative to its own history, with median house values now above $1m, so the affordability argument that drove the last cycle is largely spent.'},
   {q:'Should I buy a house or a unit in Adelaide?', a:'It depends on whether you are buying for income or growth. On current Cotality figures Adelaide units yield around 4.3% gross against roughly 3.4% for houses, a meaningful gap, and units carry a median around $692,861 against roughly $1,007,684 for houses. Houses typically carry the land component that drives long-run growth. Neither is automatically right, which is exactly the trade-off we work through on a strategy call.'},
@@ -1985,7 +2014,67 @@ const CALC_SCHEMA = [
 ];
 
 /* ---------------- WRITE ---------------- */
-const EVALNEG_SCHEMA = {"@context":"https://schema.org","@type":"Service","name":"Evaluate and Negotiate","serviceType":"Buyers agent evaluation and negotiation","provider":{"@id":BASE+"#organisation"},"areaServed":AREA_SERVED,"description":"Owner-occupier service: price range from comparable settled sales, flood, bushfire, zoning and planning overlay checks on every shortlisted property, then negotiation or auction bidding through to signing.","offers":{"@type":"Offer","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee. Auction attendance and bidding included."}};
+const EVALNEG_SCHEMA = {"@context":"https://schema.org","@type":"Service","name":"Evaluate and Negotiate","serviceType":"Buyers agent evaluation and negotiation","provider":{"@id":BASE+"#organisation"},"areaServed":AREA_SERVED,"description":"Owner-occupier service: price range from comparable settled sales, flood, bushfire, zoning and planning overlay checks on every shortlisted property, then negotiation or auction bidding through to signing.","offers":{"@type":"Offer","price":"11500","priceCurrency":"AUD","description":"$11,500 inc GST, fixed fee: $8,500 on engagement, $3,000 when the contract goes unconditional. Auction attendance and bidding included."}};
+
+/* ---------------- EVALUATE ONLY (new 2 Nov 2026 per pricing brief) ----------------
+   $7,000 price-and-strategy tier for home buyers who negotiate themselves.
+   Kept out of NAV like E&N; linked from the services page and both city
+   pages. Piecemeal cost figures verified 2 Nov 2026 against the two guides
+   named in the source block; neither is a buyers agency. */
+const EO_FAQ = [
+  {q:'Is this a valuation?', a:'No. CapitalVue is a licensed buyers agency, not a registered valuer. Every price range is reasoned from settled sales data with the source and date shown.'},
+  {q:'Do you inspect the property?', a:'Not under Evaluate Only. The reviews are desktop, from the listing, the sales data and the planning and hazard layers. You inspect.'},
+  {q:'Can investors use it?', a:'Evaluate Only is built for home buyers. Investors are better served by the <a href="services.html">Full Buyers Agent Service</a>.'},
+  {q:'Is there a minimum purchase price?', a:'Adelaide purchases from $700,000. No minimum in South East Queensland.'},
+  {q:'Who is it not for?', a:'Anyone who has not started looking, anyone outside South East Queensland or Adelaide, and anyone who wants us at the table with the agent. If that is you, <a href="evaluate-and-negotiate.html">Evaluate and Negotiate</a> is the service.'}
+];
+const EO_SCHEMA = {"@context":"https://schema.org","@type":"Service","@id":BASE+"evaluate-only.html#service","name":"Evaluate Only","serviceType":"Buyers agent property evaluation and offer strategy","provider":{"@id":BASE+"#organisation"},"areaServed":AREA_SERVED,"url":BASE+"evaluate-only.html","description":"For home buyers who negotiate themselves: up to four property reviews a week for 12 weeks, priced from settled sales with planning and hazard checks, three full offer packs with disclosure review, and a written offer strategy. Desktop reviews; the buyer inspects, offers and negotiates.","offers":{"@type":"Offer","price":"7000","priceCurrency":"AUD","description":"$7,000 inc GST, paid on engagement. Credits in full against Evaluate and Negotiate within 90 days."}};
+const eoItem = (h,p) => `<div class="prob reveal"><h3>${h}</h3><p>${p}</p></div>`;
+const evaluateOnlyBody = `
+<section class="page-hero"><div class="wrap">
+  <div class="crumb"><a href="index.html">Home</a> / <a href="services.html">Services &amp; pricing</a> / Evaluate Only</div>
+  <span class="eyebrow">Evaluate Only · $7,000 inc GST</span>
+  <h1 class="serif">You negotiate. We make sure you know what it is worth first.</h1>
+  <p>Most properties in Brisbane and Adelaide are listed without a price. You inspect, you like it, and the agent gives nothing away. Evaluate Only is for the buyer who is happy to make the offer and run the negotiation themselves, but wants the price evidence, the risk checks and an offer strategy before putting a number on the table. $7,000 inc GST, flat.</p>
+  <div class="hero-actions" style="margin-top:1.6rem"><a class="btn btn-primary" href="contact.html#book">Book a free strategy call</a><a class="btn btn-outline-l" href="property-readiness.html">Take the Property Readiness Snapshot</a></div>
+</div></section>
+<section class="bg-paper"><div class="wrap"><div class="article">
+  <span class="eyebrow">Who it is for</span>
+  <h2 class="serif" style="margin-top:.6rem">Already searching, finance underway, happy to negotiate</h2>
+  <p>Home buyers in South East Queensland or Adelaide who are already searching and inspecting, have finance underway with a broker or in place, and have the confidence to negotiate but not the data. If you want us to deal with the selling agent and run the negotiation, that is <a href="evaluate-and-negotiate.html">Evaluate and Negotiate</a>. Either way you are working with a licensed <a href="buyers-agent-brisbane.html">buyers agent in Brisbane</a> or a <a href="buyers-agent-adelaide.html">buyers agent in Adelaide</a>, and you can see <a href="services.html">all our fees</a> on one page.</p>
+</div></div></section>
+<section><div class="wrap">
+  <div class="sec-head reveal"><span class="eyebrow">What you get</span><h2 class="serif">Up to 48 reviews across your search, and three full offer packs</h2></div>
+  <div class="prob-grid two">
+    ${eoItem('Your brief and walk-away rules','A 45-minute session, then a written brief: budget (your figure or your broker&#39;s, labelled as such), non-negotiables, compromises, and the price you walk away at.')}
+    ${eoItem('Up to four property reviews a week','Send us the listings. For each one, within one business day: a price range from settled sales (Cotality), zoning, overlays and hazards (Stash), the automated estimate with its confidence band, how it fits your brief, and a verdict: inspect, inspect with questions, or pass.')}
+    ${eoItem('Three offer packs','On any property you intend to offer on: a full written review (comparable sales with source and date, position, planning, risks and what to verify, price reasoning and the negotiation zone, questions for the agent), your offer strategy (opening number, ceiling, conditions, settlement terms, what to do when the agent counters), and the disclosure review (Queensland Form 2 and prescribed certificates, or South Australian Form 1, cooling-off and planning checks). Issued before you offer.')}
+    ${eoItem('Building and pest read','We read the report you commission and tell you what to price, what to walk on, and what to put to the agent.')}
+    ${eoItem('Your client portal for the 12-week term','Every review, offer pack and document in one place, with identity checks completed inside it.')}
+    ${eoItem('What you do','You find the listings, attend inspections, submit the offer and negotiate with the agent. We do not contact the selling agent, submit offers, or attend auctions under this service.')}
+  </div>
+</div></section>
+<section class="bg-paper"><div class="wrap"><div class="article">
+  <span class="eyebrow">The fee</span>
+  <h2 class="serif" style="margin-top:.6rem">$7,000 inc GST, paid on engagement</h2>
+  <p>Your 12 weeks start when the fee is paid. Need a fourth offer pack? $1,000 each. The 12 weeks extend at no charge if your brief and your funding have not changed.</p>
+  <h3>If you change your mind</h3>
+  <p>Move to <a href="evaluate-and-negotiate.html">Evaluate and Negotiate</a> within 90 days and the full $7,000 credits against the $11,500 fee. You pay $1,500 to upgrade and $3,000 when your contract goes unconditional.</p>
+  <h3>What it costs bought piecemeal</h3>
+  <p>Published guides put a single property report at $500 to $950 and a shortlist-and-inspect service with no negotiation at $5,000 to $9,000. Three single reports at those rates would run $1,500 to $2,850 and stop at a price view, with no offer strategy and no disclosure review. Forty-eight of them, one for every listing we would review across a 12-week term, would run $24,000 at the bottom of the range.</p>
+  <p class="disc">Sources: What&#39;s The Damage, &ldquo;Buyers Agent Cost Brisbane&rdquo;, prices verified November 2026, due diligence or inspection only $500 to $950 per property. Your Property Guide, &ldquo;Buyers agent cost Australia&rdquo;, updated 16 October 2026, shortlist and inspect with no negotiation $5,000 to $9,000. Both are cost guides, not buyers agencies. Ranges are theirs, not ours, and will move.</p>
+  <p><strong>The published fee is the whole fee.</strong> No percentage of the purchase price, no success fee, no settlement fee. We do not take commission from sellers.</p>
+</div></div></section>
+<section><div class="wrap">
+  <div class="sec-head reveal"><span class="eyebrow">Questions</span><h2 class="serif">Before you book</h2></div>
+  ${faqHtml(EO_FAQ)}
+</div></section>
+<section class="bg-paper"><div class="wrap" style="max-width:820px">
+  <div class="calc-disc" style="margin-top:0">
+    <p>Licensed buyers agency. QLD 4769773, SA 335016. General information only, not financial product advice, credit assistance or legal advice. Finance is a matter for your broker, contracts for your conveyancer or solicitor. Any price range we give you is our opinion formed from the sales evidence available at the time; it is not a valuation and CapitalVue is not a registered valuer.</p>
+  </div>
+</div></section>
+${ctaBand}`;
 
 const pages = {
   'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 27 Google reviews.', indexBody,'index.html','index.html',{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE}),
@@ -1996,8 +2085,9 @@ const pages = {
   'team.html':    page('Our Team | CapitalVue Buyers Agents','Meet the CapitalVue team: buyers agents for investors and home buyers, backed by decades of real estate, finance and construction experience.', teamBody,'team.html','team.html',Object.values(PEOPLE)),
   'blog.html':    page('The Vue | Property Investment Blog | CapitalVue','The Vue: market updates, strategy and buying frameworks for Australian property investors and home buyers, from CapitalVue.', blogBody,'blog.html','blog.html'),
   'contact.html': page('Book a Strategy Call | Contact CapitalVue','Book a free, no-obligation property strategy call with CapitalVue, buyers agents for investors and home buyers in Brisbane and Adelaide.', contactBody,'contact.html','contact.html'),
-  'buyers-agent-brisbane.html': page('Buyers Agent Brisbane for Investors | CapitalVue','Licensed Brisbane buyers agent for property investors. Fixed fees from $2,200, a Camp Hill office, current market data and client purchase results.', brisbaneBody,'','buyers-agent-brisbane.html',[svcAreaSchema('Brisbane','QLD',['Brisbane','Morningside','Camp Hill','Carina Heights','Chapel Hill','Keperra','Taigum','Kangaroo Point','Woolloongabba','Chermside']), faqSchema(BNE_FAQ)],{ogTitle:'Buyers Agent Brisbane | CapitalVue',ogDesc:'Licensed Brisbane buyers agency for investors, with current market data on where Brisbane actually sits.'}),
+  'buyers-agent-brisbane.html': page('Buyers Agent Brisbane for Investors | CapitalVue','Licensed Brisbane buyers agent for property investors. Fixed fees from $1,650, a Camp Hill office, current market data and client purchase results.', brisbaneBody,'','buyers-agent-brisbane.html',[svcAreaSchema('Brisbane','QLD',['Brisbane','Morningside','Camp Hill','Carina Heights','Chapel Hill','Keperra','Taigum','Kangaroo Point','Woolloongabba','Chermside']), faqSchema(BNE_FAQ)],{ogTitle:'Buyers Agent Brisbane | CapitalVue',ogDesc:'Licensed Brisbane buyers agency for investors, with current market data on where Brisbane actually sits.'}),
   'buyers-agent-adelaide.html': page('Buyers Agent Adelaide for Investors | CapitalVue','Licensed South Australian buyers agent (SA 335016) for property investors. Fixed fees, client purchase results and current Adelaide market data.', adelaideBody,'','buyers-agent-adelaide.html',[svcAreaSchema('Adelaide','SA',['Adelaide','St Morris','Norwood','Payneham','Salisbury','Mawson Lakes','Woodville','Findon','Marion','Hallett Cove']), faqSchema(ADL_FAQ)],{ogTitle:'Buyers Agent Adelaide | CapitalVue',ogDesc:'Licensed SA buyers agency for investors buying from $700,000, with current data on a market that has just come off the boil.'}),
+  'evaluate-only.html': page('Evaluate Only Buyers Agent, $7,000 Flat | CapitalVue','You negotiate. We price every property from the sales data, check it, and set your offer strategy. $7,000 flat, 4 reviews a week, Brisbane and Adelaide.', evaluateOnlyBody,'services.html','evaluate-only.html',[EO_SCHEMA, faqSchema(EO_FAQ)],{ogImage:'assets/og-evaluate-only.jpg',ogTitle:'You negotiate. We make sure you know what it is worth first.',ogDesc:'Price evidence, risk checks and an offer strategy before you put a number on the table. $7,000 inc GST, flat. Brisbane and Adelaide.'}),
   'evaluate-and-negotiate.html': page('Evaluate &amp; Negotiate | $11,500 Fixed Fee | CapitalVue','No asking price on the listing? We price it from settled sales, check the overlays and negotiate. Fixed $11,500 inc GST. Licensed QLD and SA.', evalNegBody,'services.html','evaluate-and-negotiate.html', EVALNEG_SCHEMA, {ogTitle:'No asking price? Here is how we work out what to pay.',ogDesc:'You find the home. We price it from the settled sales, check the flood and planning overlays, and negotiate. $11,500 inc GST, published.'}),
   'buying-power.html': page('Borrowing Power Calculator | CapitalVue','Free borrowing power calculator for Australian buyers and investors. Estimate what you can borrow, your purchase budget and repayments in 60 seconds.', calcBody,'buying-power.html','buying-power.html', CALC_SCHEMA, {ogTitle:'What can you buy, and what could it be worth?', ogDesc:'A free 60-second estimate of your property borrowing power, buying budget and illustrative growth. From CapitalVue, licensed Australian buyers agents.', ogImage:'assets/og-calculator.jpg'}),
 };
@@ -2084,7 +2174,7 @@ fs.writeFileSync(path.join(DIR,'llms.txt'), `# CapitalVue
 
 ## Key facts
 - Service area: Adelaide (SA) and South East Queensland (QLD) only. CapitalVue is licensed in Queensland and South Australia and does not buy outside these two markets.
-- Fees, inc GST, fixed (not a percentage of the price): full buyers agent service $19,500; Owner-Occupier Evaluation & Negotiation $11,500; auction bidding only $2,200.
+- Fees, inc GST, fixed (not a percentage of the price): full buyers agent service $19,500 ($11,500 on engagement, $8,000 when the contract goes unconditional); Owner-Occupier Evaluate and Negotiate $11,500 ($8,500 on engagement, $3,000 when unconditional); Evaluate Only $7,000 (on engagement, you negotiate); auction bidding only $1,650 per auction.
 - The full service includes choosing the market and suburbs, on and off-market search, inspections, valuation against comparable sales, due diligence, negotiation or auction bidding, and contract and settlement management.
 - The $11,500 service is for buyers who find the listings themselves: CapitalVue assesses every listing sent, values it against comparable sales, runs due diligence and negotiates or bids.
 - Each agent takes on two or three clients at a time, and the same agent runs the engagement from first call to settlement.
@@ -2096,6 +2186,7 @@ fs.writeFileSync(path.join(DIR,'llms.txt'), `# CapitalVue
 - [Buyers agent Brisbane](${BASE}buyers-agent-brisbane.html): South East Queensland submarkets, client purchases and current market data.
 - [Buyers agent Adelaide](${BASE}buyers-agent-adelaide.html): Adelaide market, client purchases and the $700,000 minimum.
 - [Evaluate & Negotiate](${BASE}evaluate-and-negotiate.html): the $11,500 owner-occupier service in detail.
+- [Evaluate Only](${BASE}evaluate-only.html): the $7,000 price-and-strategy service for buyers who negotiate themselves.
 - [Why there is no price on the listing](${BASE}why-no-price.html): why listings hide their price in QLD and SA, the QLD auction rule and what an SA price range means.
 - [Buying power calculator](${BASE}buying-power.html): free indicative borrowing and budget estimate.
 - [Property readiness snapshot](${BASE}property-readiness.html): free 90-second readiness check.
