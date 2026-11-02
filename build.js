@@ -486,7 +486,7 @@ const footer = () => `
           <a href="https://www.facebook.com/capitalvueinvestments" target="_blank" rel="noopener" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.96h-1.51c-1.49 0-1.95.93-1.95 1.87v2.25h3.32l-.53 3.49h-2.79V24C19.61 23.09 24 18.1 24 12.07Z"/></svg></a>
           <a href="https://www.instagram.com/capitalvueinvestments/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
           <a href="https://www.linkedin.com/company/capitalvue-pty-ltd/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
-          <a href="https://maps.google.com/?cid=11747579062209486214" target="_blank" rel="noopener" aria-label="CapitalVue on Google, 5.0 from 27 reviews"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.35 11.1H12v3.2h5.35c-.5 2.4-2.6 3.9-5.35 3.9a6.2 6.2 0 1 1 0-12.4c1.55 0 2.95.57 4.03 1.5l2.4-2.4A9.6 9.6 0 0 0 12 2.4a9.6 9.6 0 1 0 0 19.2c5.3 0 9.6-3.6 9.6-9.6 0-.3-.1-.6-.25-.9z"/></svg></a>
+          <a href="https://maps.google.com/?cid=11747579062209486214" target="_blank" rel="noopener" aria-label="CapitalVue on Google, 5.0 from 28 reviews"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.35 11.1H12v3.2h5.35c-.5 2.4-2.6 3.9-5.35 3.9a6.2 6.2 0 1 1 0-12.4c1.55 0 2.95.57 4.03 1.5l2.4-2.4A9.6 9.6 0 0 0 12 2.4a9.6 9.6 0 1 0 0 19.2c5.3 0 9.6-3.6 9.6-9.6 0-.3-.1-.6-.25-.9z"/></svg></a>
         </div>
       </div>
       <div>
@@ -2179,7 +2179,7 @@ fs.writeFileSync(path.join(DIR,'llms.txt'), `# CapitalVue
 - The $11,500 service is for buyers who find the listings themselves: CapitalVue assesses every listing sent, values it against comparable sales, runs due diligence and negotiates or bids.
 - Each agent takes on three clients at a time, and the same agent runs the engagement from first call to settlement.
 - Track record: $21.31M secured across 23 settled client purchases, as at July 2026.
-- Google rating: 5.0 from 27 reviews, as at October 2026.
+- Google rating: 5.0 from 28 reviews, as at November 2026.
 
 ## Key pages
 - [Services & Pricing](${BASE}services.html): published fees, what each service includes, and when a buyer does not need one.
