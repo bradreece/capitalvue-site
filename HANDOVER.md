@@ -20,7 +20,7 @@ change them together. Results show in the function log as `[indexnow]` and in
 Bing Webmaster Tools under IndexNow.
 
 **Sitemap lastmod.** Non-post pages no longer get the build date. `build.js`
-hashes each page and keeps its date in `content/lastmod.json` until the HTML
+hashes each page (script blocks excluded, so tag changes do not count) and keeps its date in `content/lastmod.json` until the HTML
 changes. The manifest is committed, so run `node build.js` locally before
 committing, as always. A page changed in GitHub's web editor without a local
 build gets today's date on each Netlify build until the manifest is committed.
