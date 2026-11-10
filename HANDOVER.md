@@ -1,28 +1,81 @@
 # CapitalVue: open work and known traps
 
-Last updated 31 August 2026. Written as a handover so this does not live only
+Last updated 10 November 2026. Written as a handover so this does not live only
 in a chat thread. Update it when you close something.
 
 ---
 
-## Bing and IndexNow, 10 November 2026
+## 0. Bing and IndexNow, 10 November 2026
 
-Bing Webmaster Tools property `capitalvue.com.au/` (apex) is verified and
-accepts the www URLs; the www sitemap is submitted (33 URLs, Success). No
-second www property is needed.
+`main@834359c`. Bing Webmaster Tools property `capitalvue.com.au/` (apex) is
+verified and accepts the www URLs; the www sitemap is submitted (33 URLs,
+Success). No second www property is needed.
 
 **IndexNow.** `build.js` writes the key file `/5aaf1e370a6b217927b613a9a8aad79c.txt`
 (public by design, gitignored as build output). `netlify/functions/deploy-succeeded.mjs`
 runs after every production deploy and submits every sitemap URL whose
-`lastmod` is today or yesterday (Brisbane). The key is hardcoded in both
-files; change them together. Results show in the function log as `[indexnow]`
-and in Bing Webmaster Tools under IndexNow.
+`lastmod` is today or yesterday (Brisbane). Deploy previews and branch deploys
+are skipped; outside POSTs get a 403. The key is hardcoded in both files;
+change them together. Results show in the function log as `[indexnow]` and in
+Bing Webmaster Tools under IndexNow.
 
 **Sitemap lastmod.** Non-post pages no longer get the build date. `build.js`
 hashes each page and keeps its date in `content/lastmod.json` until the HTML
 changes. The manifest is committed, so run `node build.js` locally before
-committing, as always. Posts still use `iso` / `updated`. The manifest was
-seeded at 2026-11-05, the date the live sitemap already carried.
+committing, as always. A page changed in GitHub's web editor without a local
+build gets today's date on each Netlify build until the manifest is committed.
+Posts still use `iso` / `updated`. The manifest was seeded at 2026-11-05, the
+date the live sitemap already carried.
+
+---
+
+## 0b. Readiness funnel, snapshot email and HubSpot properties, 21 October 2026
+
+Three deploys in one day. `main@45a538c`. Function health check returns
+`"version":"1.4.0"` with the `hardening` array.
+
+**Page.** Source is `content/readiness-funnel.src.html`. The committed
+`property-readiness.html` is build output; never edit it. Four archetypes
+(`strategic_upgrader`, `foundation_builder`, `growth_investor`,
+`portfolio_expander`). `ready_mover` is gone; "Ready to move" is derived from
+`timeframe` in (`now`, `3_6`) and `readiness === "ready"`. Each archetype has
+`reflection_searching` (missed `multi` or `once`) and `reflection_starting`
+(`not_yet`, `not_started`, absent). The first live lead got the wrong variant
+before this branch existed; nothing to recall.
+
+**Function** (`netlify/functions/submit.mjs`, v1.4.0) holds its own copy of
+`ARCHETYPES`, `PEER` and the answer labels, mirroring the page. Change both
+files together. `PEER_ASOF` is `2026-10-20`; refresh monthly from the
+responses spreadsheet.
+
+- Email: BCC and reply-to default to `brad@capitalvue.com.au` (env `MAIL_BCC`,
+  `MAIL_REPLY_TO` override). `MAIL_FROM` is now
+  `"Brad Reece, CapitalVue" <brad@capitalvue.com.au>`. Unsubscribe is a mailto
+  with subject "Unsubscribe"; action within five working days.
+- HubSpot: after the send, the function upserts the eleven `cv_` contact
+  properties through the Contacts API (PATCH by email; 404 → 2s retry → create).
+  Auth is a HubSpot **Service Key** (not a legacy private app) in env
+  `HUBSPOT_TOKEN`, scopes `crm.objects.contacts.read` and `.write`. Option B
+  from the spec: the page also calls the function at the contact step with
+  `stage: "partial"`, which writes `cv_purpose`, `cv_timeframe_stated` and
+  `cv_snapshot_status = partial`, no email; completion overwrites with the
+  full set. The HubSpot Forms API payload on the page is unchanged and must
+  stay that way (form `9f419495-...` carries none of the `cv_` fields).
+- Verified live with two test contacts: all eleven values on a next-home run,
+  ten on an investor run with `cv_sell_first` absent, `Just exploring` label,
+  `cv_ready_now` derived correctly, partial flipping to completed.
+
+**Still open from the three specs:**
+- Confirm lists 44 to 51 pick up a new contact without a manual step.
+- Confirm the BCC copies arrived at `brad@capitalvue.com.au` (four test sends
+  went out on 21 October; they should be there).
+- Delete the test contacts `roostergsd@gmail.com` and
+  `roostergsd+investor@gmail.com`. The first shows a last name "Test" the
+  function never sent; check what stamped it before deleting.
+
+**Env var changes need a redeploy.** Netlify snapshots env vars into the
+deploy, so a variable added or changed in the UI is not visible to functions
+until the next deploy. An empty commit pushed to `main` is the clean way.
 
 ---
 
@@ -84,7 +137,15 @@ rapid POSTs, zero 429s. Both `config.rateLimit` on the function and the
 `rate_limit` block on the forced redirect were tried. The function health check
 honestly reports this under `pending` rather than `hardening`. Root cause
 unknown: plan restriction, feature not enabled, or a validation error visible
-only in deploy logs.
+only in deploy logs. The partial-stage call added on 21 October doubles the
+function's call volume per lead; it sends no email, so the exposure is HubSpot
+writes behind the same honeypot and origin gate.
+
+**Committed HTML on `main` is stale.** The generated pages checked into the
+repo lag `build.js` by weeks (missing the `_redirects` exclusion block, the
+colour-scheme meta, seven whole pages). Netlify regenerates everything on push
+so the live site is right, but anyone reading the repo's HTML is reading the
+wrong thing. Either commit a fresh build or stop committing output.
 
 ---
 
@@ -138,7 +199,8 @@ The last one is a legal question, not a copy edit.
   real site.
 - Request indexing for `post-buyers-agent-fees-australia.html` and the three
   earlier URLs.
-- Delete the HubSpot test contacts, including `test@test.com`.
+- Delete the HubSpot test contacts, including `test@test.com`,
+  `roostergsd@gmail.com` and `roostergsd+investor@gmail.com`.
 - Second GBP post for the fees article, 7 to 10 days after the first, using the
   1080x1080 GST comparison card.
 - Save `capitalvue-brand` v1.2 to the account. It corrects the GBP card size
@@ -161,11 +223,10 @@ autoscale). Not installed. Key design points if picked up:
   leads stay out even if the cursor is reset.
 - Advance the cursor to the newest record seen, not the wall clock, because
   HubSpot's search index is eventually consistent.
-- All structured answers live inside the HubSpot `message` field as a newline
-  block. There are no custom properties. Adding them requires creating the
-  properties *and* adding them to form `9f419495-172c-4c2b-9578-e0e87d37fbbe`
-  before the payload sends them, or the Forms API rejects the whole
-  submission and lead capture breaks.
+- The structured answers now live in the eleven `cv_` contact properties
+  (since 21 October 2026), so the poller can read those directly instead of
+  parsing the `message` field. The `message` block is still written by the
+  Forms post for older tooling.
 
 ---
 
@@ -201,6 +262,17 @@ upstream version was an open relay that accepted any POST and emailed any
 address. The deployed build adds an origin allowlist, a honeypot and field
 length caps. If a health check comes back without the `hardening` array, it is
 a downgrade.
+
+**Never add fields to the page's HubSpot Forms payload.** Form
+`9f419495-172c-4c2b-9578-e0e87d37fbbe` has none of the `cv_` fields; the Forms
+API rejects the whole submission when the payload names one, and lead capture
+breaks. Properties go through the Contacts API in the function.
+
+**The readiness page is a built page, not a source file.** A copy of
+`property-readiness.html` pulled from the live site or the repo carries 19 head
+lines that `build.js` injects. Dropping it straight into
+`content/readiness-funnel.src.html` duplicates all of them. Strip from
+`<meta name="description"` through the GTM `<script>` first.
 
 **Client names and street addresses never publish.** Suburb plus figures only,
 in the results tables and everywhere else.
