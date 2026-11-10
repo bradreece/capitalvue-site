@@ -5,6 +5,27 @@ in a chat thread. Update it when you close something.
 
 ---
 
+## Bing and IndexNow, 10 November 2026
+
+Bing Webmaster Tools property `capitalvue.com.au/` (apex) is verified and
+accepts the www URLs; the www sitemap is submitted (33 URLs, Success). No
+second www property is needed.
+
+**IndexNow.** `build.js` writes the key file `/5aaf1e370a6b217927b613a9a8aad79c.txt`
+(public by design, gitignored as build output). `netlify/functions/deploy-succeeded.mjs`
+runs after every production deploy and submits every sitemap URL whose
+`lastmod` is today or yesterday (Brisbane). The key is hardcoded in both
+files; change them together. Results show in the function log as `[indexnow]`
+and in Bing Webmaster Tools under IndexNow.
+
+**Sitemap lastmod.** Non-post pages no longer get the build date. `build.js`
+hashes each page and keeps its date in `content/lastmod.json` until the HTML
+changes. The manifest is committed, so run `node build.js` locally before
+committing, as always. Posts still use `iso` / `updated`. The manifest was
+seeded at 2026-11-05, the date the live sitemap already carried.
+
+---
+
 ## 1. Blocking the Meta campaign launch
 
 Everything else on this list can wait. This cannot, because money is waiting

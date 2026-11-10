@@ -2147,15 +2147,42 @@ fs.writeFileSync(path.join(DIR,'snapshot-email.js'), fs.readFileSync(path.join(D
 fs.writeFileSync(path.join(DIR,'style.css'), CSS.trim());
 
 // ---- sitemap.xml ----
-const today = new Date().toISOString().slice(0,10);
+// lastmod for non-post pages comes from a content-hash manifest, so it only moves
+// when the page's HTML actually changes. Stamping the build date on every page on
+// every deploy teaches Bing and Google to ignore lastmod, and the IndexNow ping in
+// netlify/functions/deploy-succeeded.mjs submits exactly the URLs whose lastmod
+// moved. The manifest lives in content/ (already 404'd and robots-disallowed) and
+// is committed: run node build.js locally before every commit, as always. A page
+// changed in GitHub's web editor without a local build gets today's date on each
+// Netlify build until the next local build commits the manifest; that is the safe
+// direction. Posts keep their own iso / updated dates.
+const LASTMOD_FILE = path.join(DIR, 'content', 'lastmod.json');
+let LASTMOD = {};
+try { LASTMOD = JSON.parse(fs.readFileSync(LASTMOD_FILE, 'utf8')); } catch (e) { LASTMOD = {}; }
+const NEW_LASTMOD = {};
+const pageLastmod = f => {
+  const h = require('crypto').createHash('sha256').update(pages[f]).digest('hex').slice(0, 16);
+  const prev = LASTMOD[f];
+  const lm = (prev && prev.hash === h) ? prev.lastmod : TODAY_BNE;
+  NEW_LASTMOD[f] = { hash: h, lastmod: lm };
+  return lm;
+};
 const sm = Object.keys(pages).filter(f=>f!=='404.html').map(f=>{
   const loc = BASE + (f==='index.html'?'':f);
   const pr = f==='index.html'?'1.0':(f.indexOf('post-')===0?'0.70':(/terms|privacy|aml-ctf/.test(f)?'0.30':'0.80'));
   const art = f.indexOf('post-')===0 ? ARTICLES.find(a=>'post-'+a.slug+'.html'===f) : null;
-  const lm = art ? (art.updated||art.iso) : today;
+  const lm = art ? (art.updated||art.iso) : pageLastmod(f);
   return `  <url><loc>${loc}</loc><lastmod>${lm}</lastmod><changefreq>weekly</changefreq><priority>${pr}</priority></url>`;
 }).join('\n');
 fs.writeFileSync(path.join(DIR,'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sm}\n</urlset>\n`);
+fs.writeFileSync(LASTMOD_FILE, JSON.stringify(Object.fromEntries(Object.keys(NEW_LASTMOD).sort().map(k => [k, NEW_LASTMOD[k]])), null, 1) + '\n');
+
+// ---- IndexNow key file ----
+// Public by design: IndexNow verifies ownership by fetching /<key>.txt from the
+// site. Not a secret, so it is NOT in the publish-root exclusion list. The same
+// key is hardcoded in netlify/functions/deploy-succeeded.mjs. Change both together.
+const INDEXNOW_KEY = '5aaf1e370a6b217927b613a9a8aad79c';
+fs.writeFileSync(path.join(DIR, INDEXNOW_KEY + '.txt'), INDEXNOW_KEY);
 
 // ---- robots.txt ----
 // /content/ holds unstyled article fragments that build.js injects into the
