@@ -141,12 +141,6 @@ only in deploy logs. The partial-stage call added on 21 October doubles the
 function's call volume per lead; it sends no email, so the exposure is HubSpot
 writes behind the same honeypot and origin gate.
 
-**Committed HTML on `main` is stale.** The generated pages checked into the
-repo lag `build.js` by weeks (missing the `_redirects` exclusion block, the
-colour-scheme meta, seven whole pages). Netlify regenerates everything on push
-so the live site is right, but anyone reading the repo's HTML is reading the
-wrong thing. Either commit a fresh build or stop committing output.
-
 ---
 
 ## 3. Content and compliance debt
