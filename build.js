@@ -371,6 +371,9 @@ footer{background:var(--ink);color:#c2cddd;padding:60px 0 28px;font-size:.9rem}
 .bare-foot a{color:#9fb0c6}
 .bare-foot a:hover{color:#fff}
 .disclaimer{font-size:.76rem;color:#7889a1;margin-top:14px;line-height:1.6}
+.site-credit{font-size:.74rem;color:#7889a1;margin-top:12px}
+.site-credit a{color:#9fb0c6}
+.site-credit a:hover{color:#fff}
 .own{background:linear-gradient(160deg,var(--navy),#061a30);border-radius:22px;padding:46px;color:#fff;display:grid;grid-template-columns:1.4fr auto;gap:32px;align-items:center;box-shadow:var(--shadow)}
 .own .eyebrow{color:#4fc2c2}
 .own h2{color:#fff;margin-top:.4rem;font-size:clamp(1.45rem,3vw,2rem)}
@@ -474,6 +477,7 @@ const bareFooter = `
 <footer class="bare-foot"><div class="wrap">
   <p style="margin-bottom:.5rem">CapitalVue Pty Ltd · ABN 56 671 085 028 · 28 Bovelles St, Camp Hill QLD 4152 · <a href="mailto:info@capitalvue.com.au">info@capitalvue.com.au</a> · 0499 484 727</p>
   <p><a href="privacy-policy.html">Privacy Policy</a> · <a href="terms-and-conditions.html">Terms &amp; Conditions</a> · <a href="aml-ctf-statement.html">AML/CTF Statement</a> · <a href="index.html">Home</a> · © 2026 CapitalVue Pty Ltd</p>
+  <p class="site-credit">SEO &amp; AI search by <a href="https://lumilogicmedia.com/" rel="sponsored">LumiLogic Media</a> · <a href="https://lumilogicmedia.com/website-check" rel="sponsored">Free website check</a></p>
 </div></footer>`;
 const footer = () => `
 <footer>
@@ -518,6 +522,7 @@ const footer = () => `
       <span><a href="terms-and-conditions.html" style="color:#9fb0c6">Terms &amp; Conditions</a> &nbsp;·&nbsp; <a href="privacy-policy.html" style="color:#9fb0c6">Privacy Policy</a> &nbsp;·&nbsp; <a href="aml-ctf-statement.html" style="color:#9fb0c6">AML/CTF Statement</a></span>
     </div>
     <p class="disclaimer">*Performance note: the +16.44% figure reflects the combined change in market value across CapitalVue's 23 settled client purchases since acquisition (first purchase May 2024), measured as at July 2026. It is a portfolio-wide capital growth figure, not an annualised or compounding rate, and is shown for illustration only. Past performance is not a reliable indicator of future performance. Property investment carries risk. This website is general information only and does not constitute financial, investment, legal or tax advice; seek independent advice for your circumstances.</p>
+    <p class="site-credit">SEO &amp; AI search by <a href="https://lumilogicmedia.com/" rel="sponsored">LumiLogic Media</a> · <a href="https://lumilogicmedia.com/website-check" rel="sponsored">Free website check</a></p>
   </div>
 </footer>`;
 
