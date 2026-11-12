@@ -476,7 +476,7 @@ const bareHeader = `
 const bareFooter = `
 <footer class="bare-foot"><div class="wrap">
   <p style="margin-bottom:.5rem">CapitalVue Pty Ltd · ABN 56 671 085 028 · 28 Bovelles St, Camp Hill QLD 4152 · <a href="mailto:info@capitalvue.com.au">info@capitalvue.com.au</a> · 0499 484 727</p>
-  <p><a href="privacy-policy.html">Privacy Policy</a> · <a href="terms-and-conditions.html">Terms &amp; Conditions</a> · <a href="aml-ctf-statement.html">AML/CTF Statement</a> · <a href="index.html">Home</a> · © 2026 CapitalVue Pty Ltd</p>
+  <p><a href="privacy-policy.html">Privacy Policy</a> · <a href="terms-and-conditions.html">Terms &amp; Conditions</a> · <a href="aml-ctf-statement.html">AML/CTF Statement</a> · <a href="https://g.page/r/CYYd0G3qyAejEBE" target="_blank" rel="noopener">Find us on Google</a> · <a href="https://g.page/r/CYYd0G3qyAejEBE/review" target="_blank" rel="noopener">Leave us a Google review</a> · <a href="index.html">Home</a> · © 2026 CapitalVue Pty Ltd</p>
   <p class="site-credit">SEO &amp; AI search by <a href="https://lumilogicmedia.com/" rel="sponsored">LumiLogic Media</a> · <a href="https://lumilogicmedia.com/website-check" rel="sponsored">Free website check</a></p>
 </div></footer>`;
 const footer = () => `
@@ -514,6 +514,8 @@ const footer = () => `
         <a href="mailto:info@capitalvue.com.au">info@capitalvue.com.au</a>
         <a href="tel:+61499484727">0499 484 727</a>
         <a href="https://maps.app.goo.gl/s9fyPFnemrxc4oq56" target="_blank" rel="noopener">28 Bovelles St, Camp Hill QLD 4152</a>
+        <a href="https://g.page/r/CYYd0G3qyAejEBE" target="_blank" rel="noopener">Find us on Google</a>
+        <a href="https://g.page/r/CYYd0G3qyAejEBE/review" target="_blank" rel="noopener">Leave us a Google review</a>
         <span style="color:#9fb0c6;display:block;margin-top:.4rem">Licensed: QLD 4769773 · SA 335016</span>
       </div>
     </div>
@@ -584,7 +586,7 @@ const PEOPLE = {
 const PEOPLE_REFS = Object.values(PEOPLE).map(x=>({"@id":x["@id"]}));
 // Visible byline name -> schema person. Default byline is "Brad".
 const AUTHOR_KEY = n => /rebecca/i.test(n||'') ? 'rebecca' : /tony/i.test(n||'') ? 'tony' : 'brad';
-const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@id":BASE+"#organisation","name":"CapitalVue","description":"Licensed Australian buyers agency helping busy Australians buy investment property and homes, with real-time portfolio tracking.","url":BASE,"logo":BASE+"assets/cv-logo-stacked.png","image":BASE+"assets/og.jpg","telephone":"+61499484727","email":"info@capitalvue.com.au","priceRange":"$$$","address":{"@type":"PostalAddress","streetAddress":"28 Bovelles St","addressLocality":"Camp Hill","addressRegion":"QLD","postalCode":"4152","addressCountry":"AU"},"areaServed":AREA_SERVED,"knowsAbout":["Buyers agent services","Residential property valuation","Property due diligence","Auction bidding","Property investment"],"founder":{"@id":BASE+"team.html#brad"},"employee":PEOPLE_REFS,"sameAs":["https://www.facebook.com/capitalvueinvestments","https://www.instagram.com/capitalvueinvestments/","https://www.linkedin.com/company/capitalvue-pty-ltd/","https://maps.google.com/?cid=11747579062209486214"]};
+const ORG_SCHEMA = {"@context":"https://schema.org","@type":"RealEstateAgent","@id":BASE+"#organisation","name":"CapitalVue","description":"Licensed Australian buyers agency helping busy Australians buy investment property and homes, with real-time portfolio tracking.","url":BASE,"logo":BASE+"assets/cv-logo-stacked.png","image":BASE+"assets/og.jpg","telephone":"+61499484727","email":"info@capitalvue.com.au","priceRange":"$$$","address":{"@type":"PostalAddress","streetAddress":"28 Bovelles St","addressLocality":"Camp Hill","addressRegion":"QLD","postalCode":"4152","addressCountry":"AU"},"areaServed":AREA_SERVED,"knowsAbout":["Buyers agent services","Residential property valuation","Property due diligence","Auction bidding","Property investment"],"founder":{"@id":BASE+"team.html#brad"},"employee":PEOPLE_REFS,"sameAs":["https://www.facebook.com/capitalvueinvestments","https://www.instagram.com/capitalvueinvestments/","https://www.linkedin.com/company/capitalvue-pty-ltd/","https://maps.google.com/?cid=11747579062209486214","https://g.page/r/CYYd0G3qyAejEBE"],"hasMap":"https://maps.google.com/?cid=11747579062209486214"};
 const esc = s => String(s).replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/"/g,'&quot;');
 const CRUMB = {
   'about.html':'About','services.html':'Services & pricing','tracker.html':'CapitalVue Portfolio',
