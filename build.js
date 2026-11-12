@@ -374,6 +374,10 @@ footer{background:var(--ink);color:#c2cddd;padding:60px 0 28px;font-size:.9rem}
 .site-credit{font-size:.74rem;color:#7889a1;margin-top:12px}
 .site-credit a{color:#9fb0c6}
 .site-credit a:hover{color:#fff}
+.faq{display:flex;flex-direction:column;gap:.4rem}
+.fq{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.fq h3{font-size:1.02rem;margin-bottom:.4rem;color:var(--ink)}
+.fq p{color:#33465f;font-size:.94rem}
 .own{background:linear-gradient(160deg,var(--navy),#061a30);border-radius:22px;padding:46px;color:#fff;display:grid;grid-template-columns:1.4fr auto;gap:32px;align-items:center;box-shadow:var(--shadow)}
 .own .eyebrow{color:#4fc2c2}
 .own h2{color:#fff;margin-top:.4rem;font-size:clamp(1.45rem,3vw,2rem)}
@@ -690,6 +694,21 @@ const REVIEWS = [
 ];
 const revCard = r => `<div class="rev reveal"><div class="stars">★★★★★</div><q>${r[4]}</q><div class="who"><span class="av" style="background:${r[1]}">${r[0]}</span><span><span class="nm">${r[2]}</span><span class="src">${r[3]}</span></span></div></div>`;
 
+const HOME_FAQ = [
+ {q:'What does a buyers agent do?',
+  a:'A buyers agent acts only for the buyer. We set the strategy and the brief, search on and off market, run the due diligence, negotiate or bid at auction, and oversee settlement through to a tracked property. What each service includes is on our <a href="services.html">services and pricing page</a>.'},
+ {q:'How much does CapitalVue charge?',
+  a:'Our fees are fixed and published. The Full Buyers Agent Service is $19,500 inc GST, Evaluate and Negotiate is $11,500, Evaluate Only is $7,000 and the Auction Bidding Service is $1,650 per auction. Every fee, the payment split and what it covers is on our <a href="services.html">services and pricing page</a>.'},
+ {q:'Do you work with home buyers or only investors?',
+  a:'Both. Investment purchases are led by founder Brad Reece, and owner-occupier purchases are led by Dr Rebecca Cox, our Owner-Occupier Buyers Agent. Tony Eaton guides buyers relocating to Brisbane from interstate or overseas. See <a href="services.html">who each service is for</a>.'},
+ {q:'Which areas do you buy in?',
+  a:'South East Queensland and Adelaide, under real estate licences in Queensland and South Australia. Current market data and a selection of client purchases, with prices paid and current values, are on our <a href="buyers-agent-brisbane.html">Brisbane buyers agent</a> and <a href="buyers-agent-adelaide.html">Adelaide buyers agent</a> pages.'},
+ {q:'Can you assess or negotiate a property I have already found?',
+  a:'Yes. With <a href="evaluate-only.html">Evaluate Only</a> you run the negotiation and we supply the price evidence from settled sales, the risk checks and an offer strategy. With <a href="evaluate-and-negotiate.html">Evaluate and Negotiate</a> we price each shortlisted property and deal with the selling agent for you.'},
+ {q:'What happens after settlement?',
+  a:'We oversee settlement, and for investors we connect a vetted property manager to find a tenant. Once you have bought with us we load the property into <a href="tracker.html">CapitalVue Portfolio</a>: live market value, loans, expenses and an EOFY report for your accountant, with access set up at settlement.'}
+];
+
 const ctaBand = `
 <section id="book"><div class="wrap"><div class="cta reveal">
   <span class="eyebrow" style="color:#4fc2c2">Get in touch</span>
@@ -777,6 +796,13 @@ ${trustbar}
   <div class="sec-head center reveal"><span class="eyebrow">★★★★★ &nbsp;5.0 from 28 Google reviews</span><h2 class="serif">Clients don't just recommend CapitalVue. They come back.</h2></div>
   <div class="rev-grid">${REVIEWS.map(revCard).join('')}</div>
   <div class="rev-cta"><a class="btn btn-ghost" href="https://maps.app.goo.gl/s9fyPFnemrxc4oq56" target="_blank" rel="noopener">Read all reviews on Google →</a></div>
+</div></section>
+
+<section style="background:#f4f7fb" id="faq"><div class="wrap" style="max-width:860px">
+  <div class="sec-head center reveal"><h2 class="serif">Common questions</h2></div>
+  <div class="faq">
+${HOME_FAQ.map(f=>`    <div class="fq"><h3>${f.q}</h3><p>${f.a}</p></div>`).join('\n')}
+  </div>
 </div></section>
 ${ctaBand}`;
 
@@ -2086,7 +2112,7 @@ const evaluateOnlyBody = `
 ${ctaBand}`;
 
 const pages = {
-  'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 28 Google reviews.', indexBody,'index.html','index.html',{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE}),
+  'index.html':   page('Property Buyers Agency for Investors | CapitalVue','Licensed buyers agency for Brisbane and Adelaide. We find, negotiate and secure the right investment property or home. Rated 5.0 from 28 Google reviews.', indexBody,'index.html','index.html',[{"@context":"https://schema.org","@type":"WebSite","name":"CapitalVue","url":BASE},faqSchema(HOME_FAQ)]),
   'about.html':   page('About CapitalVue | Licensed Buyers Agency (QLD, SA)','CapitalVue pairs a licensed buyers agency with real-time portfolio technology to make buying an investment property or a home simple, transparent and provable.', aboutBody,'about.html','about.html'),
   'services.html':page('Buyers Agent Fees, Published | CapitalVue','Buyers agent fees, published. $19,500 full service, $11,500 if you search yourself. Adelaide and SEQ. No seller commission, same agent to settlement.', servicesBody,'services.html','services.html',[SVC_SCHEMA, faqSchema(SVC_FAQ)]),
   'why-no-price.html':page('Why There&#39;s No Price on the Listing | CapitalVue','No price, offers over, contact agent. Four reasons a listing hides its price in Queensland and South Australia, and what each one means for a buyer.', whyNoPriceBody,'services.html','why-no-price.html',faqSchema(WNP_FAQ)),
