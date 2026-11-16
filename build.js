@@ -509,7 +509,7 @@ const footer = () => `
       </div>
       <div>
         <h4>Account</h4>
-        <a href="https://capitalvue.app.portfoliologic.com.au/" target="_blank" rel="noopener">CapitalVue Portfolio login</a>
+        <a href="https://app.capitalvue.com.au/portfoliologic/login/" target="_blank" rel="noopener">CapitalVue Portfolio login</a>
         <a href="https://clientportal.capitalvue.com.au/" target="_blank" rel="noopener">Client portal</a>
         <a href="contact.html#book">Book a strategy call</a>
       </div>
@@ -1086,14 +1086,14 @@ ${pageHero('Why there is no price','Buying without a price','Why there is no pri
 </div></div></section>`;
 
 /* ---------------- TRACKER (CapitalVue Portfolio) ---------------- */
-// The original Property Tracker (app.capitalvue.com.au) is retired 16 November 2026.
+// The original Property Tracker closed 16 November 2026. app.capitalvue.com.au now serves the
+// CapitalVue Portfolio login (/portfoliologic/login/); the PortfolioLogic URL routes to the same page.
 // This page now covers CapitalVue Portfolio only. Copy follows the CapitalVue Portfolio feature and benefit sheet (Oct 2026).
 // URL kept as tracker.html for existing links and redirects.
 const feat = t => `<div class="feat-item"><span class="tick">✓</span> ${t}</div>`;
 const shot = (f,w,h,alt) => `<img src="${A(f)}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async" style="width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow)">`;
 const trackerBody = `
 ${pageHero('CapitalVue Portfolio','For CapitalVue clients','Your whole portfolio, run from one login.','CapitalVue Portfolio is the platform we set up for clients once they have bought with us. Live market value, rent, expenses, loans, insurance, equity and tax records for every property you own, in one secure place, ready for you and your accountant.')}
-<div style="background:#e3f4f4;border-bottom:1px solid var(--line)"><div class="wrap" style="padding:14px 0;font-size:.9rem;color:#33465f;text-align:center">The original CapitalVue Property Tracker closes on 16 November 2026. Questions about an existing tracker account: <a href="mailto:info@capitalvue.com.au" style="color:var(--emerald);font-weight:600">info@capitalvue.com.au</a></div></div>
 <section><div class="wrap feat">
   <div class="reveal">
     <span class="eyebrow">Client-only platform</span>
@@ -1105,7 +1105,7 @@ ${pageHero('CapitalVue Portfolio','For CapitalVue clients','Your whole portfolio
       ${feat('Auto-categorised expenses')}${feat('Insurance read from the PDF')}
       ${feat('EOFY report for your accountant')}${feat('Lease and renewal reminders')}
     </div>
-    <div class="hero-actions" style="margin-top:1.8rem"><a class="btn btn-navy" href="https://capitalvue.app.portfoliologic.com.au/" target="_blank" rel="noopener">CapitalVue Portfolio Login</a></div>
+    <div class="hero-actions" style="margin-top:1.8rem"><a class="btn btn-navy" href="https://app.capitalvue.com.au/portfoliologic/login/" target="_blank" rel="noopener">CapitalVue Portfolio Login</a></div>
     <p style="color:var(--muted);font-size:.88rem;margin-top:.9rem">Access is set up for you at settlement and sign-in is protected by two-factor authentication. It is not available for purchase separately.</p>
   </div>
   <div class="reveal">
@@ -1147,7 +1147,7 @@ ${pageHero('CapitalVue Portfolio','For CapitalVue clients','Your whole portfolio
   <div class="sec-head center reveal"><span class="eyebrow">Two portals, one engagement</span><h2 class="serif">Before settlement and after it.</h2><p>Every client works in a secure client portal during the search. Once you buy, CapitalVue Portfolio takes over.</p></div>
   <div class="prob-grid two" style="align-items:stretch">
     <div class="prob reveal" style="display:flex;flex-direction:column"><span class="eyebrow">During the search</span><h3 style="margin-top:.5rem">Client portal</h3><p>Your brief, shortlist, offers and contract stages in one place, with identity and AML checks completed inside it.</p><p style="margin-top:auto;padding-top:.8rem"><a href="portal-demo.html" style="color:var(--emerald);font-weight:600">Try the portal demo →</a></p></div>
-    <div class="prob reveal" style="display:flex;flex-direction:column"><span class="eyebrow">From settlement</span><h3 style="margin-top:.5rem">CapitalVue Portfolio</h3><p>The property moves into your portfolio so you can track its performance, alongside anything else you own.</p><p style="margin-top:auto;padding-top:.8rem"><a href="https://capitalvue.app.portfoliologic.com.au/" target="_blank" rel="noopener" style="color:var(--emerald);font-weight:600">Client login →</a></p></div>
+    <div class="prob reveal" style="display:flex;flex-direction:column"><span class="eyebrow">From settlement</span><h3 style="margin-top:.5rem">CapitalVue Portfolio</h3><p>The property moves into your portfolio so you can track its performance, alongside anything else you own.</p><p style="margin-top:auto;padding-top:.8rem"><a href="https://app.capitalvue.com.au/portfoliologic/login/" target="_blank" rel="noopener" style="color:var(--emerald);font-weight:600">Client login →</a></p></div>
   </div>
 </div></section>
 <section class="bg-paper" style="padding-top:0"><div class="wrap">
