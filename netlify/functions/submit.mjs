@@ -2,6 +2,8 @@
  * POST /.netlify/functions/submit
  *
  * Emails the lead their readiness snapshot, and the team an internal alert.
+ * Since 1.5.0 it also emails buying power calculator leads a copy of their
+ * results (source "buying_power_calculator"); see the calculator block below.
  *
  * CRM capture happens on the page via the HubSpot Forms API submission; that
  * is the lead record and the consent record. This function additionally writes
@@ -38,8 +40,8 @@
    Upstream 1.0.0 accepts any POST and emails any address in the body, which
    makes it an open relay on a verified sending domain. Do not "upgrade" back
    to a build without these three controls. */
-const VERSION = "1.4.1";
-const BUILD = "2026-10-21";
+const VERSION = "1.5.0";
+const BUILD = "2026-11-22";
 const BASED_ON = "1.0.0";
 const HARDENING = ["origin-allowlist", "honeypot", "field-length-caps"];
 /* Configured but NOT enforcing. Netlify rate limiting was set up two ways on
@@ -56,6 +58,8 @@ const PENDING = ["rate-limit (configured, not enforcing on this plan)"];
    copy to Brad, plain-text part, Spam Act footer. No illustration, no fee, no
    service description in the lead's copy.
    1.3.1: reflection branches on answers.missed (searching vs starting).
+   1.5.0 (22 Nov 2026): buying power calculator results email, a second
+   source on the same endpoint. Snapshot path unchanged.
    1.4.0: writes the cv_ contact properties through the HubSpot Contacts API
    after the email send (spec "Snapshot answers to HubSpot properties",
    21 Oct 2026, option B). Accepts stage:"partial" from the contact step:
@@ -369,6 +373,144 @@ function internalEmailHtml(payload) {
   </div>`;
 }
 
+/* ---- Buying power calculator results email (1.5.0) ----
+   The calculator gate on buying-power.html says "We'll also send you a copy".
+   This is that copy. The page posts source:"buying_power_calculator" with three
+   numbers; nothing free-text from the request reaches the email except the
+   validated first name, so the endpoint cannot be used to mail arbitrary copy.
+   Figures are formatted here, not on the page.
+   Every calculator lead gets the same email, with the two offers (call,
+   broker introduction), whether or not they ticked the marketing box. Decision
+   22 Nov 2026: this is the one-to-one reply the gate promised, not marketing.
+   The marketing box governs newsletters and campaigns only. */
+const CALC_SOURCE = "buying_power_calculator";
+const CALC_MAX = 50000000;
+const aud = (n) => "$" + Math.round(n).toLocaleString("en-AU");
+const calcNum = (v) => (typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= CALC_MAX ? Math.round(v) : null);
+const isPhone = (v) => {
+  const d = String(v ?? "").replace(/[^0-9]/g, "");
+  return d.length >= 8 && d.length <= 15;
+};
+function calcFigures(payload) {
+  const c = payload.calc || {};
+  const budget = calcNum(c.budget), maxLoan = calcNum(c.maxLoan), repay = calcNum(c.repay);
+  if (budget === null || maxLoan === null || repay === null || budget <= 0) return null;
+  return { budget, maxLoan, repay };
+}
+const CALC_NOTE = "Calculator estimates from the figures you entered, set to be cautious. A lender may assess you higher or lower.";
+const CALC_WHY = "A number like this usually raises the next question: what happens first? Finance, a brief, a suburb, an offer. The order matters, because steps taken out of sequence cost time and sometimes the property.";
+const CALC_CALL = "A 30-minute call with me. We map the sequence for your purchase, and you leave with a clear next step.";
+const CALC_BROKER = "A broker can assess what you can borrow. Reply to this email, or use the button, and I will pass on your name and contact details.";
+const calcBookUrl = SITE + "contact.html?utm_source=calculator&utm_medium=email&utm_content=book#book";
+function calcFooter({ privacyUrl, unsubscribeTo }) {
+  return {
+    line1: `CapitalVue Pty Ltd, ABN ${ABN}. Licensed buyers agency, ${LICENCES}. This is general information, not financial, credit, tax or legal advice. CapitalVue is not a credit provider or mortgage broker. You're receiving this because you asked for your results at capitalvue.com.au.`,
+    unsubscribe: `mailto:${unsubscribeTo}?subject=Unsubscribe`,
+    privacy: privacyUrl || SITE + "privacy-policy.html",
+  };
+}
+
+function calcEmailHtml({ firstName, fig, privacyUrl, replyTo }) {
+  const f = calcFooter({ privacyUrl, unsubscribeTo: replyTo });
+  const serif = "font-family:Georgia,'Times New Roman',serif;";
+  const stat = (label, value) => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#183555;border:1px solid #264668;border-radius:10px;">
+                <tr><td style="padding:14px 16px 2px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8FA9C6;font-weight:600;">${label}</td></tr>
+                <tr><td style="padding:0 16px 14px;font-size:21px;font-weight:700;color:#ffffff;">${esc(value)}</td></tr>
+              </table>`;
+  const card = (title, body, button) => `<tr><td style="background:#f6f8fb;border:1px solid #dde3ec;border-radius:12px;padding:20px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="${serif}font-size:19px;font-weight:700;color:#071f38;padding-bottom:6px;">${title}</td></tr>
+          <tr><td style="font-size:15px;color:#33465f;padding-bottom:16px;">${esc(body)}</td></tr>
+          <tr><td>${button}</td></tr>
+        </table>
+      </td></tr>`;
+  const offerRows = `<tr><td style="font-size:16px;color:#33465f;padding-bottom:22px;">${esc(CALC_WHY)}</td></tr>
+      <tr><td style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#57687f;font-weight:600;padding-bottom:12px;">Two ways we can help from here</td></tr>
+      ${card("Work out your order of events", CALC_CALL, `<a href="${esc(calcBookUrl)}" style="display:inline-block;background:#0E2C4E;color:#ffffff;font-weight:600;font-size:15px;padding:12px 24px;border-radius:10px;text-decoration:none;">Book a time</a>`)}
+      <tr><td style="height:12px;line-height:12px;font-size:0;">&nbsp;</td></tr>
+      ${card("Meet a mortgage broker", CALC_BROKER, `<a href="mailto:${esc(replyTo)}?subject=Broker%20introduction" style="display:inline-block;background:#ffffff;color:#0E2C4E;font-weight:600;font-size:15px;padding:11px 23px;border-radius:10px;border:1px solid #0E2C4E;text-decoration:none;">Ask for an introduction</a>`)}
+      <tr><td style="font-size:15px;color:#33465f;padding-top:18px;">Neither carries any obligation.</td></tr>`;
+
+  return `<!DOCTYPE html><html lang="en-AU"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Your buying power estimate</title></head>
+<body style="margin:0;padding:0;background:#f6f8fb;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#f6f8fb;font-size:1px;line-height:1px;">Your indicative figures, and two ways to work out what happens first.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f8fb;padding:28px 12px;">
+<tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:14px;overflow:hidden;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#071f38;line-height:1.55;">
+  <tr><td style="background:#0E2C4E;padding:18px 32px;"><img src="${SITE}assets/logo-white.png" alt="CapitalVue" height="26" style="height:26px;width:auto;display:block;border:0;"></td></tr>
+  <tr><td style="background:#0E2C4E;padding:10px 32px 30px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8FA9C6;font-weight:600;padding-bottom:10px;">Buying power calculator &nbsp;&middot;&nbsp; your results</td></tr>
+      <tr><td style="${serif}font-size:26px;line-height:1.25;font-weight:700;color:#ffffff;padding-bottom:4px;">Indicative purchase budget</td></tr>
+      <tr><td style="${serif}font-size:44px;line-height:1.1;font-weight:700;color:#5EC8C5;letter-spacing:-0.01em;padding-bottom:20px;">${esc(aud(fig.budget))}</td></tr>
+      <tr><td>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="50%" valign="top" style="padding-right:6px;">
+              ${stat("Borrowing power", aud(fig.maxLoan))}
+            </td>
+            <td width="50%" valign="top" style="padding-left:6px;">
+              ${stat("Repayment a month", aud(fig.repay))}
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+      <tr><td style="font-size:12.5px;line-height:1.55;color:#C7DCED;padding-top:14px;">${esc(CALC_NOTE)}</td></tr>
+    </table>
+  </td></tr>
+  <tr><td style="padding:30px 32px 32px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="font-size:16px;color:#33465f;padding-bottom:14px;">Hi ${esc(firstName)}, thanks for using the buying power calculator. Your results are above so you have a copy.</td></tr>
+      ${offerRows}
+      <tr><td style="font-size:15px;padding-top:22px;color:#071f38;">Regards,<br><b>Brad Reece</b><br><span style="color:#57687f;">Founder, CapitalVue &nbsp;&middot;&nbsp; <a href="tel:+61499484727" style="color:#57687f;text-decoration:none;">0499 484 727</a></span></td></tr>
+      <tr><td style="padding-top:26px;">
+        <div style="border-top:1px solid #dde3ec;padding-top:16px;font-size:11px;line-height:1.6;color:#57687f;">
+          ${esc(f.line1)} <a href="${esc(f.unsubscribe)}" style="color:#57687f;">Unsubscribe</a> &middot; <a href="${esc(f.privacy)}" style="color:#57687f;">Collection notice</a>
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>`;
+}
+
+function calcEmailText({ firstName, fig, privacyUrl, replyTo }) {
+  const f = calcFooter({ privacyUrl, unsubscribeTo: replyTo });
+  const L = [
+    `Hi ${firstName}, thanks for using the buying power calculator. Here is a copy of your results.`, "",
+    `Indicative purchase budget: ${aud(fig.budget)}`,
+    `Indicative borrowing power: ${aud(fig.maxLoan)}`,
+    `Indicative repayment: ${aud(fig.repay)} a month`, "",
+    CALC_NOTE, "",
+  ];
+  L.push(CALC_WHY, "", "TWO WAYS WE CAN HELP FROM HERE", "",
+    "1. Work out your order of events", CALC_CALL, `Book a time: ${calcBookUrl}`, "",
+    "2. Meet a mortgage broker", "A broker can assess what you can borrow. Reply to this email and I will pass on your name and contact details.", "",
+    "Neither carries any obligation.", "");
+  L.push("Regards,", "Brad Reece", "Founder, CapitalVue", "0499 484 727", "");
+  L.push("--", f.line1, `Unsubscribe: ${f.unsubscribe}`, `Collection notice: ${f.privacy}`);
+  return L.join("\n");
+}
+
+function calcInternalHtml({ contact, fig, payload }) {
+  const row = (k, v) =>
+    `<tr><td style="padding:5px 14px 5px 0;color:#57687f;white-space:nowrap;">${esc(k)}</td><td style="padding:5px 0;"><b>${esc(v)}</b></td></tr>`;
+  return `<div style="font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;color:#071f38;line-height:1.5;">
+    <h2 style="margin:0 0 4px;">New calculator lead: ${esc(contact.firstName)}</h2>
+    <div style="color:#57687f;margin-bottom:16px;">Buying power calculator</div>
+    <table cellpadding="0" cellspacing="0">
+      ${row("Email", contact.email)}
+      ${row("Phone", contact.mobile)}
+      ${row("Purchase budget", aud(fig.budget))}
+      ${row("Borrowing power", aud(fig.maxLoan))}
+      ${row("Repayment a month", aud(fig.repay))}
+      ${row("Marketing opt-in", payload.marketingOptIn === true ? "yes" : "no")}
+    </table>
+    <p style="color:#57687f;font-size:12px;margin-top:18px;">The full inputs are on the HubSpot contact (message field). The lead's copy is BCC'd to ${esc(process.env.MAIL_BCC || DEFAULT_PERSON)}.</p>
+  </div>`;
+}
+
 /* ---- HubSpot cv_ properties (Contacts API, not Forms API) ---- */
 const HS_API = "https://api.hubapi.com/crm/v3/objects/contacts";
 const TIMEFRAME_LABEL = {
@@ -514,6 +656,7 @@ export default async (req) => {
   }
 
   const contact = payload.contact || {};
+  const isCalc = payload.source === CALC_SOURCE;
 
   // Validate server-side. Never trust the client's own checks.
   if (
@@ -521,7 +664,8 @@ export default async (req) => {
     String(contact.firstName).length > MAX.firstName ||
     !isEmail(contact.email) ||
     String(contact.email).length > MAX.email ||
-    !isAuMobile(contact.mobile) ||
+    // The calculator gate takes any phone number, not only AU mobiles.
+    !(isCalc ? isPhone(contact.mobile) : isAuMobile(contact.mobile)) ||
     String(contact.mobile).length > MAX.mobile
   ) {
     return new Response(JSON.stringify({ error: "Invalid contact details", version: VERSION }), { status: 400, headers });
@@ -529,6 +673,31 @@ export default async (req) => {
   // No consent, no contact. Hard stop.
   if (payload.consent !== true) {
     return new Response(JSON.stringify({ error: "Consent required", version: VERSION }), { status: 400, headers });
+  }
+
+  // Buying power calculator: results email only. No cv_ properties, no stages.
+  if (isCalc) {
+    const fig = calcFigures(payload);
+    if (!fig) return new Response(JSON.stringify({ error: "Invalid figures", version: VERSION }), { status: 400, headers });
+    const replyTo = process.env.MAIL_REPLY_TO || DEFAULT_PERSON;
+    const bcc = process.env.MAIL_BCC || DEFAULT_PERSON;
+    const internalTo = process.env.MAIL_TO_INTERNAL;
+    const privacyUrl = process.env.BRAND_PRIVACY_URL || "";
+    // The gate asks for a full name; greet by the first word of it.
+    const firstName = String(contact.firstName).trim().split(/\s+/)[0];
+    const args = { firstName, fig, privacyUrl, replyTo };
+    const results = await Promise.allSettled([
+      sendEmail({ to: contact.email, subject: `Your buying power estimate, ${firstName}`, html: calcEmailHtml(args), text: calcEmailText(args), replyTo, bcc }),
+      internalTo
+        ? sendEmail({ to: internalTo, subject: `New calculator lead: ${firstName} (${aud(fig.budget)} budget)`, html: calcInternalHtml({ contact, fig, payload }), replyTo: contact.email })
+        : Promise.resolve({ skipped: true }),
+    ]);
+    const failures = results.map((r, i) => (r.status === "rejected" ? ["leadEmail", "teamEmail"][i] : null)).filter(Boolean);
+    if (failures.length) console.error("[submit] calculator partial failure", failures, results);
+    console.info("[submit] calculator email sent");
+    if (results[0].status === "rejected")
+      return new Response(JSON.stringify({ ok: false, failed: failures, version: VERSION }), { status: 502, headers });
+    return new Response(JSON.stringify({ ok: true, source: CALC_SOURCE, degraded: failures, version: VERSION }), { status: 200, headers });
   }
 
   // Contact-captured step (option B). No email: the snapshot is not finished.

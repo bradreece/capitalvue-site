@@ -1534,6 +1534,9 @@ ${pageHero('Calculator','Borrowing &amp; buying power calculator','What can you 
     window.dataLayer=window.dataLayer||[];
     window.dataLayer.push({event:'hs_form_submitted',form_source:'buying_power_calculator',marketing_optin:mkt?'yes':'no'});
     try{fetch(HSCALC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(function(){});}catch(e){}
+    // Results email (netlify/functions/submit.mjs, source buying_power_calculator). Separate from the
+    // HubSpot post above and never added to its payload. Fire and forget: CRM capture does not depend on it.
+    if(location.protocol!=='file:'){try{fetch('/api/snapshot-submit',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'buying_power_calculator',contact:{firstName:name,email:email,mobile:phone},consent:true,marketingOptIn:!!mkt,calc:{budget:Math.round(d.budget),maxLoan:Math.round(d.maxLoan),repay:Math.round(d.repay)},page:location.href,cv_hp2:''})}).catch(function(){});}catch(e){}}
   });
 })();
 </script>`;

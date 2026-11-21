@@ -1,7 +1,39 @@
 # CapitalVue: open work and known traps
 
-Last updated 10 November 2026. Written as a handover so this does not live only
+Last updated 22 November 2026. Written as a handover so this does not live only
 in a chat thread. Update it when you close something.
+
+---
+
+## 0a. Buying power calculator results email, 22 November 2026
+
+**Built, not yet deployed** (branch `calculator-results-email`). Function goes
+to `1.5.0`; the health check must still return the `hardening` array.
+
+The calculator gate has always said "We'll also send you a copy" and nothing
+was sent. `buying-power.html` now makes a second POST, to `/api/snapshot-submit`
+with `source: "buying_power_calculator"` and three numbers (budget, maxLoan,
+repay). The HubSpot Forms payload is untouched.
+
+- One version for every lead, marketing box ticked or not: results plus two
+  offers (30-minute call, broker introduction). Decision 22 Nov: this is the
+  one-to-one reply the gate promised, not marketing. The marketing box governs
+  newsletters and campaigns only.
+- No referral-fee line in the email, by decision (22 Nov): disclosure happens
+  on engagement and the Form 6 covers it.
+- BCC and reply-to follow the snapshot email (`MAIL_BCC`, `MAIL_REPLY_TO`,
+  default `brad@capitalvue.com.au`). A "New calculator lead" alert goes to
+  `MAIL_TO_INTERNAL` when that is set.
+- The calculator accepts any phone number of 8 to 15 digits; the snapshot path
+  still requires an AU mobile. Figures must be numbers; nothing free-text from
+  the request reaches the email except the validated name.
+- A lead whose name or email fails the junk guards still lands in HubSpot but
+  gets no email, silently.
+
+**Still open:** one live submission after deploy to confirm the lead copy, the
+BCC and the internal alert arrive. `content/lastmod.json` hashes shift for 15
+untouched pages when built from a fresh clone; not committed here, cause not
+found.
 
 ---
 
