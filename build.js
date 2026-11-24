@@ -455,7 +455,9 @@ const navItem = (n, active) => {
       </div>`;
 };
 
-const header = (active) => `
+// noCta drops the phone number and the Book a call button. Used by the noted pages,
+// where the visitor has just said they are not buying.
+const header = (active, noCta) => `
 <header>
   <div class="wrap nav">
     <a class="logo" href="index.html"><img src="${LOGO_DARK}" alt="CapitalVue"></a>
@@ -465,9 +467,9 @@ const header = (active) => `
       <a class="nav-m" href="tel:+61499484727">Call 0499 484 727</a>
     </nav>
     <div class="nav-cta">
-      <a class="nav-phone" href="tel:+61499484727">0499 484 727</a>
+      ${noCta?'':'<a class="nav-phone" href="tel:+61499484727">0499 484 727</a>'}
       <a class="btn btn-navy nav-portal" href="https://clientportal.capitalvue.com.au/" target="_blank" rel="noopener">Client portal</a>
-      <a class="btn btn-primary" href="contact.html#book">Book a call</a>
+      ${noCta?'':'<a class="btn btn-primary" href="contact.html#book">Book a call</a>'}
       <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -629,7 +631,7 @@ const page = (title, desc, body, active, pathName, schema, opts) => {
 <title>${title}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${url}">
-<meta name="robots" content="${(opts&&opts.noindex)?'noindex,follow':'index,follow,max-image-preview:large'}">
+<meta name="robots" content="${(opts&&opts.noindex)?(opts.nofollow?'noindex, nofollow':'noindex,follow'):'index,follow,max-image-preview:large'}">
 ${(opts&&opts.baseHref)?'<base href="/">':''}<!-- 404 only. Netlify serves 404.html for ANY missing path, so at /wp-content/uploads/x/y.png every relative href on this page would resolve against that directory and 404 again. 79 legacy redirect entries sit at subpath depth, and this page exists to recover exactly that traffic. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CapitalVue">
@@ -658,7 +660,7 @@ ${(opts&&opts.baseHref)?'<base href="/">':''}<!-- 404 only. Netlify serves 404.h
 </head>
 <body>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WFV2RRJZ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-${bare?bareHeader:header(active)}
+${bare?bareHeader:header(active, !!(opts&&opts.noCta))}
 ${body}
 ${bare?bareFooter:footer()}
 ${bare?'':SCRIPT}
@@ -2141,6 +2143,79 @@ pages['terms-and-conditions.html'] = page('Terms &amp; Conditions | CapitalVue',
 pages['privacy-policy.html'] = page('Privacy Policy | CapitalVue Buyers Agency','How CapitalVue collects, holds and manages your personal information under the Australian Privacy Principles.', legalBody('Privacy Policy','privacy.html'),'','privacy-policy.html',null,{bare:true});
 pages['aml-ctf-statement.html'] = page('AML/CTF Compliance Statement | CapitalVue','How CapitalVue meets its obligations under the AML/CTF Act 2006, what identification we ask for and how we handle it.', legalBody('AML/CTF Compliance Statement','aml-ctf.html'),'','aml-ctf-statement.html',null,{bare:true});
 
+/* ---------------- "Noted" pages: Second Snapshot nurture, Email 1 ---------------- */
+// Landing pages for three of the four tap answers in Email 1. Reached only from the
+// email (utm_campaign=second-snapshot, utm_content=e1-*; HubSpot segments key on those
+// values, so do not rename the files). noindex, nofollow, left out of the sitemap
+// (HIDDEN_PAGES), and never linked from the nav, footer or any other page.
+// No form, no call button, no CTA band, no related posts: these visitors have just said
+// they are not buying. Nothing on them fires Lead or generate_lead.
+const NOTED_DISC = 'General information only. It is not financial, credit, legal or tax advice. Speak to your own broker, conveyancer or accountant about your circumstances.';
+const notedTip = (t, i) => `<div class="noted-tip"><div class="num">${i+1}</div><div><h2>${t.h}</h2><p>${t.p}</p>${t.link?`<a href="${t.link[0]}">${t.link[1]}</a>`:''}</div></div>`;
+// Page-local CSS on purpose. The site CSS is inlined into every page, so adding these
+// rules to CSS would change every page's hash, move every sitemap lastmod and make the
+// IndexNow function resubmit the whole site.
+const NOTED_CSS = `<style>
+/* "Noted" acknowledgement pages (Second Snapshot nurture). One 640px column, no promo blocks. */
+.noted-col{max-width:684px}
+.noted{display:flex;flex-direction:column;gap:44px}
+.noted-tip{display:flex;gap:24px;align-items:flex-start}
+.noted-tip .num{flex:0 0 40px;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:600;font-size:2.75rem;color:var(--emerald);line-height:1}
+.noted-tip h2{font-size:1.25rem;line-height:1.3;letter-spacing:-.01em;color:var(--navy);margin-bottom:.5rem}
+.noted-tip p,.noted-sign p{color:#33465f;font-size:1.02rem;line-height:1.75}
+.noted-tip a{display:inline-block;margin-top:.5rem;padding:.25rem 0;color:var(--emerald);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.noted-sign .nm{color:var(--ink);font-weight:600;margin-top:.35rem}
+.noted-disc{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:1.1rem;font-style:italic}
+@media(max-width:640px){
+  .noted{gap:40px}
+  .noted-tip{flex-direction:column;gap:8px}
+  .noted-tip .num{flex:none;font-size:2.2rem}
+  .noted-tip h2{font-size:1.15rem}
+}
+</style>`;
+const notedBody = (h1, intro, tips, sign) => `
+${NOTED_CSS}
+<section class="page-hero"><div class="wrap noted-col">
+  <h1 class="serif">${h1}</h1>
+  <p>${intro}</p>
+</div></section>
+<section><div class="wrap noted-col noted">
+${tips.map(notedTip).join('\n')}
+<div class="noted-sign"><p>${sign}</p><p class="nm">Brad</p></div>
+<p class="noted-disc">${NOTED_DISC}</p>
+</div></section>`;
+const NOTED_OPTS = {noindex:true, nofollow:true, noCta:true};
+const HIDDEN_PAGES = new Set(['noted-bought.html','noted-on-hold.html','noted-plans-changed.html']);
+
+pages['noted-bought.html'] = page('You bought. Two things worth doing now | CapitalVue','Two things worth doing now that you have bought.', notedBody(
+  'Good on you.',
+  "Thanks for telling me. I've taken you off the buying emails. Two things worth doing now that you've bought.",
+  [
+    {h:'Go back through the building and pest report.', p:'Anything it flagged as deteriorated gets a trade booked now, seals in showers and wet areas especially. A reseal is a small job. The water damage behind a failed seal is not.'},
+    {h:'Put a rate review in your calendar, six months from settlement.', p:"Ask your broker or bank whether the rate you're on is still the best they can do for you. Not every broker or lender checks unprompted. They're the ones to ask; we're not brokers."},
+  ],
+  'If a question comes up, reply to any email from me.'),'','noted-bought.html',null,NOTED_OPTS);
+
+pages['noted-on-hold.html'] = page('On hold. Three things that keep you ready | CapitalVue','Three things that keep you ready while your plans are on hold.', notedBody(
+  'No worries.',
+  "Thanks for telling me. You'll get a short market note from me once a month and nothing else. Three things that keep you ready without much effort.",
+  [
+    {h:'Know the date your pre-approval runs out.', p:'If you have one, the date on the letter is the one that counts. A change in income, debts or rates can reset it sooner. Ask your broker what a refresh would need.', link:['post-home-loan-pre-approval-explained.html','Pre-approval, explained']},
+    {h:"Write down why the ones you saw didn't work.", p:'Do it while you still remember. The criteria you set at your desk hold up better than the ones you make standing in an open home.', link:['post-why-you-lost-the-last-one.html','Why you lost the last one']},
+    {h:"Watch what sells, not what's listed.", p:"Pick one suburb and look at the sold prices once a month. Ten minutes keeps your number current, so you're not starting from scratch when you come back.", link:['why-no-price.html','Why there is no price on the listing']},
+  ],
+  "When things change, reply to any email from me and we'll pick it up from there."),'','noted-on-hold.html',null,NOTED_OPTS);
+
+pages['noted-plans-changed.html'] = page('Plans changed. What still applies | CapitalVue','Whichever way your plans went, one of these probably still applies.', notedBody(
+  'Fair enough.',
+  'Thanks for telling me. Plans change. Whichever way yours went, one of these probably still applies.',
+  [
+    {h:'Buying somewhere else, or something different?', p:'The checks are the same wherever you buy: flood and overlays, the title, the contract, then the building. Run them in that order.', link:['post-property-due-diligence-checklist.html','The due diligence checklist']},
+    {h:'Selling instead of buying?', p:'Work out the order before you list. Whether you sell first or buy first changes what you can offer and what it costs you to wait.', link:['post-sell-first-or-buy-first.html','Sell first or buy first']},
+    {h:'Staying where you are?', p:'Put a rate review in your calendar every six months. Ask your broker or bank whether your rate is still the best they can do. Not every broker or lender checks unprompted.'},
+  ],
+  'If it changes back, reply to any email from me.'),'','noted-plans-changed.html',null,NOTED_OPTS);
+
 pages['404.html'] = page('Page not found | CapitalVue','That page has moved or no longer exists. Find CapitalVue services, the buying power calculator, CapitalVue Portfolio and contact details here.', notFoundBody,'','404.html',null,{noindex:true,baseHref:true});
 
 // ---- Property Readiness Snapshot landing page ----
@@ -2208,7 +2283,7 @@ const pageLastmod = f => {
   NEW_LASTMOD[f] = { hash: h, lastmod: lm };
   return lm;
 };
-const sm = Object.keys(pages).filter(f=>f!=='404.html').map(f=>{
+const sm = Object.keys(pages).filter(f=>f!=='404.html' && !HIDDEN_PAGES.has(f)).map(f=>{
   const loc = BASE + (f==='index.html'?'':f);
   const pr = f==='index.html'?'1.0':(f.indexOf('post-')===0?'0.70':(/terms|privacy|aml-ctf/.test(f)?'0.30':'0.80'));
   const art = f.indexOf('post-')===0 ? ARTICLES.find(a=>'post-'+a.slug+'.html'===f) : null;
