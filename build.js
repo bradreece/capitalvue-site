@@ -1911,7 +1911,7 @@ ${pageHero('Buyers Agent Brisbane','Brisbane &middot; Investor buyers agency','B
 
 <section><div class="wrap">
   <div class="sec-head reveal"><span class="eyebrow">Brisbane market, ${MKT_ASOF}</span><h2 class="serif">Brisbane is leading the downturn. The rental market is holding.</h2></div>
-  <div class="hc-stats" style="grid-template-columns:repeat(4,1fr);gap:12px">
+  <div class="hc-stats" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
     ${statCard('⌂','#6d3bf0','#eef0ff','$1,018,401','Median dwelling value (Cotality, October 2026)')}
     ${statCard('↘','#b4482f','#fdeeea','-6.1%','Change over the October 2026 quarter')}
     ${statCard('↗','#148f8f','#e3f4f4','+0.4%','Annual change to October 2026','#148f8f')}
@@ -1977,7 +1977,7 @@ ${pageHero('Buyers Agent Adelaide','Adelaide &middot; Investor buyers agency','B
 
 <section><div class="wrap">
   <div class="sec-head reveal"><span class="eyebrow">Adelaide market, ${MKT_ASOF}</span><h2 class="serif">Australia's most resilient capital has turned, more gently than Brisbane.</h2></div>
-  <div class="hc-stats" style="grid-template-columns:repeat(4,1fr);gap:12px">
+  <div class="hc-stats" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
     ${statCard('⌂','#6d3bf0','#eef0ff','$916,860','Median dwelling value (Cotality, October 2026)')}
     ${statCard('↘','#b4482f','#fdeeea','-3.9%','Change over the October 2026 quarter')}
     ${statCard('↗','#148f8f','#e3f4f4','+3.7%','Annual change to October 2026','#148f8f')}
@@ -2006,7 +2006,7 @@ ${pageHero('Buyers Agent Adelaide','Adelaide &middot; Investor buyers agency','B
 
 <section><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Credentials</span><h2 class="serif">What we bring to a South Australian purchase.</h2></div>
-  <div class="hc-stats" style="grid-template-columns:repeat(4,1fr);gap:12px">
+  <div class="hc-stats" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
     ${statCard('⚖','#6d3bf0','#eef0ff','SA 335016','Current South Australian land agent licence')}
     ${statCard('◈','#6d3bf0','#eef0ff','23','Client properties secured and settled')}
     ${statCard('⌂','#6d3bf0','#eef0ff','$21.31M','Total purchase value across clients')}
