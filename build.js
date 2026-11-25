@@ -2186,7 +2186,7 @@ ${tips.map(notedTip).join('\n')}
 <p class="noted-disc">${NOTED_DISC}</p>
 </div></section>`;
 const NOTED_OPTS = {noindex:true, nofollow:true, noCta:true};
-const HIDDEN_PAGES = new Set(['noted-bought.html','noted-on-hold.html','noted-plans-changed.html','noted-still-looking.html']);
+const HIDDEN_PAGES = new Set(['noted-bought.html','noted-on-hold.html','noted-plans-changed.html','noted-still-looking.html','noted-still-figuring.html']);
 
 pages['noted-bought.html'] = page('You bought. Two things worth doing now | CapitalVue','Two things worth doing now that you have bought.', notedBody(
   'Good on you.',
@@ -2227,6 +2227,16 @@ pages['noted-still-looking.html'] = page('Still looking. Three things worth doin
   ],
   'If a question comes up, reply to any email from me.',
   'If you have already missed out on one, this is usually where it went wrong: <a href="post-why-you-lost-the-last-one.html">Why you lost the last one</a>.'),'','noted-still-looking.html',null,NOTED_OPTS);
+
+pages['noted-still-figuring.html'] = page('Still figuring it out. Where to start | CapitalVue','Where to start when you are still working out where to buy.', notedBody(
+  "Fair enough. There's a lot to work out.",
+  'Finance, deposit, which suburb, and a news cycle telling you something different every week. Most people try to do all of it at once. It goes easier in this order.',
+  [
+    {h:'Your number first.', p:'What a lender will give you and what your deposit covers. Everything else depends on it.', link:['buying-power.html','Work out your buying power']},
+    {h:'Then the suburbs.', p:'Your number cuts the map down for you. Pick two or three areas you can afford and learn what has sold there in the last three months.', link:['why-no-price.html','Why there is no price on the listing']},
+    {h:'Then the noise, in proportion.', p:"A rate change moves your repayment, so it matters to you. A headline about national prices is an average of markets you aren't buying in. Check your own number when rates move; the rest can wait."},
+  ],
+  'If a question comes up, reply to any email from me.'),'','noted-still-figuring.html',null,NOTED_OPTS);
 
 pages['404.html'] = page('Page not found | CapitalVue','That page has moved or no longer exists. Find CapitalVue services, the buying power calculator, CapitalVue Portfolio and contact details here.', notFoundBody,'','404.html',null,{noindex:true,baseHref:true});
 
