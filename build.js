@@ -2173,7 +2173,8 @@ const NOTED_CSS = `<style>
   .noted-tip h2{font-size:1.15rem}
 }
 </style>`;
-const notedBody = (h1, intro, tips, sign) => `
+// `more` is an optional paragraph (may carry one inline link) shown above the sign-off.
+const notedBody = (h1, intro, tips, sign, more) => `
 ${NOTED_CSS}
 <section class="page-hero"><div class="wrap noted-col">
   <h1 class="serif">${h1}</h1>
@@ -2181,11 +2182,11 @@ ${NOTED_CSS}
 </div></section>
 <section><div class="wrap noted-col noted">
 ${tips.map(notedTip).join('\n')}
-<div class="noted-sign"><p>${sign}</p><p class="nm">Brad</p></div>
+<div class="noted-sign">${more?`<p style="margin-bottom:1rem">${more}</p>`:''}<p>${sign}</p><p class="nm">Brad</p></div>
 <p class="noted-disc">${NOTED_DISC}</p>
 </div></section>`;
 const NOTED_OPTS = {noindex:true, nofollow:true, noCta:true};
-const HIDDEN_PAGES = new Set(['noted-bought.html','noted-on-hold.html','noted-plans-changed.html']);
+const HIDDEN_PAGES = new Set(['noted-bought.html','noted-on-hold.html','noted-plans-changed.html','noted-still-looking.html']);
 
 pages['noted-bought.html'] = page('You bought. Two things worth doing now | CapitalVue','Two things worth doing now that you have bought.', notedBody(
   'Good on you.',
@@ -2215,6 +2216,17 @@ pages['noted-plans-changed.html'] = page('Plans changed. What still applies | Ca
     {h:'Staying where you are?', p:'Put a rate review in your calendar every six months. Ask your broker or bank whether your rate is still the best they can do. Not every broker or lender checks unprompted.'},
   ],
   'If it changes back, reply to any email from me.'),'','noted-plans-changed.html',null,NOTED_OPTS);
+
+pages['noted-still-looking.html'] = page('Still looking. Three things worth doing now | CapitalVue','Three things worth doing while you are still looking.', notedBody(
+  'Good to know. Thanks for telling me.',
+  "I'll keep the emails short and useful. Three things worth doing while you're still looking.",
+  [
+    {h:'Have your borrowing capacity re-run before your next offer.', p:"Rates have risen several times in 2026. A pre-approval from earlier in the year may be for more than a lender would give you today. Better to hear that from your broker this week than after an offer has been accepted. They're the ones to ask; we're not brokers.", link:['post-home-loan-pre-approval-explained.html','How pre-approval works']},
+    {h:'Price it off what has settled in the last three months.', p:'The asking price is what the seller hopes for. Sales from a year ago can be from a different market. Settled sales nearby from the last three months are the closest thing to evidence you will get.', link:['why-no-price.html','Why there is no price on the listing']},
+    {h:'Keep your conditions.', p:'When fewer buyers are competing, there is less reason to drop finance or building and pest to win. Ask for them. A seller can say no, and then it is your decision. Your conveyancer or solicitor can tell you what each condition does for you.'},
+  ],
+  'If a question comes up, reply to any email from me.',
+  'If you have already missed out on one, this is usually where it went wrong: <a href="post-why-you-lost-the-last-one.html">Why you lost the last one</a>.'),'','noted-still-looking.html',null,NOTED_OPTS);
 
 pages['404.html'] = page('Page not found | CapitalVue','That page has moved or no longer exists. Find CapitalVue services, the buying power calculator, CapitalVue Portfolio and contact details here.', notFoundBody,'','404.html',null,{noindex:true,baseHref:true});
 
